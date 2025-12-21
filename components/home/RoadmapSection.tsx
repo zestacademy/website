@@ -1,92 +1,82 @@
-import { CheckCircle2, Circle, ArrowRight } from "lucide-react"
+import { ArrowRight, Layout, TrendingUp, ShieldCheck, Database } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
-const steps = [
+const paths = [
     {
-        id: 1,
-        title: "Foundations",
-        description: "Learn the basics of HTML, CSS, and JavaScript. Build simple static websites.",
-        status: "completed",
-        color: "bg-green-500",
+        title: "Full Stack Developer",
+        description: "Master Frontend, Backend, and Database technologies to build complete web apps.",
+        courses: 8,
+        hours: 48,
+        icon: Layout,
+        color: "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400",
+        popularity: "High"
     },
     {
-        id: 2,
-        title: "Frontend Mastery",
-        description: "Master React, Tailwind CSS, and Next.js. Create dynamic, responsive applications.",
-        status: "current",
-        color: "bg-blue-600",
+        title: "Digital Marketing Expert",
+        description: "Learn SEO, Social Media, and Email Marketing strategies to grow any business.",
+        courses: 5,
+        hours: 24,
+        icon: TrendingUp,
+        color: "bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400",
+        popularity: "Medium"
     },
     {
-        id: 3,
-        title: "Backend Integration",
-        description: "Connect to databases, handle authentication, and build robust APIs with Node.js.",
-        status: "upcoming",
-        color: "bg-yellow-500",
+        title: "Cybersecurity Specialist",
+        description: "Protect systems and networks from digital attacks. Learn ethical hacking.",
+        courses: 6,
+        hours: 32,
+        icon: ShieldCheck,
+        color: "bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400",
+        popularity: "High"
     },
     {
-        id: 4,
-        title: "Career Ready",
-        description: "Build a portfolio, contribute to open source, and prepare for technical interviews.",
-        status: "upcoming",
-        color: "bg-red-500",
+        title: "Data Scientist",
+        description: "Analyze complex data, build ML models, and drive business decisions.",
+        courses: 7,
+        hours: 56,
+        icon: Database,
+        color: "bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400",
+        popularity: "High"
     },
 ]
 
 export function RoadmapSection() {
     return (
-        <section className="container mx-auto py-16 px-4">
-            <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold tracking-tight mb-4">Your Learning Journey</h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                    Follow our proven step-by-step roadmap to go from beginner to professional developer.
-                </p>
+        <section className="container mx-auto py-16 px-4 bg-muted/20">
+            <div className="flex items-center gap-3 mb-8">
+                <div className="p-2 bg-blue-600 rounded-lg">
+                    <Layout className="h-6 w-6 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold tracking-tight">Curated Learning Paths</h2>
             </div>
 
-            <div className="relative">
-                {/* Connector Line (Desktop) */}
-                <div className="hidden md:block absolute top-6 left-0 w-full h-1 bg-muted -z-10" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {paths.map((path, index) => (
+                    <div key={index} className="flex flex-col sm:flex-row gap-6 p-6 rounded-2xl bg-card border hover:shadow-lg transition-all group">
+                        <div className={`p-4 rounded-xl h-fit ${path.color}`}>
+                            <path.icon className="h-8 w-8" />
+                        </div>
+                        <div className="flex-1 space-y-3">
+                            <div className="flex justify-between items-start">
+                                <h3 className="text-xl font-bold group-hover:text-primary transition-colors">{path.title}</h3>
+                                <Badge variant="secondary" className="font-normal">{path.courses} Courses</Badge>
+                            </div>
+                            <p className="text-muted-foreground">{path.description}</p>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    {steps.map((step, index) => (
-                        <div key={step.id} className="relative flex flex-col items-center text-center md:text-left md:items-start group">
-                            {/* Connector Line (Mobile) */}
-                            {index !== steps.length - 1 && (
-                                <div className="md:hidden absolute top-8 left-1/2 w-1 h-full bg-muted -translate-x-1/2 -z-10" />
-                            )}
-
-                            <div className={`
-                flex items-center justify-center w-12 h-12 rounded-full border-4 border-white dark:border-background shadow-sm mb-4 bg-background z-10
-                ${step.status === 'completed' ? 'text-green-500' : ''}
-                ${step.status === 'current' ? 'text-blue-600 ring-2 ring-blue-600 ring-offset-2 dark:ring-offset-background' : 'text-muted-foreground'}
-              `}>
-                                {step.status === 'completed' ? (
-                                    <CheckCircle2 className="w-6 h-6 fill-green-100 dark:fill-green-900" />
-                                ) : (
-                                    <Circle className="w-6 h-6 fill-current" />
-                                )}
+                            <div className="pt-2 flex items-center justify-between text-sm">
+                                <span className="font-medium text-muted-foreground">{path.hours} Hours</span>
+                                <Button variant="ghost" className="p-0 h-auto text-blue-600 hover:text-blue-700 hover:bg-transparent font-medium group-hover:underline">                                    View Path <ArrowRight className="ml-1 h-4 w-4" />
+                                </Button>
                             </div>
 
-                            <div className="bg-card border rounded-xl p-6 w-full shadow-sm hover:shadow-md transition-shadow">
-                                <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
-                                    <span className={`w-2 h-2 rounded-full ${step.color}`} />
-                                    {step.title}
-                                </h3>
-                                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                                    {step.description}
-                                </p>
-                                <div className="flex justify-between items-center text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                                    <span>Step 0{step.id}</span>
-                                </div>
+                            {/* Progress bar simulation or decorative line */}
+                            <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden mt-2">
+                                <div className={`h-full rounded-full w-0 group-hover:w-full transition-all duration-1000 ease-out bg-primary/80`}></div>
                             </div>
                         </div>
-                    ))}
-                </div>
-
-                <div className="mt-12 text-center">
-                    <Button size="lg" className="rounded-full px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/20">
-                        Start Your Journey <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                </div>
+                    </div>
+                ))}
             </div>
         </section>
     )
