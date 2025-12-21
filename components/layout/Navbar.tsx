@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Monitor, Search } from "lucide-react"
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -36,16 +36,9 @@ export function Navbar() {
                         </div>
                     </div>
                     <nav className="flex items-center space-x-2">
-                        <SignedOut>
-                            <SignInButton mode="modal">
-                                <Button className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-full hover:opacity-90 transition-opacity">
-                                    Sign In
-                                </Button>
-                            </SignInButton>
-                        </SignedOut>
-                        <SignedIn>
-                            <UserButton />
-                        </SignedIn>
+                        <Button className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-full hover:opacity-90 transition-opacity">
+                            Sign In
+                        </Button>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon">

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useUser } from "@clerk/nextjs"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function OnboardingPage() {
-    const { user } = useUser()
+
     const router = useRouter()
     const [loading, setLoading] = useState(false)
 
@@ -28,14 +28,14 @@ export default function OnboardingPage() {
         <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] bg-muted/20">
             <Card className="w-[400px] shadow-lg">
                 <CardHeader>
-                    <CardTitle>Welcome, {user?.firstName || "Learner"}!</CardTitle>
+                    <CardTitle>Welcome, Learner!</CardTitle>
                     <CardDescription>Let's personalize your learning experience.</CardDescription>
                 </CardHeader>
                 <form onSubmit={handleOnboarding}>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="fullname">Full Name</Label>
-                            <Input id="fullname" placeholder="John Doe" defaultValue={user?.fullName || ""} required />
+                            <Input id="fullname" placeholder="John Doe" required />
                         </div>
 
                         <div className="space-y-2">
