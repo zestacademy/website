@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { Search, Sun, Moon } from "lucide-react"
 
 
@@ -21,20 +22,14 @@ export function Navbar() {
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-16 items-center mx-auto px-4 justify-between">
                 <Link href="/" className="flex items-center space-x-2 mr-8">
-                    <div className="bg-primary text-primary-foreground p-1 rounded-md">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="h-6 w-6"
-                        >
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                            <path d="M6 12v5c3 3 9 3 12 0v-5" />
-                        </svg>
+                    <div className="relative h-10 w-10 mr-1">
+                        <Image
+                            src="/logo.jpg"
+                            alt="Zest Academy Logo"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
                     </div>
                     <span className="font-bold text-xl tracking-tight">
                         Zest Academy
