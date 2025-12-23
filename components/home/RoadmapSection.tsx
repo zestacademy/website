@@ -1,82 +1,118 @@
-import { ArrowRight, Layout, TrendingUp, ShieldCheck, Database } from "lucide-react"
+import { ArrowRight, Code2, Layers, Network, Database, Trophy, Calendar, Target } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
 const paths = [
     {
-        title: "Full Stack Developer",
-        description: "Master Frontend, Backend, and Database technologies to build complete web apps.",
-        courses: 8,
-        hours: 48,
-        icon: Layout,
-        color: "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400",
-        popularity: "High"
+        title: "Full Stack Engineer",
+        description: "Master frontend, backend, databases, and deployment. Build production-ready web applications.",
+        topics: 45,
+        weeks: 12,
+        icon: Layers,
+        color: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
+        level: "Beginner to Advanced",
+        outcome: "Interview Ready"
     },
     {
-        title: "Digital Marketing Expert",
-        description: "Learn SEO, Social Media, and Email Marketing strategies to grow any business.",
-        courses: 5,
-        hours: 24,
-        icon: TrendingUp,
-        color: "bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400",
-        popularity: "Medium"
+        title: "Data Structures & Algorithms",
+        description: "Core CS fundamentals for technical interviews. Master problem-solving patterns and optimization.",
+        topics: 150,
+        weeks: 16,
+        icon: Code2,
+        color: "bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400",
+        level: "Beginner to Advanced",
+        outcome: "FAANG Ready"
     },
     {
-        title: "Cybersecurity Specialist",
-        description: "Protect systems and networks from digital attacks. Learn ethical hacking.",
-        courses: 6,
-        hours: 32,
-        icon: ShieldCheck,
-        color: "bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400",
-        popularity: "High"
+        title: "System Design Mastery",
+        description: "Design scalable systems and ace senior engineering interviews. Learn real-world architecture patterns.",
+        topics: 30,
+        weeks: 8,
+        icon: Network,
+        color: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
+        level: "Intermediate",
+        outcome: "Senior Level"
     },
     {
-        title: "Data Scientist",
-        description: "Analyze complex data, build ML models, and drive business decisions.",
-        courses: 7,
-        hours: 56,
+        title: "Backend Engineering",
+        description: "APIs, databases, caching, message queues, and microservices architecture from scratch.",
+        topics: 55,
+        weeks: 10,
         icon: Database,
-        color: "bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400",
-        popularity: "High"
+        color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+        level: "Intermediate",
+        outcome: "Core Mastery"
     },
 ]
 
 export function RoadmapSection() {
     return (
-        <section className="container mx-auto py-16 px-4 bg-muted/20">
-            <div className="flex items-center gap-3 mb-8">
-                <div className="p-2 bg-blue-600 rounded-lg">
-                    <Layout className="h-6 w-6 text-white" />
+        <section className="container mx-auto py-20 px-4 bg-gradient-to-b from-muted/30 to-background">
+            <div className="text-center mb-12">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
+                    <Target className="h-4 w-4" />
+                    <span className="text-sm font-semibold">Signature Feature</span>
                 </div>
-                <h2 className="text-3xl font-bold tracking-tight">Curated Learning Paths</h2>
+                <h2 className="text-4xl font-bold tracking-tight mb-3">Structured Learning Roadmaps</h2>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    Follow proven paths designed by engineers, for engineers. Each roadmap takes you from fundamentals to interview readiness.
+                </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 {paths.map((path, index) => (
-                    <div key={index} className="flex flex-col sm:flex-row gap-6 p-6 rounded-2xl bg-card border hover:shadow-lg transition-all group">
-                        <div className={`p-4 rounded-xl h-fit ${path.color}`}>
-                            <path.icon className="h-8 w-8" />
-                        </div>
-                        <div className="flex-1 space-y-3">
-                            <div className="flex justify-between items-start">
-                                <h3 className="text-xl font-bold group-hover:text-primary transition-colors">{path.title}</h3>
-                                <Badge variant="secondary" className="font-normal">{path.courses} Courses</Badge>
+                    <div key={index} className="flex flex-col gap-6 p-8 rounded-2xl bg-card border-2 border-muted hover:border-primary/40 hover:shadow-xl transition-all group">
+                        <div className="flex items-start gap-6">
+                            <div className={`p-4 rounded-xl h-fit ${path.color} group-hover:scale-105 transition-transform`}>
+                                <path.icon className="h-8 w-8" />
                             </div>
-                            <p className="text-muted-foreground">{path.description}</p>
+                            <div className="flex-1 space-y-4">
+                                <div className="flex flex-wrap items-start justify-between gap-2">
+                                    <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">{path.title}</h3>
+                                    <Badge className="bg-accent text-accent-foreground border-0 font-medium">
+                                        <Trophy className="h-3 w-3 mr-1" />
+                                        {path.outcome}
+                                    </Badge>
+                                </div>
+                                <p className="text-muted-foreground leading-relaxed">{path.description}</p>
 
-                            <div className="pt-2 flex items-center justify-between text-sm">
-                                <span className="font-medium text-muted-foreground">{path.hours} Hours</span>
-                                <Button variant="ghost" className="p-0 h-auto text-blue-600 hover:text-blue-700 hover:bg-transparent font-medium group-hover:underline">                                    View Path <ArrowRight className="ml-1 h-4 w-4" />
-                                </Button>
-                            </div>
+                                <div className="flex flex-wrap items-center gap-4 pt-2 text-sm font-medium">
+                                    <div className="flex items-center gap-2 text-muted-foreground">
+                                        <Calendar className="h-4 w-4" />
+                                        <span>{path.weeks} weeks</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-muted-foreground">
+                                        <Code2 className="h-4 w-4" />
+                                        <span>{path.topics} topics</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-primary">
+                                        <Target className="h-4 w-4" />
+                                        <span>{path.level}</span>
+                                    </div>
+                                </div>
 
-                            {/* Progress bar simulation or decorative line */}
-                            <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden mt-2">
-                                <div className={`h-full rounded-full w-0 group-hover:w-full transition-all duration-1000 ease-out bg-primary/80`}></div>
+                                <div className="pt-2">
+                                    <Button variant="ghost" className="p-0 h-auto text-primary hover:text-primary/80 hover:bg-transparent font-semibold group/btn">
+                                        Start Learning Path 
+                                        <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                                    </Button>
+                                </div>
+
+                                {/* Progress indicator */}
+                                <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                                    <div className={`h-full rounded-full w-0 group-hover:w-full transition-all duration-1000 ease-out bg-gradient-to-r from-primary to-accent`}></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 ))}
+            </div>
+
+            <div className="text-center">
+                <Button size="lg" variant="outline" className="font-semibold">
+                    View All Learning Paths
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
             </div>
         </section>
     )

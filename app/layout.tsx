@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Zest Academy - Unlock Your Potential",
-  description: "Master new skills with industry experts. Join thousands of learners worldwide.",
+  title: "Zest Academy - Master Engineering Fundamentals & Ace Interviews",
+  description: "Structured learning paths for engineering students. Master Data Structures, System Design, and interview preparation with expert-crafted roadmaps.",
   icons: {
     icon: "/logo.png",
   },
