@@ -13,6 +13,8 @@ interface CourseProps {
     category: string
     level?: string
     tag?: string
+    difficulty?: string
+    duration?: string
 }
 
 export function CourseCard({ course }: { course: CourseProps }) {
@@ -41,7 +43,7 @@ export function CourseCard({ course }: { course: CourseProps }) {
 
             <div className="p-5 flex flex-col gap-3">
                 <div className="flex justify-between items-start">
-                    <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
+                    <div className="text-xs font-semibold text-primary uppercase tracking-wide">
                         {course.category}
                     </div>
                     <div className="flex items-center gap-1 text-sm font-medium">
@@ -59,9 +61,30 @@ export function CourseCard({ course }: { course: CourseProps }) {
                     By <span className="text-foreground font-medium">{course.instructor}</span>
                 </p>
 
+                {/* Difficulty and Duration */}
+                {(course.difficulty || course.duration) && (
+                    <div className="flex items-center gap-3 text-xs">
+                        {course.difficulty && (
+                            <span className={`px-2 py-1 rounded-md font-medium ${
+                                course.difficulty === 'Easy' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                                course.difficulty === 'Medium' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
+                                'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                            }`}>
+                                {course.difficulty}
+                            </span>
+                        )}
+                        {course.duration && (
+                            <span className="flex items-center gap-1 text-muted-foreground">
+                                <Clock className="h-3 w-3" />
+                                {course.duration}
+                            </span>
+                        )}
+                    </div>
+                )}
+
                 <div className="pt-2 flex items-center justify-between border-t mt-1">
                     <span className="text-xl font-bold text-foreground">{course.price}</span>
-                    <Button size="sm" className="px-6 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60 font-semibold transition-colors">
+                    <Button size="sm" className="px-6 bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground font-semibold transition-colors">
                         Enroll
                     </Button>
                 </div>

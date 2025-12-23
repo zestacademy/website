@@ -1,49 +1,57 @@
 import { CourseCard } from "@/components/courses/CourseCard"
 import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, TrendingUp } from "lucide-react"
 
 const courses = [
     {
-        title: "Complete Web Design: from Figma to Webflow",
-        instructor: "Sarah Jenkins",
-        rating: 4.8,
-        students: 2100,
-        price: "$19.99",
-        image: "https://images.unsplash.com/photo-1509395176047-4a66953fd231?auto=format&fit=crop&q=80&w=600",
-        category: "Design",
-        level: "Beginner",
-        tag: "Bestseller"
-    },
-    {
-        title: "Advanced React Patterns & Performance",
-        instructor: "David Chen",
+        title: "Master Data Structures & Algorithms",
+        instructor: "Dr. Sarah Kumar",
         rating: 4.9,
-        students: 850,
+        students: 8500,
+        price: "$29.99",
+        image: "",
+        category: "DSA",
+        level: "Intermediate",
+        tag: "Interview Focus",
+        difficulty: "Medium",
+        duration: "12 weeks"
+    },
+    {
+        title: "System Design Fundamentals",
+        instructor: "Alex Chen",
+        rating: 4.8,
+        students: 3200,
         price: "$49.99",
-        image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&q=80&w=600",
-        category: "Development",
+        image: "",
+        category: "System Design",
         level: "Advanced",
-        tag: "New"
+        tag: "High Demand",
+        difficulty: "Hard",
+        duration: "8 weeks"
     },
     {
-        title: "Data Analysis for Business Intelligence with Excel",
-        instructor: "Michael Scott",
-        rating: 4.6,
-        students: 1200,
-        price: "$24.99",
-        image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=600",
-        category: "Business",
-        level: "Intermediate"
-    },
-    {
-        title: "Digital Marketing Essentials 101",
-        instructor: "Emily Blunt",
+        title: "Complete React & Node.js Stack",
+        instructor: "David Martinez",
         rating: 4.7,
         students: 5400,
+        price: "$39.99",
+        image: "",
+        category: "Web Development",
+        level: "Beginner",
+        difficulty: "Easy",
+        duration: "10 weeks"
+    },
+    {
+        title: "SQL & Database Design Mastery",
+        instructor: "Emily Roberts",
+        rating: 4.9,
+        students: 4100,
         price: "Free",
-        image: "https://images.unsplash.com/photo-1533750516457-a7f992034fec?auto=format&fit=crop&q=80&w=600",
-        category: "Marketing",
-        level: "Beginner"
+        image: "",
+        category: "Database",
+        level: "Intermediate",
+        difficulty: "Medium",
+        duration: "6 weeks"
     },
 ]
 
@@ -51,11 +59,16 @@ export function CoursesSection() {
     return (
         <section className="container mx-auto py-16 px-4">
             <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-2">
-                    <span className="text-red-500">🔥</span>
-                    <h2 className="text-3xl font-bold tracking-tight">Trending Now</h2>
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-amber-500/10 rounded-lg">
+                        <TrendingUp className="h-6 w-6 text-amber-600" />
+                    </div>
+                    <div>
+                        <h2 className="text-3xl font-bold tracking-tight">Featured Topics</h2>
+                        <p className="text-sm text-muted-foreground mt-1">High-impact skills for engineering success</p>
+                    </div>
                 </div>
-                <Button variant="ghost" className="hidden md:flex gap-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                <Button variant="ghost" className="hidden md:flex gap-2 text-primary hover:text-primary/80 hover:bg-primary/10">
                     View All <ArrowRight className="h-4 w-4" />
                 </Button>
             </div>
@@ -67,7 +80,7 @@ export function CoursesSection() {
             </div>
 
             <div className="mt-8 text-center md:hidden">
-                <Button variant="outline" className="w-full">View all courses</Button>
+                <Button variant="outline" className="w-full">View all topics</Button>
             </div>
         </section>
     )
