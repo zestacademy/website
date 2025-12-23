@@ -24,7 +24,7 @@ export function Navbar() {
                 <Link href="/" className="flex items-center space-x-2 mr-8">
                     <div className="relative h-10 w-10 mr-1">
                         <Image
-                            src="/logo.jpg"
+                            src="/logo.png"
                             alt="Zest Academy Logo"
                             fill
                             className="object-contain"

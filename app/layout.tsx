@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "Zest Academy - Unlock Your Potential",
   description: "Master new skills with industry experts. Join thousands of learners worldwide.",
   icons: {
-    icon: "/logo.jpg",
+    icon: "/logo.png",
   },
 };
 
