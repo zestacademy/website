@@ -55,9 +55,11 @@ export function Navbar() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-                            Log In
-                        </Button>
+                        <Link href="/login">
+                            <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
+                                Log In
+                            </Button>
+                        </Link>
                         <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-sm">
                             Sign Up
                         </Button>
