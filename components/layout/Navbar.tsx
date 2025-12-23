@@ -36,13 +36,12 @@ export function Navbar() {
                     </span>
                 </Link>
 
-                {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center space-x-6 text-sm font-medium text-muted-foreground">
                     <Link href="/" className="text-foreground hover:text-primary transition-colors">Home</Link>
                     <Link href="/roadmaps" className="hover:text-primary transition-colors">Roadmaps</Link>
                     <Link href="/explore" className="hover:text-primary transition-colors">Skills</Link>
                     <Link href="/categories" className="hover:text-primary transition-colors">Interview Questions</Link>
-                    <Link href="/my-learning" className="hover:text-primary transition-colors">Practice</Link>
+                    <Link href="/articles" className="hover:text-primary transition-colors">Practice</Link>
                     <Link href="/my-learning" className="hover:text-primary transition-colors">My Learning</Link>
                 </nav>
 
