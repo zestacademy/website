@@ -2,58 +2,7 @@ import { CourseCard } from "@/components/courses/CourseCard"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, TrendingUp } from "lucide-react"
 
-const courses = [
-    {
-        title: "Master Data Structures & Algorithms",
-        instructor: "Dr. Sarah Kumar",
-        rating: 4.9,
-        students: 8500,
-        price: "$29.99",
-        image: "",
-        category: "DSA",
-        level: "Intermediate",
-        tag: "Interview Focus",
-        difficulty: "Medium",
-        duration: "12 weeks"
-    },
-    {
-        title: "System Design Fundamentals",
-        instructor: "Alex Chen",
-        rating: 4.8,
-        students: 3200,
-        price: "$49.99",
-        image: "",
-        category: "System Design",
-        level: "Advanced",
-        tag: "High Demand",
-        difficulty: "Hard",
-        duration: "8 weeks"
-    },
-    {
-        title: "Complete React & Node.js Stack",
-        instructor: "David Martinez",
-        rating: 4.7,
-        students: 5400,
-        price: "$39.99",
-        image: "",
-        category: "Web Development",
-        level: "Beginner",
-        difficulty: "Easy",
-        duration: "10 weeks"
-    },
-    {
-        title: "SQL & Database Design Mastery",
-        instructor: "Emily Roberts",
-        rating: 4.9,
-        students: 4100,
-        price: "Free",
-        image: "",
-        category: "Database",
-        level: "Intermediate",
-        difficulty: "Medium",
-        duration: "6 weeks"
-    },
-]
+const courses: any[] = []
 
 export function CoursesSection() {
     return (

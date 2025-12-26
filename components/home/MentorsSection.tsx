@@ -1,31 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-const mentors = [
-    {
-        name: "Sarah J.",
-        role: "Design Lead",
-        initials: "SJ",
-        image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200&h=200"
-    },
-    {
-        name: "David C.",
-        role: "Senior Dev",
-        initials: "DC",
-        image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=200&h=200"
-    },
-    {
-        name: "Emily R.",
-        role: "CMO",
-        initials: "ER",
-        image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200&h=200"
-    },
-    {
-        name: "Michael B.",
-        role: "Entrepreneur",
-        initials: "MB",
-        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200&h=200"
-    },
-]
+const mentors: any[] = []
 
 export function MentorsSection() {
     return (

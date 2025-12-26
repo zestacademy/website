@@ -2,48 +2,7 @@ import { ArrowRight, Code2, Layers, Network, Database, Trophy, Calendar, Target 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
-const paths = [
-    {
-        title: "Full Stack Engineer",
-        description: "Master frontend, backend, databases, and deployment. Build production-ready web applications.",
-        topics: 45,
-        weeks: 12,
-        icon: Layers,
-        color: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
-        level: "Beginner to Advanced",
-        outcome: "Interview Ready"
-    },
-    {
-        title: "Data Structures & Algorithms",
-        description: "Core CS fundamentals for technical interviews. Master problem-solving patterns and optimization.",
-        topics: 150,
-        weeks: 16,
-        icon: Code2,
-        color: "bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400",
-        level: "Beginner to Advanced",
-        outcome: "FAANG Ready"
-    },
-    {
-        title: "System Design Mastery",
-        description: "Design scalable systems and ace senior engineering interviews. Learn real-world architecture patterns.",
-        topics: 30,
-        weeks: 8,
-        icon: Network,
-        color: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
-        level: "Intermediate",
-        outcome: "Senior Level"
-    },
-    {
-        title: "Backend Engineering",
-        description: "APIs, databases, caching, message queues, and microservices architecture from scratch.",
-        topics: 55,
-        weeks: 10,
-        icon: Database,
-        color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-        level: "Intermediate",
-        outcome: "Core Mastery"
-    },
-]
+const paths: any[] = []
 
 export function RoadmapSection() {
     return (
@@ -93,7 +52,7 @@ export function RoadmapSection() {
 
                                 <div className="pt-2">
                                     <Button variant="ghost" className="p-0 h-auto text-primary hover:text-primary/80 hover:bg-transparent font-semibold group/btn">
-                                        Start Learning Path 
+                                        Start Learning Path
                                         <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                                     </Button>
                                 </div>

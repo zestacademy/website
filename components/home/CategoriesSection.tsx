@@ -2,16 +2,7 @@ import { Code2, Database, Cpu, Globe, Cloud, Lock, Smartphone, GitBranch } from 
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
-const categories = [
-    { name: "Data Structures & Algorithms", icon: Code2, count: "150+ Problems", color: "text-blue-600 dark:text-blue-400", badge: "Core" },
-    { name: "System Design", icon: Cpu, count: "45 Patterns", color: "text-purple-600 dark:text-purple-400", badge: "Interview Focus" },
-    { name: "Web Development", icon: Globe, count: "120 Topics", color: "text-green-600 dark:text-green-400" },
-    { name: "Database Engineering", icon: Database, count: "65 Concepts", color: "text-indigo-600 dark:text-indigo-400" },
-    { name: "DevOps & Cloud", icon: Cloud, count: "80 Skills", color: "text-sky-600 dark:text-sky-400", badge: "High Demand" },
-    { name: "Security & Networking", icon: Lock, count: "50 Topics", color: "text-red-600 dark:text-red-400" },
-    { name: "Mobile Development", icon: Smartphone, count: "70 Lessons", color: "text-orange-600 dark:text-orange-400" },
-    { name: "Version Control & Git", icon: GitBranch, count: "40 Commands", color: "text-amber-600 dark:text-amber-400" },
-]
+const categories: any[] = []
 
 export function CategoriesSection() {
     return (
