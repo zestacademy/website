@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { CommentsSection } from "@/components/comments-section"
 
 export default function ComprehensiveAIGuidePage() {
     return (
@@ -22,7 +23,7 @@ export default function ComprehensiveAIGuidePage() {
             <section className="py-12 bg-background">
                 <div className="container mx-auto px-4 max-w-5xl">
                     <article className="prose prose-lg dark:prose-invert max-w-none">
-                        
+
                         {/* What is AI Section */}
                         <Card className="mb-8">
                             <CardHeader>
@@ -47,7 +48,7 @@ export default function ComprehensiveAIGuidePage() {
                                 <p>
                                     At the foundation of most modern AI systems is <strong>machine learning</strong>—a subset of AI where programs improve and adapt over time without being explicitly programmed with step-by-step instructions.
                                 </p>
-                                
+
                                 <div className="mt-6">
                                     <h3 className="text-xl font-semibold text-foreground mb-3">The Machine Learning Process</h3>
                                     <p>The machine learning workflow operates through a systematic cycle:</p>
@@ -84,7 +85,7 @@ export default function ComprehensiveAIGuidePage() {
                             </CardHeader>
                             <CardContent className="space-y-6 text-muted-foreground">
                                 <p>AI&apos;s journey spans over seven decades, marked by periods of intense progress and occasional setbacks:</p>
-                                
+
                                 <div>
                                     <h3 className="text-xl font-semibold text-foreground mb-2">1950s-1960s: Foundations & Early Optimism</h3>
                                     <ul className="list-disc list-inside space-y-1 ml-4">
@@ -879,6 +880,9 @@ export default function ComprehensiveAIGuidePage() {
                                 </div>
                             </CardContent>
                         </Card>
+
+                        {/* Comments Section */}
+                        <CommentsSection courseId="ai-comprehensive-guide" />
 
                     </article>
                 </div>

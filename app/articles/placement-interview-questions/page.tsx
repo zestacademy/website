@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { CommentsSection } from "@/components/comments-section"
 
 export default function PlacementInterviewQuestionsPage() {
     const questions = [
@@ -274,6 +275,9 @@ export default function PlacementInterviewQuestionsPage() {
                     </Card>
                 </div>
             </section>
+
+            {/* Comments Section */}
+            <CommentsSection courseId="placement-interview-questions" />
         </div>
     )
 }

@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Search, Sun, Moon } from "lucide-react"
-
+import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,7 +13,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useTheme } from "next-themes"
+import { UserProfile } from "@/components/layout/UserProfile"
 
 export function Navbar() {
     const { setTheme } = useTheme()
@@ -54,16 +54,7 @@ export function Navbar() {
                         />
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        <Link href="/login">
-                            <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-                                Log In
-                            </Button>
-                        </Link>
-                        <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-sm">
-                            Sign Up
-                        </Button>
-                    </div>
+                    <UserProfile />
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>

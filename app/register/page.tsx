@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile, sendEmailVerification } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 
 import { Button } from "@/components/ui/button"
@@ -20,23 +20,31 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 
-export default function LoginPage() {
+export default function RegisterPage() {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [showPassword, setShowPassword] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
+    const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [showNotFoundDialog, setShowNotFoundDialog] = useState(false)
+    const [showVerifyDialog, setShowVerifyDialog] = useState(false)
+    const [showExistsDialog, setShowExistsDialog] = useState(false)
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user) {
+            if (user && !showVerifyDialog) {
+                // Only redirect if we are NOT showing the verification dialog.
+                // This prevents premature redirect before the user sees the message if auto-login happens on signup.
+                // However, createUserWithEmailAndPassword signs in automatically.
+                // We need to handle the flow carefully.
+                // If the dialog is open, we wait for user interaction.
+                // If user visits the page appearing logged in, we redirect.
                 router.push("/")
             }
         })
         return () => unsubscribe()
-    }, [router])
+    }, [router, showVerifyDialog])
 
     async function onSubmit(event: React.SyntheticEvent) {
         event.preventDefault()
@@ -44,23 +52,39 @@ export default function LoginPage() {
         setError(null)
 
         try {
-            await signInWithEmailAndPassword(auth, email, password)
-            router.push("/")
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+            if (name) {
+                await updateProfile(userCredential.user, {
+                    displayName: name
+                })
+            }
+            await sendEmailVerification(userCredential.user)
+            setShowVerifyDialog(true)
+            // Do NOT router.push("/") here. Wait for dialog.
         } catch (e: any) {
             console.error(e)
-            // Handle account not found or invalid credentials
-            // Note: If email enumeration protection is enabled (default), 'auth/user-not-found' is not returned.
-            // Instead 'auth/invalid-credential' is returned.
-            // We show the dialog for all these cases to ensure users who don't have an account are prompted to create one.
-            if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential' || e.code === 'auth/invalid-login-credentials') {
-                setShowNotFoundDialog(true)
+            if (e.code === 'auth/email-already-in-use') {
+                setShowExistsDialog(true)
             } else {
-                setError(e.message || "Failed to sign in. Please check your credentials.")
+                setError(e.message || "Failed to create account. Please try again.")
             }
         } finally {
             setIsLoading(false)
         }
     }
+
+    // ... handleGoogleLogin ... (omitted from replacement for brevity if not changing, but wait, replace_file_content replaces range)
+    // Actually, I need to be careful with replace_file_content range.
+    // The "useEffect" logic I wrote above might conflict with the existing one if I don't replace it carefully.
+    // The existing useEffect redirects simply if user exists.
+    // When createUserWithEmailAndPassword succeeds, auth state changes to "logged in".
+    // The useEffect will trigger and redirect to "/", potentially BEFORE the dialog is seen or immediately closing it?
+    // userCredential creates the user and signs them in.
+    // So the state change listener WILL fire.
+    // I should modify the useEffect to ignore the redirect if we just signed up (maybe check showVerifyDialog?)
+    // Yes, added !showVerifyDialog check in the replacement above.
+
+    // Let's carry on with the rest of the component structure.
 
     async function handleGoogleLogin() {
         setIsLoading(true)
@@ -71,7 +95,7 @@ export default function LoginPage() {
             router.push("/")
         } catch (e: any) {
             console.error(e)
-            setError(e.message || "Failed to sign in with Google.")
+            setError(e.message || "Failed to sign up with Google.")
         } finally {
             setIsLoading(false)
         }
@@ -79,6 +103,7 @@ export default function LoginPage() {
 
     return (
         <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+            {/* ... Left Side ... */}
             <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
                 <div className="absolute inset-0 bg-primary/90" />
                 <div className="relative z-20 flex items-center text-lg font-medium">
@@ -104,20 +129,35 @@ export default function LoginPage() {
                     </blockquote>
                 </div>
             </div>
+
             <div className="lg:p-8 relative">
                 <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
                     <div className="flex flex-col space-y-2 text-center">
                         <h1 className="text-2xl font-semibold tracking-tight">
-                            Welcome back
+                            Create an account
                         </h1>
                         <p className="text-sm text-muted-foreground">
-                            Enter your email to sign in to your account
+                            Enter your email below to create your account
                         </p>
                     </div>
                     <Card className="border-none shadow-none">
                         <CardContent className="p-0">
                             <form onSubmit={onSubmit}>
                                 <div className="grid gap-4">
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="name">Name</Label>
+                                        <Input
+                                            id="name"
+                                            placeholder="John Doe"
+                                            type="text"
+                                            autoCapitalize="words"
+                                            autoComplete="name"
+                                            autoCorrect="off"
+                                            disabled={isLoading}
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                        />
+                                    </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="email">Email</Label>
                                         <Input
@@ -135,19 +175,13 @@ export default function LoginPage() {
                                     <div className="grid gap-2">
                                         <div className="flex items-center justify-between">
                                             <Label htmlFor="password">Password</Label>
-                                            <Link
-                                                href="/forgot-password"
-                                                className="text-sm font-medium text-primary hover:underline"
-                                            >
-                                                Forgot password?
-                                            </Link>
                                         </div>
                                         <div className="relative">
                                             <Input
                                                 id="password"
                                                 type={showPassword ? "text" : "password"}
                                                 autoCapitalize="none"
-                                                autoComplete="current-password"
+                                                autoComplete="new-password"
                                                 disabled={isLoading}
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
@@ -176,7 +210,7 @@ export default function LoginPage() {
                                         {isLoading && (
                                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                         )}
-                                        Sign In
+                                        Create Account
                                     </Button>
                                 </div>
                             </form>
@@ -203,12 +237,12 @@ export default function LoginPage() {
                         </CardContent>
                         <CardFooter className="flex flex-col space-y-4 p-0 mt-6 text-center text-sm text-muted-foreground">
                             <p>
-                                Don&apos;t have an account?{" "}
+                                Already have an account?{" "}
                                 <Link
-                                    href="/register"
+                                    href="/login"
                                     className="underline underline-offset-4 hover:text-primary"
                                 >
-                                    Sign up
+                                    Login
                                 </Link>
                             </p>
 
@@ -217,21 +251,39 @@ export default function LoginPage() {
                 </div>
             </div>
 
-            <Dialog open={showNotFoundDialog} onOpenChange={setShowNotFoundDialog}>
+            <Dialog open={showVerifyDialog} onOpenChange={setShowVerifyDialog}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Account Not Found</DialogTitle>
+                        <DialogTitle>Verify your email</DialogTitle>
                         <DialogDescription>
-                            We couldn&apos;t find an account with that email address. Create an account today to get started!
+                            Account created successfully! We&apos;ve sent a verification email to <strong>{email}</strong>.
+                            Please verify your email address to access all features.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowNotFoundDialog(false)}>
+                        <Button onClick={() => router.push("/")}>
+                            Continue to Dashboard
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={showExistsDialog} onOpenChange={setShowExistsDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Account Already Exists</DialogTitle>
+                        <DialogDescription>
+                            It looks like there is already an account associated with <strong>{email}</strong>.
+                            Would you like to log in instead?
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowExistsDialog(false)}>
                             Cancel
                         </Button>
-                        <Link href="/register" passHref>
-                            <Button onClick={() => setShowNotFoundDialog(false)}>
-                                Create Account
+                        <Link href="/login" passHref>
+                            <Button onClick={() => setShowExistsDialog(false)}>
+                                Log In
                             </Button>
                         </Link>
                     </DialogFooter>
