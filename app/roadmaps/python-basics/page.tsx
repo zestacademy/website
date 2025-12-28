@@ -337,7 +337,7 @@ export default function PythonBasicsRoadmapPage() {
                                     {day.projects && (
                                         <div>
                                             <h4 className="font-semibold text-foreground mb-2">Project Options</h4>
-                                            {Array.isArray(day.projects[0]) ? (
+                                            {typeof day.projects[0] === 'string' ? (
                                                 <ul className="space-y-1 ml-6">
                                                     {day.projects.map((project, projectIdx) => (
                                                         <li key={projectIdx} className="text-muted-foreground list-disc">
