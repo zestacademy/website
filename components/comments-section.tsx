@@ -6,64 +6,99 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Send, User, MessageSquare } from "lucide-react"
+import { db, auth } from "@/lib/firebase"
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore"
+import { onAuthStateChanged } from "firebase/auth"
 
 interface Comment {
     id: string
     author: string
+    authorId?: string
     avatar?: string
     content: string
     date: string
+    timestamp?: unknown
 }
 
 export function CommentsSection({ courseId }: { courseId: string }) {
     const [comments, setComments] = useState<Comment[]>([])
     const [newComment, setNewComment] = useState("")
+    const [currentUser, setCurrentUser] = useState<unknown>(null)
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
-        // Load comments from localStorage
-        const stored = localStorage.getItem(`comments-${courseId}`)
-        if (stored) {
-            setComments(JSON.parse(stored))
-        } else {
-            // Default dummy comments
-            setComments([
-                {
-                    id: "1",
-                    author: "Alex Johnson",
-                    content: "This content was incredibly helpful! It simplified complex topics in a way that was easy to understand.",
-                    date: "2 days ago",
-                },
-                {
-                    id: "2",
-                    author: "Sarah Chen",
-                    content: "Great detailed explanation. Would love more examples on the practical applications section.",
-                    date: "1 week ago"
-                },
-                {
-                    id: "3",
-                    author: "Michael Brown",
-                    content: "The breakdown of core technologies was exactly what I needed. Thanks for putting this together!",
-                    date: "2 weeks ago"
+        // Listen for auth state changes
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+            setCurrentUser(user)
+        })
+
+        // Set up real-time listener for comments
+        const commentsRef = collection(db, "articles", courseId, "comments")
+        const q = query(commentsRef, orderBy("timestamp", "desc"))
+        
+        const unsubscribeComments = onSnapshot(q, (snapshot) => {
+            const fetchedComments = snapshot.docs.map(doc => {
+                const data = doc.data()
+                return {
+                    id: doc.id,
+                    author: data.author || "Anonymous",
+                    authorId: data.authorId,
+                    avatar: data.avatar,
+                    content: data.content,
+                    date: formatDate(data.timestamp),
+                    timestamp: data.timestamp
                 }
-            ])
+            })
+            setComments(fetchedComments)
+        }, (error) => {
+            console.error("Error fetching comments:", error)
+        })
+
+        return () => {
+            unsubscribeAuth()
+            unsubscribeComments()
         }
     }, [courseId])
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const formatDate = (timestamp: unknown) => {
+        if (!timestamp) return "Just now"
+        
+        const date = (timestamp as { toDate?: () => Date }).toDate ? (timestamp as { toDate: () => Date }).toDate() : new Date(timestamp as string | number | Date)
+        const now = new Date()
+        const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+        
+        if (diffInSeconds < 60) return "Just now"
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
+        if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`
+        if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`
+        return date.toLocaleDateString()
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!newComment.trim()) return
+        if (!newComment.trim() || isLoading) return
 
-        const comment: Comment = {
-            id: Date.now().toString(),
-            author: "Guest User", // In a real app, get from auth
-            content: newComment,
-            date: "Just now",
+        setIsLoading(true)
+        
+        try {
+            const commentsRef = collection(db, "articles", courseId, "comments")
+            const user = currentUser as { displayName?: string; email?: string; uid?: string; photoURL?: string } | null
+            await addDoc(commentsRef, {
+                content: newComment.trim(),
+                author: user?.displayName || user?.email || "Guest User",
+                authorId: user?.uid || null,
+                avatar: user?.photoURL || null,
+                timestamp: serverTimestamp()
+            })
+            
+            setNewComment("")
+        } catch (error) {
+            console.error("Error adding comment:", error)
+            alert("Failed to post comment. Please try again.")
+        } finally {
+            setIsLoading(false)
         }
-
-        const updated = [comment, ...comments]
-        setComments(updated)
-        localStorage.setItem(`comments-${courseId}`, JSON.stringify(updated))
-        setNewComment("")
     }
 
     return (
@@ -88,7 +123,7 @@ export function CommentsSection({ courseId }: { courseId: string }) {
                                     onChange={(e) => setNewComment(e.target.value)}
                                     className="flex-1 bg-background/50"
                                 />
-                                <Button type="submit" size="icon" disabled={!newComment.trim()}>
+                                <Button type="submit" size="icon" disabled={!newComment.trim() || isLoading}>
                                     <Send className="h-4 w-4" />
                                 </Button>
                             </div>
