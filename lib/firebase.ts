@@ -1,6 +1,5 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAnalytics, isSupported } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
@@ -14,18 +13,30 @@ const firebaseConfig = {
     measurementId: "G-TRQSQ7WDE0"
 };
 
+
+
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
+
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 
+const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+    experimentalForceLongPolling: true,
+});
+
 // Analytics (only on client side and if supported)
-let analytics;
+let analytics: any;
+
 if (typeof window !== "undefined") {
-    isSupported().then((supported) => {
-        if (supported) {
-            analytics = getAnalytics(app);
-        }
-    });
+    import("firebase/analytics").then((analyticsModule) => {
+        analyticsModule.isSupported().then((supported) => {
+            if (supported) {
+                analytics = analyticsModule.getAnalytics(app);
+            }
+        });
+    }).catch((e) => console.error("Analytics not supported", e));
 }
 
-export { app, auth, analytics };
+export { app, auth, db, analytics };
