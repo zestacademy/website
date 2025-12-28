@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Send, User, MessageSquare } from "lucide-react"
+import { Send, User as UserIcon, MessageSquare } from "lucide-react"
 import { db, auth } from "@/lib/firebase"
-import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore"
-import { onAuthStateChanged } from "firebase/auth"
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, Timestamp } from "firebase/firestore"
+import { onAuthStateChanged, User } from "firebase/auth"
 
 interface Comment {
     id: string
@@ -17,14 +17,35 @@ interface Comment {
     avatar?: string
     content: string
     date: string
-    timestamp?: unknown
+    timestamp?: Timestamp | null
 }
 
 export function CommentsSection({ courseId }: { courseId: string }) {
     const [comments, setComments] = useState<Comment[]>([])
     const [newComment, setNewComment] = useState("")
-    const [currentUser, setCurrentUser] = useState<unknown>(null)
+    const [currentUser, setCurrentUser] = useState<User | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+
+    const convertFirestoreTimestamp = (timestamp: Timestamp | null | undefined): Date => {
+        if (!timestamp) return new Date()
+        return timestamp.toDate()
+    }
+
+    const formatDate = (timestamp: Timestamp | null | undefined) => {
+        if (!timestamp) return "Just now"
+        
+        const date = convertFirestoreTimestamp(timestamp)
+        const now = new Date()
+        const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+        
+        if (diffInSeconds < 60) return "Just now"
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
+        if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`
+        if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`
+        return date.toLocaleDateString()
+    }
 
     useEffect(() => {
         // Listen for auth state changes
@@ -58,44 +79,30 @@ export function CommentsSection({ courseId }: { courseId: string }) {
             unsubscribeAuth()
             unsubscribeComments()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [courseId])
-
-    const formatDate = (timestamp: unknown) => {
-        if (!timestamp) return "Just now"
-        
-        const date = (timestamp as { toDate?: () => Date }).toDate ? (timestamp as { toDate: () => Date }).toDate() : new Date(timestamp as string | number | Date)
-        const now = new Date()
-        const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-        
-        if (diffInSeconds < 60) return "Just now"
-        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`
-        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
-        if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`
-        if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`
-        return date.toLocaleDateString()
-    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!newComment.trim() || isLoading) return
 
         setIsLoading(true)
+        setError(null)
         
         try {
             const commentsRef = collection(db, "articles", courseId, "comments")
-            const user = currentUser as { displayName?: string; email?: string; uid?: string; photoURL?: string } | null
             await addDoc(commentsRef, {
                 content: newComment.trim(),
-                author: user?.displayName || user?.email || "Guest User",
-                authorId: user?.uid || null,
-                avatar: user?.photoURL || null,
+                author: currentUser?.displayName || currentUser?.email || "Guest User",
+                authorId: currentUser?.uid || null,
+                avatar: currentUser?.photoURL || null,
                 timestamp: serverTimestamp()
             })
             
             setNewComment("")
-        } catch (error) {
-            console.error("Error adding comment:", error)
-            alert("Failed to post comment. Please try again.")
+        } catch (err) {
+            console.error("Error adding comment:", err)
+            setError("Failed to post comment. Please try again.")
         } finally {
             setIsLoading(false)
         }
@@ -116,16 +123,21 @@ export function CommentsSection({ courseId }: { courseId: string }) {
                             <Avatar className="h-10 w-10">
                                 <AvatarFallback className="bg-primary/10 text-primary">ME</AvatarFallback>
                             </Avatar>
-                            <div className="flex-1 flex gap-2">
-                                <Input
-                                    placeholder="Share your thoughts or ask a question..."
-                                    value={newComment}
-                                    onChange={(e) => setNewComment(e.target.value)}
-                                    className="flex-1 bg-background/50"
-                                />
-                                <Button type="submit" size="icon" disabled={!newComment.trim() || isLoading}>
-                                    <Send className="h-4 w-4" />
-                                </Button>
+                            <div className="flex-1 flex flex-col gap-2">
+                                <div className="flex gap-2">
+                                    <Input
+                                        placeholder="Share your thoughts or ask a question..."
+                                        value={newComment}
+                                        onChange={(e) => setNewComment(e.target.value)}
+                                        className="flex-1 bg-background/50"
+                                    />
+                                    <Button type="submit" size="icon" disabled={!newComment.trim() || isLoading}>
+                                        <Send className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                                {error && (
+                                    <p className="text-sm text-destructive">{error}</p>
+                                )}
                             </div>
                         </form>
 
@@ -135,7 +147,7 @@ export function CommentsSection({ courseId }: { courseId: string }) {
                                     <Avatar className="h-10 w-10 border border-border">
                                         <AvatarImage src={comment.avatar} />
                                         <AvatarFallback className="bg-muted text-muted-foreground">
-                                            <User className="h-4 w-4" />
+                                            <UserIcon className="h-4 w-4" />
                                         </AvatarFallback>
                                     </Avatar>
                                     <div className="space-y-1.5 flex-1">
