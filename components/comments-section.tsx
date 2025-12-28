@@ -5,65 +5,107 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Send, User, MessageSquare } from "lucide-react"
+import { Send, User as UserIcon, MessageSquare } from "lucide-react"
+import { db, auth } from "@/lib/firebase"
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, Timestamp } from "firebase/firestore"
+import { onAuthStateChanged, User } from "firebase/auth"
 
 interface Comment {
     id: string
     author: string
+    authorId?: string
     avatar?: string
     content: string
     date: string
+    timestamp?: Timestamp | null
 }
 
 export function CommentsSection({ courseId }: { courseId: string }) {
     const [comments, setComments] = useState<Comment[]>([])
     const [newComment, setNewComment] = useState("")
+    const [currentUser, setCurrentUser] = useState<User | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+
+    const convertFirestoreTimestamp = (timestamp: Timestamp | null | undefined): Date => {
+        if (!timestamp) return new Date()
+        return timestamp.toDate()
+    }
+
+    const formatDate = (timestamp: Timestamp | null | undefined) => {
+        if (!timestamp) return "Just now"
+        
+        const date = convertFirestoreTimestamp(timestamp)
+        const now = new Date()
+        const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+        
+        if (diffInSeconds < 60) return "Just now"
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
+        if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`
+        if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`
+        return date.toLocaleDateString()
+    }
 
     useEffect(() => {
-        // Load comments from localStorage
-        const stored = localStorage.getItem(`comments-${courseId}`)
-        if (stored) {
-            setComments(JSON.parse(stored))
-        } else {
-            // Default dummy comments
-            setComments([
-                {
-                    id: "1",
-                    author: "Alex Johnson",
-                    content: "This content was incredibly helpful! It simplified complex topics in a way that was easy to understand.",
-                    date: "2 days ago",
-                },
-                {
-                    id: "2",
-                    author: "Sarah Chen",
-                    content: "Great detailed explanation. Would love more examples on the practical applications section.",
-                    date: "1 week ago"
-                },
-                {
-                    id: "3",
-                    author: "Michael Brown",
-                    content: "The breakdown of core technologies was exactly what I needed. Thanks for putting this together!",
-                    date: "2 weeks ago"
+        // Listen for auth state changes
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+            setCurrentUser(user)
+        })
+
+        // Set up real-time listener for comments
+        const commentsRef = collection(db, "articles", courseId, "comments")
+        const q = query(commentsRef, orderBy("timestamp", "desc"))
+        
+        const unsubscribeComments = onSnapshot(q, (snapshot) => {
+            const fetchedComments = snapshot.docs.map(doc => {
+                const data = doc.data()
+                return {
+                    id: doc.id,
+                    author: data.author || "Anonymous",
+                    authorId: data.authorId,
+                    avatar: data.avatar,
+                    content: data.content,
+                    date: formatDate(data.timestamp),
+                    timestamp: data.timestamp
                 }
-            ])
+            })
+            setComments(fetchedComments)
+        }, (error) => {
+            console.error("Error fetching comments:", error)
+        })
+
+        return () => {
+            unsubscribeAuth()
+            unsubscribeComments()
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [courseId])
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!newComment.trim()) return
+        if (!newComment.trim() || isLoading) return
 
-        const comment: Comment = {
-            id: Date.now().toString(),
-            author: "Guest User", // In a real app, get from auth
-            content: newComment,
-            date: "Just now",
+        setIsLoading(true)
+        setError(null)
+        
+        try {
+            const commentsRef = collection(db, "articles", courseId, "comments")
+            await addDoc(commentsRef, {
+                content: newComment.trim(),
+                author: currentUser?.displayName || currentUser?.email || "Guest User",
+                authorId: currentUser?.uid || null,
+                avatar: currentUser?.photoURL || null,
+                timestamp: serverTimestamp()
+            })
+            
+            setNewComment("")
+        } catch (err) {
+            console.error("Error adding comment:", err)
+            setError("Failed to post comment. Please try again.")
+        } finally {
+            setIsLoading(false)
         }
-
-        const updated = [comment, ...comments]
-        setComments(updated)
-        localStorage.setItem(`comments-${courseId}`, JSON.stringify(updated))
-        setNewComment("")
     }
 
     return (
@@ -81,16 +123,21 @@ export function CommentsSection({ courseId }: { courseId: string }) {
                             <Avatar className="h-10 w-10">
                                 <AvatarFallback className="bg-primary/10 text-primary">ME</AvatarFallback>
                             </Avatar>
-                            <div className="flex-1 flex gap-2">
-                                <Input
-                                    placeholder="Share your thoughts or ask a question..."
-                                    value={newComment}
-                                    onChange={(e) => setNewComment(e.target.value)}
-                                    className="flex-1 bg-background/50"
-                                />
-                                <Button type="submit" size="icon" disabled={!newComment.trim()}>
-                                    <Send className="h-4 w-4" />
-                                </Button>
+                            <div className="flex-1 flex flex-col gap-2">
+                                <div className="flex gap-2">
+                                    <Input
+                                        placeholder="Share your thoughts or ask a question..."
+                                        value={newComment}
+                                        onChange={(e) => setNewComment(e.target.value)}
+                                        className="flex-1 bg-background/50"
+                                    />
+                                    <Button type="submit" size="icon" disabled={!newComment.trim() || isLoading}>
+                                        <Send className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                                {error && (
+                                    <p className="text-sm text-destructive">{error}</p>
+                                )}
                             </div>
                         </form>
 
@@ -100,7 +147,7 @@ export function CommentsSection({ courseId }: { courseId: string }) {
                                     <Avatar className="h-10 w-10 border border-border">
                                         <AvatarImage src={comment.avatar} />
                                         <AvatarFallback className="bg-muted text-muted-foreground">
-                                            <User className="h-4 w-4" />
+                                            <UserIcon className="h-4 w-4" />
                                         </AvatarFallback>
                                     </Avatar>
                                     <div className="space-y-1.5 flex-1">
