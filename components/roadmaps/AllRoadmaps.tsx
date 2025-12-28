@@ -1,8 +1,20 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Clock, BookOpen } from "lucide-react"
+import Link from "next/link"
 
 const roadmaps = [
+    {
+        title: "Python Basics",
+        description: "Complete 20-day Python journey from basics to advanced. Build real projects and master Python fundamentals.",
+        level: "Beginner",
+        levelColor: "bg-green-500",
+        duration: "20 Days",
+        courses: 20,
+        color: "from-yellow-500/20 to-blue-500/5",
+        image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=2070&auto=format&fit=crop",
+        link: "/roadmaps/python-basics"
+    },
     {
         title: "Frontend Developer",
         description: "Master HTML, CSS, JS, and React to build beautiful interactive websites.",
@@ -85,43 +97,55 @@ export function AllRoadmaps() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {roadmaps.map((map, idx) => (
-                        <div key={idx} className="bg-card rounded-xl overflow-hidden border border-border group hover:border-blue-500/50 transition-all hover:-translate-y-1 hover:shadow-lg">
-                            <div className="h-40 relative overflow-hidden">
-                                <div className={`absolute inset-0 bg-gradient-to-br ${map.color} opacity-60 z-10 transition-opacity group-hover:opacity-80`} />
-                                <img src={map.image} alt={map.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                                <Badge className={`absolute top-4 left-4 z-20 text-white border-0 ${map.level === 'Beginner' ? 'bg-green-500' : map.level === 'Intermediate' ? 'bg-yellow-500' : 'bg-red-500'}`}>
-                                    {map.level}
-                                </Badge>
-                            </div>
-
-                            <div className="p-5 space-y-4">
-                                <div>
-                                    <h3 className="text-xl font-bold text-foreground mb-2">{map.title}</h3>
-                                    <p className="text-muted-foreground text-sm line-clamp-2">{map.description}</p>
+                    {roadmaps.map((map, idx) => {
+                        const CardContent = (
+                            <>
+                                <div className="h-40 relative overflow-hidden">
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${map.color} opacity-60 z-10 transition-opacity group-hover:opacity-80`} />
+                                    <img src={map.image} alt={map.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                    <Badge className={`absolute top-4 left-4 z-20 text-white border-0 ${map.level === 'Beginner' ? 'bg-green-500' : map.level === 'Intermediate' ? 'bg-yellow-500' : 'bg-red-500'}`}>
+                                        {map.level}
+                                    </Badge>
                                 </div>
 
-                                {/* Progress dots or visual element */}
-                                <div className="flex gap-1 h-1.5 w-full">
-                                    <div className="flex-1 bg-blue-600 rounded-full" />
-                                    <div className="flex-1 bg-blue-600/50 rounded-full" />
-                                    <div className="flex-1 bg-muted rounded-full" />
-                                    <div className="flex-1 bg-muted rounded-full" />
-                                </div>
-
-                                <div className="flex justify-between items-center text-xs text-muted-foreground pt-2 border-t border-border">
-                                    <div className="flex items-center gap-1">
-                                        <Clock className="h-3.5 w-3.5" />
-                                        <span>{map.duration}</span>
+                                <div className="p-5 space-y-4">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-foreground mb-2">{map.title}</h3>
+                                        <p className="text-muted-foreground text-sm line-clamp-2">{map.description}</p>
                                     </div>
-                                    <div className="flex items-center gap-1">
-                                        <BookOpen className="h-3.5 w-3.5" />
-                                        <span>{map.courses} Courses</span>
+
+                                    {/* Progress dots or visual element */}
+                                    <div className="flex gap-1 h-1.5 w-full">
+                                        <div className="flex-1 bg-blue-600 rounded-full" />
+                                        <div className="flex-1 bg-blue-600/50 rounded-full" />
+                                        <div className="flex-1 bg-muted rounded-full" />
+                                        <div className="flex-1 bg-muted rounded-full" />
+                                    </div>
+
+                                    <div className="flex justify-between items-center text-xs text-muted-foreground pt-2 border-t border-border">
+                                        <div className="flex items-center gap-1">
+                                            <Clock className="h-3.5 w-3.5" />
+                                            <span>{map.duration}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <BookOpen className="h-3.5 w-3.5" />
+                                            <span>{map.courses} {map.duration === "20 Days" ? "Days" : "Courses"}</span>
+                                        </div>
                                     </div>
                                 </div>
+                            </>
+                        );
+
+                        return map.link ? (
+                            <Link key={idx} href={map.link} className="bg-card rounded-xl overflow-hidden border border-border group hover:border-blue-500/50 transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+                                {CardContent}
+                            </Link>
+                        ) : (
+                            <div key={idx} className="bg-card rounded-xl overflow-hidden border border-border group hover:border-blue-500/50 transition-all hover:-translate-y-1 hover:shadow-lg">
+                                {CardContent}
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </section>
