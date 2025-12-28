@@ -14,66 +14,6 @@ const roadmaps = [
         color: "from-yellow-500/20 to-blue-500/5",
         image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=2070&auto=format&fit=crop",
         link: "/roadmaps/python-basics"
-    },
-    {
-        title: "Frontend Developer",
-        description: "Master HTML, CSS, JS, and React to build beautiful interactive websites.",
-        level: "Beginner",
-        levelColor: "bg-green-500",
-        duration: "6 Months",
-        courses: 12,
-        color: "from-green-500/20 to-emerald-500/5",
-        image: "https://images.unsplash.com/photo-1593720213428-28a5b9e94613?q=80&w=2070&auto=format&fit=crop"
-    },
-    {
-        title: "Data Scientist",
-        description: "Learn Python, Statistics, and Machine Learning to analyze complex data.",
-        level: "Intermediate",
-        levelColor: "bg-yellow-500",
-        duration: "8 Months",
-        courses: 18,
-        color: "from-blue-500/20 to-cyan-500/5",
-        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop"
-    },
-    {
-        title: "DevOps Engineer",
-        description: "Master CI/CD, Docker, Kubernetes, and Cloud Infrastructure scaling.",
-        level: "Advanced",
-        levelColor: "bg-red-500",
-        duration: "9 Months",
-        courses: 15,
-        color: "from-red-500/20 to-orange-500/5",
-        image: "https://images.unsplash.com/photo-1667372393119-c81c0cda0a29?q=80&w=2070&auto=format&fit=crop"
-    },
-    {
-        title: "UI/UX Design",
-        description: "Learn design principles, wireframing in Figma, and user research methods.",
-        level: "Beginner",
-        levelColor: "bg-green-500",
-        duration: "4 Months",
-        courses: 8,
-        color: "from-purple-500/20 to-pink-500/5",
-        image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=2000&auto=format&fit=crop"
-    },
-    {
-        title: "Mobile Developer",
-        description: "Build iOS and Android apps using React Native and Flutter.",
-        level: "Intermediate",
-        levelColor: "bg-yellow-500",
-        duration: "7 Months",
-        courses: 14,
-        color: "from-indigo-500/20 to-blue-500/5",
-        image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=2070&auto=format&fit=crop"
-    },
-    {
-        title: "Backend Architecture",
-        description: "Deep dive into Go, Node.js, Databases, and system design...",
-        level: "Intermediate",
-        levelColor: "bg-yellow-500",
-        duration: "6 Months",
-        courses: 10,
-        color: "from-slate-500/20 to-zinc-500/5",
-        image: "https://images.unsplash.com/photo-1558494949-ef526b0042a0?q=80&w=2695&auto=format&fit=crop"
     }
 ]
 
