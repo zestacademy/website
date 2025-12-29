@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, BookOpen, Brain, Network } from "lucide-react"
+import { ArrowRight, BookOpen, Brain, Network, Zap } from "lucide-react"
 
 export function FeaturedArticles() {
     return (
@@ -84,6 +84,32 @@ export function FeaturedArticles() {
                             </CardHeader>
                             <CardContent>
                                 <div className="flex items-center text-sm font-medium text-blue-600 dark:text-blue-400">
+                                    Read Article <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                    <Link href="/articles/ai-tools-guide" className="group">
+                        <Card className="h-full transition-all hover:shadow-lg hover:border-purple-500/50 cursor-pointer">
+                            <div className="h-48 w-full bg-purple-100 dark:bg-purple-950/20 rounded-t-xl flex items-center justify-center">
+                                <Zap className="h-16 w-16 text-purple-500 opacity-50" />
+                            </div>
+                            <CardHeader>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">
+                                        Productivity
+                                    </span>
+                                    <span className="text-xs text-muted-foreground">25 min read</span>
+                                </div>
+                                <CardTitle className="group-hover:text-purple-600 transition-colors">
+                                    The Ultimate Guide to AI Tools
+                                </CardTitle>
+                                <CardDescription>
+                                    Supercharge your workflow with 84 powerful AI tools across 8 essential categories.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center text-sm font-medium text-purple-600 dark:text-purple-400">
                                     Read Article <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
                                 </div>
                             </CardContent>
