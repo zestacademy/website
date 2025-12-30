@@ -256,7 +256,7 @@ export default function PythonBasicsRoadmapPage() {
                     <p className="text-lg text-muted-foreground text-center mb-8">
                         Complete Python journey from basics to advanced concepts. Build real projects and master Python in just 20 days!
                     </p>
-                    
+
                     {/* Stats Section */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
                         <div className="flex items-center gap-3 bg-card p-4 rounded-lg border">
@@ -290,7 +290,7 @@ export default function PythonBasicsRoadmapPage() {
                     <div className="mb-8">
                         <h2 className="text-3xl font-bold mb-4">Daily Learning Path</h2>
                         <p className="text-muted-foreground">
-                            Follow this structured 20-day curriculum to master Python programming. Each day builds upon the previous one, 
+                            Follow this structured 20-day curriculum to master Python programming. Each day builds upon the previous one,
                             ensuring a solid foundation and progressive skill development.
                         </p>
                     </div>
@@ -339,7 +339,7 @@ export default function PythonBasicsRoadmapPage() {
                                             <h4 className="font-semibold text-foreground mb-2">Project Options</h4>
                                             {typeof day.projects[0] === 'string' ? (
                                                 <ul className="space-y-1 ml-6">
-                                                    {day.projects.map((project, projectIdx) => (
+                                                    {(day.projects as string[]).map((project, projectIdx) => (
                                                         <li key={projectIdx} className="text-muted-foreground list-disc">
                                                             {project}
                                                         </li>
@@ -347,7 +347,7 @@ export default function PythonBasicsRoadmapPage() {
                                                 </ul>
                                             ) : (
                                                 <div className="space-y-3">
-                                                    {day.projects.map((projectOption, projectIdx) => (
+                                                    {(day.projects as { option: string; examples: string[] }[]).map((projectOption, projectIdx) => (
                                                         <div key={projectIdx} className="ml-4">
                                                             <p className="font-medium text-foreground">{projectOption.option}</p>
                                                             <ul className="ml-6 mt-1 space-y-1">
@@ -405,7 +405,7 @@ export default function PythonBasicsRoadmapPage() {
                         </CardHeader>
                         <CardContent className="space-y-4 text-muted-foreground">
                             <p>
-                                After completing this 20-day roadmap, you&apos;ll have a solid foundation in Python programming. 
+                                After completing this 20-day roadmap, you&apos;ll have a solid foundation in Python programming.
                                 Here are some recommended next steps:
                             </p>
                             <ul className="space-y-2 ml-6 list-disc">
