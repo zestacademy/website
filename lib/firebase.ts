@@ -4,13 +4,13 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyA4oVV-8kEMxUaygYy7nRIJQE_BeUoJLTA",
-    authDomain: "zest-academy.firebaseapp.com",
-    projectId: "zest-academy",
-    storageBucket: "zest-academy.firebasestorage.app",
-    messagingSenderId: "181328077612",
-    appId: "1:181328077612:web:32a090be58d4b157070289",
-    measurementId: "G-TRQSQ7WDE0"
+    apiKey: "FIREBASE_API_KEY",
+    authDomain: "FIREBASE_AUTH_DOMAIN",
+    projectId: "FIREBASE_PROJECT_ID",
+    storageBucket: "FIREBASE_STORAGE_BUCKET",
+    messagingSenderId: "FIREBASE_MESSAGING_SENDER_ID",
+    appId: "FIREBASE_APP_ID",
+    measurementId: "FIREBASE-MEASUREMENT-ID"
 };
 
 
