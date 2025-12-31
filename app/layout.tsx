@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/logo.png",
   },
+  verification: {
+    google: "XoGJcqQCUC6FagE9BnC-Rij2ju25_hn4ZrVu2fegn1I",
+  },
 };
 
 
