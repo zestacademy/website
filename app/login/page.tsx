@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
@@ -79,9 +80,19 @@ export default function LoginPage() {
 
     return (
         <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-            <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-                <div className="absolute inset-0 bg-primary/90" />
-                <div className="relative z-20 flex items-center text-lg font-medium">
+            <div className="relative hidden h-full flex-col bg-muted text-white dark:border-r lg:flex">
+                <div className="absolute inset-0 bg-zinc-900" />
+                <div className="absolute inset-0 z-10">
+                    <Image
+                        src="/auth-hero-desktop.png"
+                        alt="Authentication Hero"
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                    <div className="absolute inset-0 bg-black/20" /> {/* Subtle overlay for text contrast */}
+                </div>
+                <div className="relative z-20 flex items-center text-lg font-medium p-10">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -96,16 +107,21 @@ export default function LoginPage() {
                     </svg>
                     Zest Academy
                 </div>
-                <div className="relative z-20 mt-auto">
-                    <blockquote className="space-y-2">
-                        <p className="text-lg">
-                            &ldquo;This platform has completely transformed how I approach learning technical skills. The interactive roadmaps are a game changer.&rdquo;
-                        </p>
-                    </blockquote>
-                </div>
             </div>
             <div className="lg:p-8 relative">
                 <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+
+                    {/* Mobile Hero Image */}
+                    <div className="relative w-full aspect-square lg:hidden mb-4">
+                        <Image
+                            src="/auth-hero-mobile.png"
+                            alt="Authentication Hero"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
+
                     <div className="flex flex-col space-y-2 text-center">
                         <h1 className="text-2xl font-semibold tracking-tight">
                             Welcome back

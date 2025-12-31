@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { Search, Sun, Moon } from "lucide-react"
 import { useTheme } from "next-themes"
 
@@ -14,9 +15,18 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { UserProfile } from "@/components/layout/UserProfile"
+import { cn } from "@/lib/utils"
 
 export function Navbar() {
     const { setTheme } = useTheme()
+    const pathname = usePathname()
+
+    const navLinks = [
+        { href: "/", label: "Home" },
+        { href: "/roadmaps", label: "Roadmaps" },
+        { href: "/explore", label: "Skills" },
+        { href: "/my-learning", label: "My Learning" },
+    ]
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -36,13 +46,25 @@ export function Navbar() {
                     </span>
                 </Link>
 
-                <nav className="hidden md:flex items-center space-x-6 text-sm font-medium text-muted-foreground">
-                    <Link href="/" className="text-foreground hover:text-primary transition-colors">Home</Link>
-                    <Link href="/roadmaps" className="hover:text-primary transition-colors">Roadmaps</Link>
-                    <Link href="/explore" className="hover:text-primary transition-colors">Skills</Link>
-                    <Link href="/categories" className="hover:text-primary transition-colors">Interview Questions</Link>
-                    <Link href="/articles" className="hover:text-primary transition-colors">Practice</Link>
-                    <Link href="/my-learning" className="hover:text-primary transition-colors">My Learning</Link>
+                <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+                    {navLinks.map((link) => {
+                        const isActive = link.href === "/"
+                            ? pathname === "/"
+                            : pathname.startsWith(link.href);
+
+                        return (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className={cn(
+                                    "transition-colors hover:text-primary",
+                                    isActive ? "text-foreground" : "text-muted-foreground"
+                                )}
+                            >
+                                {link.label}
+                            </Link>
+                        )
+                    })}
                 </nav>
 
                 <div className="flex items-center space-x-4">

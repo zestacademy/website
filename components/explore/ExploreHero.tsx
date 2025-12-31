@@ -4,7 +4,7 @@ import { Search } from "lucide-react"
 
 export function ExploreHero() {
     return (
-        <section className="py-16 md:py-24 bg-background dark:bg-[#0f1117] text-center border-b border-white/5">
+        <section className="py-16 md:py-24 bg-gradient-to-b from-blue-50 to-background dark:from-blue-950/20 dark:to-background text-center border-b">
             <div className="container mx-auto px-4">
                 <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">
                     Explore Your Next Skill
