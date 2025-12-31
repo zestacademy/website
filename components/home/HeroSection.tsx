@@ -1,9 +1,59 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, TrendingUp, Code2 } from "lucide-react"
 import Link from "next/link"
 
+const QUOTES = [
+    "Precision in Learning. Power in Execution",
+    "From Fundamentals to Future-Ready",
+    "Where Equations Meet Execution",
+    "From Circuits to Cities — We Build What Matters",
+    "Design the Impossible. Engineer the Inevitable"
+]
+
 export function HeroSection() {
+    const [text, setText] = useState("")
+    const [quoteIndex, setQuoteIndex] = useState(0)
+    const [isTyping, setIsTyping] = useState(true)
+
+    useEffect(() => {
+        const currentQuote = QUOTES[quoteIndex]
+
+        if (isTyping) {
+            if (text.length < currentQuote.length) {
+                const timeout = setTimeout(() => {
+                    setText(currentQuote.slice(0, text.length + 1))
+                }, 50) // Typing speed
+                return () => clearTimeout(timeout)
+            } else {
+                // Finished typing, wait for 10 seconds (minus typing time approx, but simpler to just wait)
+                const timeout = setTimeout(() => {
+                    setIsTyping(false)
+                }, 10000)
+                return () => clearTimeout(timeout)
+            }
+        } else {
+            // Deleting (or just switching? "stays for 10 seconds" implies static. 
+            // I'll effectively clear it instantly or delete quickly to switch?
+            // User just said "stays for 10 seconds". Usually typewriter implies deleting too.
+            // I will implement a quick delete or just a fade out/in effect? 
+            // "Typewriter animation" usually means typing and deleting.
+            // Let's delete faster.
+            if (text.length > 0) {
+                const timeout = setTimeout(() => {
+                    setText(text.slice(0, -1))
+                }, 30) // Delete speed
+                return () => clearTimeout(timeout)
+            } else {
+                setQuoteIndex((prev) => (prev + 1) % QUOTES.length)
+                setIsTyping(true)
+            }
+        }
+    }, [text, isTyping, quoteIndex])
+
     return (
         <section className="relative py-20 md:py-32 bg-gradient-to-br from-[#1e3a8a] via-[#1e40af] to-[#2563eb] dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 text-white overflow-hidden">
             {/* Engineering grid pattern background */}
@@ -14,7 +64,7 @@ export function HeroSection() {
                 `,
                 backgroundSize: '40px 40px'
             }}></div>
-            
+
             {/* Circuit-like decorative elements */}
             <div className="absolute top-20 right-10 w-32 h-32 border-2 border-white/10 rounded-lg rotate-12 hidden lg:block"></div>
             <div className="absolute bottom-32 left-16 w-24 h-24 border-2 border-white/10 rounded-full hidden lg:block"></div>
@@ -33,11 +83,13 @@ export function HeroSection() {
                             Ace Technical Interviews.
                         </span>
                     </h1>
-                    
-                    <p className="mx-auto max-w-2xl text-lg text-blue-100 sm:text-xl leading-relaxed">
-                        Structured learning paths for engineering students and professionals. <br className="hidden sm:inline" />
-                        Build core skills, solve real problems, and prepare for interviews with confidence.
-                    </p>
+
+                    <div className="mx-auto max-w-3xl h-20 flex items-center justify-center">
+                        <p className="text-lg text-blue-100 sm:text-2xl font-medium leading-relaxed font-mono">
+                            {text}
+                            <span className="animate-pulse ml-1 inline-block bg-amber-400 w-2 h-6 align-middle"></span>
+                        </p>
+                    </div>
 
                     <div className="mx-auto mt-8 max-w-2xl relative">
                         <div className="relative flex items-center w-full shadow-2xl rounded-xl overflow-hidden bg-white dark:bg-slate-800">

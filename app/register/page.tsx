@@ -109,7 +109,7 @@ export default function RegisterPage() {
                 <div className="absolute inset-0 bg-zinc-900" />
                 <div className="absolute inset-0 z-10">
                     <Image
-                        src="/auth-hero-desktop.png"
+                        src="/auth-hero-desktop-hq.jpg"
                         alt="Authentication Hero"
                         fill
                         className="object-cover"

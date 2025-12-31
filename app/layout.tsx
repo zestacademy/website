@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 
-import { AIChatbot } from "@/components/chatbot/AIChatbot";
+
 
 export default function RootLayout({
   children,
@@ -44,7 +44,7 @@ export default function RootLayout({
         >
           <Navbar />
           <main className="flex-1">{children}</main>
-          <AIChatbot />
+
           <Footer />
         </ThemeProvider>
       </body>
