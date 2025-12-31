@@ -84,15 +84,15 @@ export default function AIToolsGuidePage() {
                                         <div className="space-y-4">
                                             {category.tools.map((tool, index) => (
                                                 <div key={tool.id} className="border border-border rounded-lg p-6 flex flex-col sm:flex-row gap-6 hover:bg-accent/5 transition-colors">
-                                                    
+
                                                     {/* Logo Section */}
                                                     <div className="flex-shrink-0">
                                                         <div className="w-16 h-16 rounded-xl bg-background border flex items-center justify-center overflow-hidden shadow-sm">
                                                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                            <img 
-                                                                src={getFaviconUrl(tool.url)} 
+                                                            <img
+                                                                src={getFaviconUrl(tool.url)}
                                                                 alt={`${tool.name} logo`}
-                                                                className="w-10 h-10 object-contain" 
+                                                                className="w-10 h-10 object-contain"
                                                                 style={{ width: '60%', height: '60%', objectFit: "contain" }}
                                                                 onError={(e) => {
                                                                     (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tool.name)}&background=random`;
@@ -107,9 +107,9 @@ export default function AIToolsGuidePage() {
                                                             <h4 className="text-xl font-semibold text-foreground">
                                                                 {index + 1}. {tool.name}
                                                             </h4>
-                                                            <Link 
-                                                                href={tool.url} 
-                                                                target="_blank" 
+                                                            <Link
+                                                                href={tool.url}
+                                                                target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 className="flex-shrink-0 inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                                                             >
@@ -119,7 +119,7 @@ export default function AIToolsGuidePage() {
                                                         <p className="text-muted-foreground leading-relaxed">
                                                             {tool.description}
                                                         </p>
-                                                        
+
                                                         <div className="mt-3 text-xs text-muted-foreground/60 truncate font-mono">
                                                             {tool.url}
                                                         </div>

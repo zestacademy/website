@@ -14,6 +14,14 @@ const QUOTES = [
     "Design the Impossible. Engineer the Inevitable"
 ]
 
+const QUOTE_COLORS = [
+    "from-amber-400 to-orange-500",
+    "from-cyan-400 to-blue-500",
+    "from-emerald-400 to-green-500",
+    "from-purple-400 to-pink-500",
+    "from-rose-400 to-red-500"
+]
+
 export function HeroSection() {
     const [text, setText] = useState("")
     const [quoteIndex, setQuoteIndex] = useState(0)
@@ -77,19 +85,17 @@ export function HeroSection() {
                         <span className="text-sm font-medium">For Engineering Learners</span>
                     </div>
 
-                    <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
-                        Master Engineering Fundamentals.<br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">
-                            Ace Technical Interviews.
-                        </span>
-                    </h1>
-
-                    <div className="mx-auto max-w-3xl h-20 flex items-center justify-center">
-                        <p className="text-lg text-blue-100 sm:text-2xl font-medium leading-relaxed font-mono">
+                    <div className="h-40 sm:h-32 lg:h-40 flex items-center justify-center">
+                        <h1 className={`text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl leading-tight text-transparent bg-clip-text bg-gradient-to-r ${QUOTE_COLORS[quoteIndex]}`}>
                             {text}
-                            <span className="animate-pulse ml-1 inline-block bg-amber-400 w-2 h-6 align-middle"></span>
-                        </p>
+                            <span className="animate-pulse ml-1 inline-block bg-white w-2 h-12 md:h-16 align-middle"></span>
+                        </h1>
                     </div>
+
+                    <p className="mx-auto max-w-2xl text-lg text-blue-100 sm:text-xl leading-relaxed">
+                        Structured learning paths for engineering students and professionals. <br className="hidden sm:inline" />
+                        Build core skills, solve real problems, and prepare for interviews with confidence.
+                    </p>
 
                     <div className="mx-auto mt-8 max-w-2xl relative">
                         <div className="relative flex items-center w-full shadow-2xl rounded-xl overflow-hidden bg-white dark:bg-slate-800">
@@ -120,16 +126,7 @@ export function HeroSection() {
                         </Link>
                     </div>
 
-                    <div className="mt-8 flex flex-wrap justify-center gap-4 text-sm font-medium text-blue-200">
-                        <span>Popular Skills:</span>
-                        <div className="flex flex-wrap gap-2 justify-center">
-                            {["Data Structures", "System Design", "DSA", "React", "Node.js", "SQL"].map((topic) => (
-                                <button key={topic} className="hover:text-amber-400 transition-colors underline decoration-blue-400/50 hover:decoration-amber-400 underline-offset-4">
-                                    {topic}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </section>
