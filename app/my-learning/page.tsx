@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { User, onAuthStateChanged, updateProfile } from "firebase/auth"
-import { doc, getDoc, setDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore"
 import { auth, db } from "@/lib/firebase"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -12,13 +12,20 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { BookOpen, PlayCircle, Clock, History, Save, User as UserIcon, Loader2, Trophy, Flame, Settings } from "lucide-react"
+import { BookOpen, PlayCircle, Clock, History, Save, User as UserIcon, Loader2, Trophy, Flame, Settings, Star } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+
+const COURSE_METADATA: Record<string, { title: string, link: string, icon: any }> = {
+    "python-basics": { title: "Python Basics Roadmap", link: "/roadmaps/python-basics", icon: PlayCircle }
+}
 
 export default function MyLearningPage() {
     const router = useRouter()
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
+    const [enrollments, setEnrollments] = useState<any[]>([])
 
     // Form State
     const [displayName, setDisplayName] = useState("")
@@ -40,6 +47,13 @@ export default function MyLearningPage() {
                         const data = docSnap.data()
                         setBio(data.bio || "")
                     }
+
+                    // Fetch Enrollments
+                    const q = query(collection(db, "enrollments"), where("userId", "==", currentUser.uid))
+                    const querySnapshot = await getDocs(q)
+                    const enrollData = querySnapshot.docs.map(doc => doc.data())
+                    setEnrollments(enrollData)
+
                 } catch (error) {
                     console.error("Error fetching user data:", error)
                 }
@@ -76,6 +90,11 @@ export default function MyLearningPage() {
             setSaving(false)
         }
     }
+
+    // Derived Stats
+    const completedCourses = enrollments.filter(e => e.completedDays?.length === e.totalDays).length
+    const coursesInProgress = enrollments.length - completedCourses
+    const totalProgress = enrollments.reduce((acc, curr) => acc + (curr.completedDays?.length || 0), 0)
 
     if (loading) {
         return (
@@ -141,12 +160,12 @@ export default function MyLearningPage() {
                                             <BookOpen className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-medium text-muted-foreground">Articles Read</p>
-                                            <p className="text-xl font-bold">12</p>
+                                            <p className="text-sm font-medium text-muted-foreground">Enrolled</p>
+                                            <p className="text-xl font-bold">{enrollments.length}</p>
                                         </div>
                                     </div>
                                     <div className="h-1 w-12 bg-blue-500/20 rounded-full overflow-hidden">
-                                        <div className="h-full bg-blue-500 w-[60%]"></div>
+                                        <div className="h-full bg-blue-500" style={{ width: `${Math.min(enrollments.length * 10, 100)}%` }}></div>
                                     </div>
                                 </div>
 
@@ -156,12 +175,12 @@ export default function MyLearningPage() {
                                             <PlayCircle className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-medium text-muted-foreground">Courses Completed</p>
-                                            <p className="text-xl font-bold">4</p>
+                                            <p className="text-sm font-medium text-muted-foreground">Lessons Completed</p>
+                                            <p className="text-xl font-bold">{totalProgress}</p>
                                         </div>
                                     </div>
                                     <div className="h-1 w-12 bg-purple-500/20 rounded-full overflow-hidden">
-                                        <div className="h-full bg-purple-500 w-[30%]"></div>
+                                        <div className="h-full bg-purple-500 w-1/2"></div>
                                     </div>
                                 </div>
 
@@ -172,7 +191,7 @@ export default function MyLearningPage() {
                                         </div>
                                         <div>
                                             <p className="text-sm font-medium text-muted-foreground">Streak</p>
-                                            <p className="text-xl font-bold">7 Days</p>
+                                            <p className="text-xl font-bold">1 Day</p>
                                         </div>
                                     </div>
                                 </div>
@@ -213,40 +232,90 @@ export default function MyLearningPage() {
                                 <div className="space-y-4">
                                     <h2 className="text-xl font-semibold flex items-center gap-2">
                                         <History className="h-5 w-5 text-primary" />
-                                        Recent Activity
+                                        Active Courses
                                     </h2>
 
-                                    {/* Placeholder Activity List */}
-                                    <div className="flex flex-col gap-4">
-                                        {[1, 2].map((i) => (
-                                            <div key={i} className="flex gap-4 p-4 rounded-xl border bg-card hover:bg-accent/5 transition-colors cursor-pointer group">
-                                                <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                                                    <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="flex justify-between items-start">
-                                                        <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">Introduction to AI Tools</h3>
-                                                        <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">Article</span>
-                                                    </div>
-                                                    <p className="text-sm text-muted-foreground mt-1 line-clamp-1">Explore the top 84 AI tools transforming the industry in 2025.</p>
-                                                    <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-                                                        <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> 5 mins read</span>
-                                                        <span>•</span>
-                                                        <span>Completed 2 days ago</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    {enrollments.length > 0 ? (
+                                        <div className="flex flex-col gap-4">
+                                            {enrollments.map((enrollment, i) => {
+                                                const meta = COURSE_METADATA[enrollment.roadmapId] || { title: enrollment.roadmapId, link: "#", icon: BookOpen }
+                                                const percentage = Math.round((enrollment.completedDays.length / enrollment.totalDays) * 100)
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                                        <div className="rounded-xl border border-dashed p-8 text-center bg-muted/10 space-y-3">
-                                            <div className="mx-auto w-12 h-12 bg-muted rounded-full flex items-center justify-center">
-                                                <PlayCircle className="h-6 w-6 text-muted-foreground" />
+                                                return (
+                                                    <div key={i} className="flex flex-col md:flex-row gap-4 p-4 rounded-xl border bg-card hover:bg-accent/5 transition-colors cursor-pointer group" onClick={() => router.push(meta.link)}>
+                                                        <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                                            <meta.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <div className="flex justify-between items-start">
+                                                                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{meta.title}</h3>
+                                                                {percentage === 100 ? (
+                                                                    <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full font-medium">Completed</span>
+                                                                ) : (
+                                                                    <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full font-medium">In Progress</span>
+                                                                )}
+                                                            </div>
+
+                                                            <div className="mt-3 space-y-2">
+                                                                <div className="flex justify-between text-xs text-muted-foreground">
+                                                                    <span>{percentage}% Complete</span>
+                                                                    <span>{enrollment.completedDays.length}/{enrollment.totalDays} Lessons</span>
+                                                                </div>
+                                                                <Progress value={percentage} className="h-2" />
+                                                            </div>
+
+                                                            <p className="text-xs text-muted-foreground mt-3">
+                                                                Last active: {new Date(enrollment.lastAccessed).toLocaleDateString()}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                            <div className="rounded-xl border border-dashed p-8 text-center bg-muted/10 space-y-3">
+                                                <div className="mx-auto w-12 h-12 bg-muted rounded-full flex items-center justify-center">
+                                                    <PlayCircle className="h-6 w-6 text-muted-foreground" />
+                                                </div>
+                                                <h3 className="font-medium">No courses in progress</h3>
+                                                <p className="text-sm text-muted-foreground">Browse our catalog to start learning.</p>
+                                                <Button variant="outline" size="sm" onClick={() => router.push('/roadmaps')}>Browse Courses</Button>
                                             </div>
-                                            <h3 className="font-medium">No courses in progress</h3>
-                                            <p className="text-sm text-muted-foreground">Browse our catalog to start learning.</p>
-                                            <Button variant="outline" size="sm" onClick={() => router.push('/courses')}>Browse Courses</Button>
+                                        </div>
+                                    )}
+
+                                    {/* Recommendations Section (Personalized Learning) */}
+                                    <div className="pt-6">
+                                        <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
+                                            <Star className="h-5 w-5 text-yellow-500" />
+                                            Recommended for You
+                                        </h2>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <Card className="hover:border-primary/50 cursor-pointer transition-colors" onClick={() => router.push('/roadmaps')}>
+                                                <CardHeader className="pb-2">
+                                                    <div className="flex justify-between">
+                                                        <Badge>Suggested</Badge>
+                                                        <Trophy className="h-4 w-4 text-muted-foreground" />
+                                                    </div>
+                                                    <CardTitle className="text-lg">Data Structures & Algorithms</CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <p className="text-sm text-muted-foreground">Based on your interest in Python Basic, master the fundamentals of DSA.</p>
+                                                </CardContent>
+                                            </Card>
+                                            <Card className="hover:border-primary/50 cursor-pointer transition-colors">
+                                                <CardHeader className="pb-2">
+                                                    <div className="flex justify-between">
+                                                        <Badge variant="secondary">New</Badge>
+                                                        <PlayCircle className="h-4 w-4 text-muted-foreground" />
+                                                    </div>
+                                                    <CardTitle className="text-lg">Web Development with Python</CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <p className="text-sm text-muted-foreground">Learn Django and Flask to build powerful web applications.</p>
+                                                </CardContent>
+                                            </Card>
                                         </div>
                                     </div>
                                 </div>

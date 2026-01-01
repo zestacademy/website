@@ -1,12 +1,19 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { CommentsSection } from "@/components/comments-section"
-import { Clock, Calendar, Target, CheckCircle2 } from "lucide-react"
+import { Clock, Calendar, Target, CheckCircle2, Loader2, PlayCircle, Trophy } from "lucide-react"
+import { useRoadmapProgress } from "@/lib/hooks/useRoadmapProgress"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { useRouter } from "next/navigation"
 
 export default function PythonBasicsRoadmapPage() {
+    const router = useRouter()
+    const { user, loading, progress, startRoadmap, toggleDayCompletion } = useRoadmapProgress("python-basics")
+
     const roadmapDays = [
         {
             day: 1,
@@ -240,11 +247,15 @@ export default function PythonBasicsRoadmapPage() {
         "Learn Git + GitHub basics"
     ]
 
+    const completionPercentage = progress ? Math.round((progress.completedDays.length / roadmapDays.length) * 100) : 0
+    const isEnrolled = !!progress
+
     return (
         <div className="flex flex-col min-h-screen">
             {/* Hero Section */}
-            <section className="py-16 bg-gradient-to-b from-blue-50 to-background dark:from-blue-950/20 dark:to-background border-b">
-                <div className="container mx-auto px-4 max-w-5xl">
+            <section className="py-16 bg-gradient-to-b from-blue-50 to-background dark:from-blue-950/20 dark:to-background border-b relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+                <div className="container mx-auto px-4 max-w-5xl relative z-10">
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <Badge className="bg-green-500 text-white border-0">Beginner Friendly</Badge>
                         <Badge className="bg-blue-500 text-white border-0">20 Days</Badge>
@@ -253,27 +264,62 @@ export default function PythonBasicsRoadmapPage() {
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">
                         20-Day Python Learning Roadmap
                     </h1>
-                    <p className="text-lg text-muted-foreground text-center mb-8">
+                    <p className="text-lg text-muted-foreground text-center mb-8 max-w-3xl mx-auto">
                         Complete Python journey from basics to advanced concepts. Build real projects and master Python in just 20 days!
                     </p>
 
+                    {/* Action Area */}
+                    <div className="flex flex-col items-center justify-center gap-6 mt-8">
+                        {loading ? (
+                            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                        ) : !user ? (
+                            <div className="text-center space-y-4">
+                                <p className="text-muted-foreground">Log in to track your progress and earn certificates.</p>
+                                <Button size="lg" onClick={() => router.push('/login')} className="font-semibold shadow-lg">
+                                    Login to Start Learning
+                                </Button>
+                            </div>
+                        ) : !isEnrolled ? (
+                            <div className="text-center space-y-4">
+                                <Button size="lg" onClick={() => startRoadmap(roadmapDays.length)} className="font-semibold shadow-lg text-lg px-8 bg-blue-600 hover:bg-blue-700">
+                                    <PlayCircle className="mr-2 h-5 w-5" /> Start This Roadmap
+                                </Button>
+                                <p className="text-sm text-muted-foreground">Join 1,200+ students learning Python today.</p>
+                            </div>
+                        ) : (
+                            <div className="w-full max-w-md space-y-2">
+                                <div className="flex justify-between text-sm font-medium">
+                                    <span>Your Progress</span>
+                                    <span>{completionPercentage}% ({progress.completedDays.length}/{roadmapDays.length} Days)</span>
+                                </div>
+                                <Progress value={completionPercentage} className="h-3" />
+                                {completionPercentage === 100 && (
+                                    <div className="p-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg flex items-center gap-2 justify-center mt-4 border border-green-200 dark:border-green-800">
+                                        <Trophy className="h-5 w-5" />
+                                        <span className="font-bold">Course Completed! Great job!</span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
                     {/* Stats Section */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-                        <div className="flex items-center gap-3 bg-card p-4 rounded-lg border">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mt-12">
+                        <div className="flex items-center gap-3 bg-card p-4 rounded-lg border shadow-sm">
                             <Clock className="h-8 w-8 text-blue-500" />
                             <div>
                                 <p className="text-2xl font-bold">1-2 hours</p>
                                 <p className="text-sm text-muted-foreground">Per day</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 bg-card p-4 rounded-lg border">
+                        <div className="flex items-center gap-3 bg-card p-4 rounded-lg border shadow-sm">
                             <Calendar className="h-8 w-8 text-green-500" />
                             <div>
                                 <p className="text-2xl font-bold">20 Days</p>
                                 <p className="text-sm text-muted-foreground">Total duration</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 bg-card p-4 rounded-lg border">
+                        <div className="flex items-center gap-3 bg-card p-4 rounded-lg border shadow-sm">
                             <Target className="h-8 w-8 text-purple-500" />
                             <div>
                                 <p className="text-2xl font-bold">5+ Projects</p>
@@ -285,98 +331,122 @@ export default function PythonBasicsRoadmapPage() {
             </section>
 
             {/* Main Content */}
-            <section className="py-12 bg-background">
+            <section className="py-12 bg-background flex-1">
                 <div className="container mx-auto px-4 max-w-5xl">
-                    <div className="mb-8">
-                        <h2 className="text-3xl font-bold mb-4">Daily Learning Path</h2>
-                        <p className="text-muted-foreground">
-                            Follow this structured 20-day curriculum to master Python programming. Each day builds upon the previous one,
-                            ensuring a solid foundation and progressive skill development.
-                        </p>
+                    <div className="mb-8 flex items-end justify-between">
+                        <div>
+                            <h2 className="text-3xl font-bold mb-2">Daily Learning Path</h2>
+                            <p className="text-muted-foreground">
+                                Follow this structured 20-day curriculum to master Python programming.
+                            </p>
+                        </div>
                     </div>
 
                     {/* Roadmap Days */}
                     <div className="space-y-6">
-                        {roadmapDays.map((day, idx) => (
-                            <Card key={idx} className="hover:border-blue-500/50 transition-all">
-                                <CardHeader>
-                                    <div className="flex items-start gap-4">
-                                        <div className="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl">
-                                            {day.day}
-                                        </div>
-                                        <div className="flex-1">
-                                            <CardTitle className="text-2xl mb-2">
-                                                Day {day.day}: {day.title}
-                                            </CardTitle>
-                                            {day.day === 4 && (
-                                                <Badge variant="outline" className="text-red-500 border-red-500">Very Important</Badge>
-                                            )}
-                                            {day.day === 7 && (
-                                                <Badge variant="outline" className="text-red-500 border-red-500">Super Important</Badge>
-                                            )}
-                                        </div>
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    {/* Topics */}
-                                    <div>
-                                        <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                            <CheckCircle2 className="h-4 w-4 text-blue-500" />
-                                            Topics to Learn
-                                        </h4>
-                                        <ul className="space-y-1 ml-6">
-                                            {day.topics.map((topic, topicIdx) => (
-                                                <li key={topicIdx} className="text-muted-foreground list-disc">
-                                                    {topic}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
+                        {roadmapDays.map((day, idx) => {
+                            const isCompleted = progress?.completedDays.includes(day.day) || false
 
-                                    {/* Projects for Days 19 & 20 */}
-                                    {day.projects && (
-                                        <div>
-                                            <h4 className="font-semibold text-foreground mb-2">Project Options</h4>
-                                            {typeof day.projects[0] === 'string' ? (
-                                                <ul className="space-y-1 ml-6">
-                                                    {(day.projects as string[]).map((project, projectIdx) => (
-                                                        <li key={projectIdx} className="text-muted-foreground list-disc">
-                                                            {project}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            ) : (
-                                                <div className="space-y-3">
-                                                    {(day.projects as { option: string; examples: string[] }[]).map((projectOption, projectIdx) => (
-                                                        <div key={projectIdx} className="ml-4">
-                                                            <p className="font-medium text-foreground">{projectOption.option}</p>
-                                                            <ul className="ml-6 mt-1 space-y-1">
-                                                                {projectOption.examples.map((example, exampleIdx) => (
-                                                                    <li key={exampleIdx} className="text-muted-foreground list-disc text-sm">
-                                                                        {example}
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
+                            return (
+                                <Card key={idx} className={`transition-all ${isCompleted ? 'border-green-500/50 bg-green-50/10' : 'hover:border-blue-500/50'}`}>
+                                    <CardHeader>
+                                        <div className="flex items-start gap-4">
+                                            <div className={`flex-shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl ${isCompleted ? 'bg-green-500' : 'bg-gradient-to-br from-blue-500 to-purple-600'}`}>
+                                                {isCompleted ? <CheckCircle2 className="h-8 w-8" /> : day.day}
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <CardTitle className={`text-2xl mb-2 ${isCompleted ? 'text-green-700 dark:text-green-400' : ''}`}>
+                                                            Day {day.day}: {day.title}
+                                                        </CardTitle>
+                                                        <div className="flex gap-2">
+                                                            {day.day === 4 && (
+                                                                <Badge variant="outline" className="text-red-500 border-red-500">Very Important</Badge>
+                                                            )}
+                                                            {day.day === 7 && (
+                                                                <Badge variant="outline" className="text-red-500 border-red-500">Super Important</Badge>
+                                                            )}
+                                                            {isCompleted && (
+                                                                <Badge variant="default" className="bg-green-500 hover:bg-green-600">Completed</Badge>
+                                                            )}
                                                         </div>
-                                                    ))}
+                                                    </div>
+
+                                                    {isEnrolled && (
+                                                        <Button
+                                                            variant={isCompleted ? "outline" : "default"}
+                                                            onClick={() => toggleDayCompletion(day.day)}
+                                                            className={isCompleted ? "border-green-500 text-green-600 hover:bg-green-50" : ""}
+                                                        >
+                                                            {isCompleted ? "Mark Incomplete" : "Mark as Done"}
+                                                        </Button>
+                                                    )}
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
-                                    )}
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        {/* Topics */}
+                                        <div>
+                                            <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                                <CheckCircle2 className="h-4 w-4 text-blue-500" />
+                                                Topics to Learn
+                                            </h4>
+                                            <ul className="space-y-1 ml-6">
+                                                {day.topics.map((topic, topicIdx) => (
+                                                    <li key={topicIdx} className="text-muted-foreground list-disc">
+                                                        {topic}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
 
-                                    <Separator />
+                                        {/* Projects for Days 19 & 20 */}
+                                        {day.projects && (
+                                            <div>
+                                                <h4 className="font-semibold text-foreground mb-2">Project Options</h4>
+                                                {typeof day.projects[0] === 'string' ? (
+                                                    <ul className="space-y-1 ml-6">
+                                                        {(day.projects as string[]).map((project, projectIdx) => (
+                                                            <li key={projectIdx} className="text-muted-foreground list-disc">
+                                                                {project}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                ) : (
+                                                    <div className="space-y-3">
+                                                        {(day.projects as { option: string; examples: string[] }[]).map((projectOption, projectIdx) => (
+                                                            <div key={projectIdx} className="ml-4">
+                                                                <p className="font-medium text-foreground">{projectOption.option}</p>
+                                                                <ul className="ml-6 mt-1 space-y-1">
+                                                                    {projectOption.examples.map((example, exampleIdx) => (
+                                                                        <li key={exampleIdx} className="text-muted-foreground list-disc text-sm">
+                                                                            {example}
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
 
-                                    {/* Practice */}
-                                    <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
-                                        <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                            <Target className="h-4 w-4 text-blue-500" />
-                                            Practice Task
-                                        </h4>
-                                        <p className="text-foreground">{day.practice}</p>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
+                                        <Separator />
+
+                                        {/* Practice */}
+                                        <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
+                                            <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                                <Target className="h-4 w-4 text-blue-500" />
+                                                Practice Task
+                                            </h4>
+                                            <p className="text-foreground">{day.practice}</p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            )
+                        })}
                     </div>
 
                     {/* Bonus Tips Section */}

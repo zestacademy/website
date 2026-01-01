@@ -21,23 +21,45 @@ service cloud.firestore {
         && request.resource.data.author is string
         && request.resource.data.timestamp != null;
     }
-    
-    // Articles collection - comments subcollection
-    match /articles/{articleId}/comments/{commentId} {
-      // Anyone can read comments (including unauthenticated users)
+
+    // --- Users Collection ---
+    match /users/{userId} {
+      allow read: if isSignedIn(); // Allow authed users to read profiles (e.g. for forums)
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
+    }
+
+    // --- LMS: Enrollments & Progress ---
+    // Structure: enrollments/{enrollmentId} where ID is usually userId_courseId
+    match /enrollments/{enrollmentId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isOwner(resource.data.userId)); 
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // --- Community: Discussions ---
+    match /discussions/{discussionId} {
       allow read: if true;
-      
-      // Both authenticated and guest users can create comments
-      // Validate that the comment data is proper
-      allow create: if isValidComment()
-                    && request.resource.data.timestamp == request.time;
-      
-      // Only comment owner can update their own comments
-      allow update: if isOwner(resource.data.authorId)
-                    && isValidComment()
-                    && request.resource.data.authorId == resource.data.authorId;
-      
-      // Only comment owner can delete their own comments
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (resource.data.authorId == request.auth.uid);
+      allow delete: if isSignedIn() && (resource.data.authorId == request.auth.uid);
+
+      // Replies subcollection
+      match /replies/{replyId} {
+        allow read: if true;
+        allow create: if isSignedIn();
+        allow update: if isSignedIn() && (resource.data.authorId == request.auth.uid);
+        allow delete: if isSignedIn() && (resource.data.authorId == request.auth.uid);
+      }
+    }
+    
+    // --- Existing Comments (Keep for backward compatibility if needed) ---
+    match /articles/{articleId}/comments/{commentId} {
+      allow read: if true;
+      allow create: if isValidComment() && request.resource.data.timestamp == request.time;
+      allow update: if isOwner(resource.data.authorId) && isValidComment() && request.resource.data.authorId == resource.data.authorId;
       allow delete: if isOwner(resource.data.authorId);
     }
     
