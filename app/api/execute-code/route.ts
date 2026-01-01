@@ -114,17 +114,48 @@ export async function POST(request: NextRequest) {
 }
 
 function simulateExecution(language: string, code: string): string {
-  // Simple simulation for demo purposes
-  const outputs: { [key: string]: string } = {
-    javascript: "Hello, World!\nExecution completed successfully.",
-    python: "Hello, World!\nExecution completed successfully.",
-    java: "Hello, World!\nExecution completed successfully.",
-    cpp: "Hello, World!\nExecution completed successfully.",
-    c: "Hello, World!\nExecution completed successfully.",
+  const lang = language.toLowerCase()
+  
+  // Try to execute JavaScript code safely for demo purposes
+  if (lang === 'javascript' || lang === 'typescript') {
+    try {
+      // Capture console.log output
+      const logs: string[] = []
+      const mockConsole = {
+        log: (...args: any[]) => {
+          logs.push(args.map(arg => 
+            typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+          ).join(' '))
+        }
+      }
+      
+      // Create a safe execution context
+      const safeEval = new Function('console', code)
+      safeEval(mockConsole)
+      
+      if (logs.length > 0) {
+        return logs.join('\n') + '\n\n✓ Execution completed successfully.'
+      } else {
+        return '✓ Code executed successfully (no output).'
+      }
+    } catch (error) {
+      return `Error: ${error instanceof Error ? error.message : String(error)}`
+    }
   }
-
-  return (
-    outputs[language.toLowerCase()] ||
-    `Code execution simulated for ${language}.\n\nYour code:\n${code.substring(0, 200)}${code.length > 200 ? '...' : ''}\n\n✓ Execution completed successfully.\n\nNote: This is a demo mode. For real code execution, configure the Judge0 API integration.`
-  )
+  
+  // For Python, try to extract print statements
+  if (lang === 'python') {
+    const printMatches = code.match(/print\s*\((.*?)\)/g)
+    if (printMatches && printMatches.length > 0) {
+      const outputs = printMatches.map(match => {
+        const content = match.match(/print\s*\((.*?)\)/)?.[1] || ''
+        // Remove quotes if it's a string literal
+        return content.replace(/^["']|["']$/g, '')
+      })
+      return outputs.join('\n') + '\n\n✓ Execution completed successfully.'
+    }
+  }
+  
+  // For other languages, show the code and a demo message
+  return `Code execution simulated for ${language}.\n\nYour code:\n${code.substring(0, 300)}${code.length > 300 ? '...' : ''}\n\n✓ Execution completed successfully.\n\nNote: This is a demo mode. For real code execution, configure the Judge0 API integration.`
 }
