@@ -25,6 +25,7 @@ export function Navbar() {
         { href: "/", label: "Home" },
         { href: "/roadmaps", label: "Roadmaps" },
         { href: "/explore", label: "Skills" },
+        { href: "/practice", label: "Practice" },
         { href: "/community", label: "Community" },
         { href: "/my-learning", label: "My Learning" },
     ]
