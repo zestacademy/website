@@ -7,9 +7,12 @@ import { Console } from "@/components/practice/Console"
 import { FileExplorer } from "@/components/practice/FileExplorer"
 import { LanguageSelector } from "@/components/practice/LanguageSelector"
 import { CollaborationPanel } from "@/components/practice/CollaborationPanel"
+import { CodePlayback } from "@/components/practice/CodePlayback"
+import { PerformanceAnalytics } from "@/components/practice/PerformanceAnalytics"
+import { Debugger } from "@/components/practice/Debugger"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Play, Save, Share2, Users, Code2, Presentation } from "lucide-react"
+import { Play, Save, Share2, Users, Code2, Presentation, Bug, BarChart3, Clock } from "lucide-react"
 
 export default function PracticePage() {
   const [selectedLanguage, setSelectedLanguage] = useState("javascript")
@@ -21,11 +24,38 @@ export default function PracticePage() {
   const [isExecuting, setIsExecuting] = useState(false)
   const [sessionId] = useState(`session-${Date.now()}`)
   const [activeView, setActiveView] = useState<"code" | "whiteboard">("code")
+  
+  // Performance and debugging state
+  const [performanceMetrics, setPerformanceMetrics] = useState({
+    executionTime: 0,
+    memoryUsage: 0,
+    cpuUsage: 0,
+    complexity: "O(n)",
+    linesOfCode: 0,
+  })
+  const [codeChanges, setCodeChanges] = useState<Array<{ timestamp: number; fileId: string; content: string }>>([])
+  const [breakpoints, setBreakpoints] = useState<Array<{ line: number }>>([])
+  const [variables, setVariables] = useState<Array<{ name: string; value: string; type: string }>>([])
+  const [isDebugging, setIsDebugging] = useState(false)
 
   const activeFile = files.find(f => f.id === activeFileId)
 
   const handleFileUpdate = (fileId: string, content: string) => {
     setFiles(files.map(f => f.id === fileId ? { ...f, content } : f))
+    
+    // Track code changes for playback
+    setCodeChanges([...codeChanges, {
+      timestamp: Date.now(),
+      fileId,
+      content
+    }])
+    
+    // Update performance metrics
+    const lines = content.split('\n').length
+    setPerformanceMetrics(prev => ({
+      ...prev,
+      linesOfCode: lines
+    }))
   }
 
   const handleCreateFile = (name: string) => {
@@ -49,6 +79,7 @@ export default function PracticePage() {
   const handleRunCode = async () => {
     if (!activeFile) return
     
+    const startTime = Date.now()
     setIsExecuting(true)
     setOutput("Executing code...\n")
 
@@ -65,6 +96,15 @@ export default function PracticePage() {
       })
 
       const data = await response.json()
+      const executionTime = Date.now() - startTime
+      
+      // Update performance metrics
+      setPerformanceMetrics(prev => ({
+        ...prev,
+        executionTime,
+        memoryUsage: Math.random() * 10 * 1024 * 1024, // Simulated for demo
+        cpuUsage: Math.random() * 100, // Simulated for demo
+      }))
       
       if (data.error) {
         setOutput(`Error: ${data.error}\n`)
@@ -171,7 +211,18 @@ export default function PracticePage() {
           <Tabs defaultValue="console" className="flex-1 flex flex-col">
             <TabsList className="w-full justify-start rounded-none border-b bg-card h-10">
               <TabsTrigger value="console">Console</TabsTrigger>
-              <TabsTrigger value="collaboration">Collaboration</TabsTrigger>
+              <TabsTrigger value="collaboration">
+                <Users className="h-3 w-3 mr-1" />
+                Collab
+              </TabsTrigger>
+              <TabsTrigger value="debugger">
+                <Bug className="h-3 w-3 mr-1" />
+                Debug
+              </TabsTrigger>
+              <TabsTrigger value="analytics">
+                <BarChart3 className="h-3 w-3 mr-1" />
+                Stats
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="console" className="flex-1 m-0 overflow-auto">
@@ -181,9 +232,42 @@ export default function PracticePage() {
             <TabsContent value="collaboration" className="flex-1 m-0 overflow-auto">
               <CollaborationPanel sessionId={sessionId} />
             </TabsContent>
+
+            <TabsContent value="debugger" className="flex-1 m-0 overflow-auto">
+              <Debugger
+                breakpoints={breakpoints}
+                variables={variables}
+                onAddBreakpoint={(line) => setBreakpoints([...breakpoints, { line }])}
+                onRemoveBreakpoint={(line) => setBreakpoints(breakpoints.filter(bp => bp.line !== line))}
+                onStepOver={() => {}}
+                onStepInto={() => {}}
+                onContinue={() => setIsDebugging(true)}
+                onPause={() => setIsDebugging(false)}
+                isRunning={isDebugging}
+              />
+            </TabsContent>
+
+            <TabsContent value="analytics" className="flex-1 m-0 overflow-auto">
+              <PerformanceAnalytics metrics={performanceMetrics} />
+            </TabsContent>
           </Tabs>
         </div>
       </div>
+
+      {/* Code Playback */}
+      {codeChanges.length > 0 && (
+        <CodePlayback
+          changes={codeChanges}
+          onReplay={(change) => {
+            const file = files.find(f => f.id === change.fileId)
+            if (file) {
+              handleFileUpdate(change.fileId, change.content)
+            }
+          }}
+          currentTime={0}
+          totalTime={codeChanges.length > 0 ? codeChanges[codeChanges.length - 1].timestamp - codeChanges[0].timestamp : 0}
+        />
+      )}
     </div>
   )
 }
