@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         '/articles/placement-interview-questions',
         '/articles/what-is-api',
         '/articles/resistor-guide',
+        '/articles/digital-electronics-interview-questions',
     ]
 
     return routes.map((route) => ({
