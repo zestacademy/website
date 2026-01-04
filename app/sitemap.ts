@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         '/articles/comprehensive-guide-to-ai',
         '/articles/placement-interview-questions',
         '/articles/what-is-api',
+        '/articles/resistor-guide',
     ]
 
     return routes.map((route) => ({

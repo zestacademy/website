@@ -25,16 +25,7 @@ export default function ResistorGuidePage() {
                 <div className="container mx-auto px-4 max-w-5xl">
                     <article className="prose prose-lg dark:prose-invert max-w-none">
 
-                        {/* Hero Image */}
-                        <div className="mb-8 rounded-lg overflow-hidden border">
-                            <Image 
-                                src="/articles/resistor-guide/hero.png" 
-                                alt="Resistor Guide Overview" 
-                                width={1200} 
-                                height={600}
-                                className="w-full h-auto"
-                            />
-                        </div>
+
 
                         {/* Introduction Section */}
                         <Card className="mb-8">
@@ -66,7 +57,7 @@ export default function ResistorGuidePage() {
                                 <p>
                                     A resistor is a passive component used to oppose or limit current flow in an electrical circuit. The core principle governing resistor behavior is <strong>Ohm&apos;s Law</strong>:
                                 </p>
-                                
+
                                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800 my-6">
                                     <h4 className="text-2xl font-bold text-center text-foreground mb-2">Ohm&apos;s Law</h4>
                                     <p className="text-3xl font-bold text-center text-foreground my-4">V = I × R</p>
@@ -113,10 +104,10 @@ export default function ResistorGuidePage() {
 
                                 {/* First set of types */}
                                 <div className="mb-6 rounded-lg overflow-hidden border">
-                                    <Image 
-                                        src="/articles/resistor-guide/types-carbon-metal-wirewound.png" 
-                                        alt="Carbon, Metal Film, and Wirewound Resistors" 
-                                        width={1000} 
+                                    <Image
+                                        src="/articles/resistor-guide/types-carbon-metal-wirewound.png"
+                                        alt="Carbon, Metal Film, and Wirewound Resistors"
+                                        width={1000}
                                         height={800}
                                         className="w-full h-auto"
                                     />
@@ -150,10 +141,10 @@ export default function ResistorGuidePage() {
 
                                 {/* Second set of types */}
                                 <div className="mb-6 rounded-lg overflow-hidden border mt-8">
-                                    <Image 
-                                        src="/articles/resistor-guide/types-smd-foil-variable.png" 
-                                        alt="SMD, Foil, and Variable Resistors" 
-                                        width={1000} 
+                                    <Image
+                                        src="/articles/resistor-guide/types-smd-foil-variable.png"
+                                        alt="SMD, Foil, and Variable Resistors"
+                                        width={1000}
                                         height={800}
                                         className="w-full h-auto"
                                     />
@@ -201,10 +192,10 @@ export default function ResistorGuidePage() {
                                 </p>
 
                                 <div className="mb-6 rounded-lg overflow-hidden border">
-                                    <Image 
-                                        src="/articles/resistor-guide/key-parameters.png" 
-                                        alt="Key Resistor Parameters" 
-                                        width={1000} 
+                                    <Image
+                                        src="/articles/resistor-guide/key-parameters.png"
+                                        alt="Key Resistor Parameters"
+                                        width={1000}
                                         height={600}
                                         className="w-full h-auto"
                                     />
@@ -267,10 +258,10 @@ export default function ResistorGuidePage() {
                                 </p>
 
                                 <div className="mb-6 rounded-lg overflow-hidden border">
-                                    <Image 
-                                        src="/articles/resistor-guide/frequency-behavior.png" 
-                                        alt="Frequency Behavior of Resistors" 
-                                        width={1000} 
+                                    <Image
+                                        src="/articles/resistor-guide/frequency-behavior.png"
+                                        alt="Frequency Behavior of Resistors"
+                                        width={1000}
                                         height={600}
                                         className="w-full h-auto"
                                     />
@@ -321,10 +312,10 @@ export default function ResistorGuidePage() {
                                 </p>
 
                                 <div className="mb-6 rounded-lg overflow-hidden border">
-                                    <Image 
-                                        src="/articles/resistor-guide/how-to-choose.png" 
-                                        alt="How to Choose a Resistor" 
-                                        width={1000} 
+                                    <Image
+                                        src="/articles/resistor-guide/how-to-choose.png"
+                                        alt="How to Choose a Resistor"
+                                        width={1000}
                                         height={600}
                                         className="w-full h-auto"
                                     />
@@ -332,7 +323,7 @@ export default function ResistorGuidePage() {
 
                                 <div className="space-y-4">
                                     <h4 className="text-lg font-semibold text-foreground">Selection Criteria:</h4>
-                                    
+
                                     <div className="grid grid-cols-1 gap-4">
                                         <div className="border border-border rounded-lg p-4">
                                             <h5 className="font-semibold text-foreground mb-2">1. Calculate Required Resistance</h5>
@@ -388,12 +379,12 @@ export default function ResistorGuidePage() {
                                 {/* Voltage Divider */}
                                 <div className="border-t border-border pt-6">
                                     <h3 className="text-2xl font-bold text-foreground mb-4">1. Voltage Divider for ADC Input</h3>
-                                    
+
                                     <div className="mb-6 rounded-lg overflow-hidden border">
-                                        <Image 
-                                            src="/articles/resistor-guide/voltage-divider.png" 
-                                            alt="Voltage Divider for ADC Input" 
-                                            width={1000} 
+                                        <Image
+                                            src="/articles/resistor-guide/voltage-divider.png"
+                                            alt="Voltage Divider for ADC Input"
+                                            width={1000}
                                             height={800}
                                             className="w-full h-auto"
                                         />
@@ -436,12 +427,12 @@ export default function ResistorGuidePage() {
                                 {/* I2C Pull-up */}
                                 <div className="border-t border-border pt-6">
                                     <h3 className="text-2xl font-bold text-foreground mb-4">2. Pull-up Resistor on I²C Line</h3>
-                                    
+
                                     <div className="mb-6 rounded-lg overflow-hidden border">
-                                        <Image 
-                                            src="/articles/resistor-guide/i2c-pullup.png" 
-                                            alt="I2C Pull-up Resistor" 
-                                            width={1000} 
+                                        <Image
+                                            src="/articles/resistor-guide/i2c-pullup.png"
+                                            alt="I2C Pull-up Resistor"
+                                            width={1000}
                                             height={800}
                                             className="w-full h-auto"
                                         />
@@ -520,16 +511,8 @@ export default function ResistorGuidePage() {
                                 {/* Op-Amp Feedback */}
                                 <div className="border-t border-border pt-6">
                                     <h3 className="text-2xl font-bold text-foreground mb-4">3. Op-Amp Feedback Resistor</h3>
-                                    
-                                    <div className="mb-6 rounded-lg overflow-hidden border">
-                                        <Image 
-                                            src="/articles/resistor-guide/opamp-feedback.png" 
-                                            alt="Op-Amp Feedback Resistor" 
-                                            width={1000} 
-                                            height={800}
-                                            className="w-full h-auto"
-                                        />
-                                    </div>
+
+
 
                                     <p className="mb-4">
                                         The feedback resistor is critical in operational amplifier circuits, controlling gain, bandwidth, and stability. It regulates how much of the output signal returns to the input.
@@ -579,16 +562,8 @@ export default function ResistorGuidePage() {
                                 {/* Signal Termination */}
                                 <div className="border-t border-border pt-6">
                                     <h3 className="text-2xl font-bold text-foreground mb-4">4. Signal Line Termination</h3>
-                                    
-                                    <div className="mb-6 rounded-lg overflow-hidden border">
-                                        <Image 
-                                            src="/articles/resistor-guide/signal-termination.png" 
-                                            alt="Signal Line Termination" 
-                                            width={1000} 
-                                            height={800}
-                                            className="w-full h-auto"
-                                        />
-                                    </div>
+
+
 
                                     <p className="mb-4">
                                         Signal line termination prevents reflections in high-speed or long PCB traces, especially when trace length is electrically significant relative to the signal wavelength.
@@ -678,7 +653,7 @@ export default function ResistorGuidePage() {
                                 {/* Snubber Resistor */}
                                 <div className="border-t border-border pt-6">
                                     <h3 className="text-2xl font-bold text-foreground mb-4">5. Snubber Resistor in Relay Driver</h3>
-                                    
+
                                     <p className="mb-4">
                                         When driving inductive loads like relays, motors, or solenoids, turning off the switch generates high-voltage spikes due to the collapsing magnetic field. A snubber circuit absorbs or dissipates this energy to protect switching devices.
                                     </p>
@@ -699,10 +674,10 @@ export default function ResistorGuidePage() {
                                         <div className="space-y-2 text-sm">
                                             <p><strong>1. Flyback Diode (Most Common):</strong></p>
                                             <p className="ml-4">Simple diode across coil provides current path when switch opens. Effective and minimal power loss.</p>
-                                            
+
                                             <p className="mt-3"><strong>2. RC Snubber:</strong></p>
                                             <p className="ml-4">Resistor and capacitor in series across the relay coil. Faster switching than diode alone.</p>
-                                            
+
                                             <p className="mt-3"><strong>3. RCD Snubber:</strong></p>
                                             <p className="ml-4">Adds diode for more precise energy dissipation and faster response.</p>
                                         </div>
