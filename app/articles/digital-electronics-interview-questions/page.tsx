@@ -936,7 +936,7 @@ export default function DigitalElectronicsPage() {
                         </Card>
 
                         <div className="mt-12">
-                            <CommentsSection articleId="digital-electronics-interview-questions" />
+                            <CommentsSection courseId="digital-electronics-interview-questions" />
                         </div>
                     </article>
                 </div>
