@@ -8,7 +8,7 @@ import { ArticleHeader, ArticleFooter } from "@/components/articles"
 export default function ComprehensiveAIGuidePage() {
     const articleTitle = "Comprehensive Guide to Artificial Intelligence: From Fundamentals to Modern Applications"
     const articleDescription = "Explore the complete journey of AI—from basic concepts to cutting-edge applications"
-    const articleUrl = typeof window !== 'undefined' ? window.location.href : 'https://zestacademy.in/articles/comprehensive-guide-to-ai'
+    const articleUrl = 'https://zestacademy.in/articles/comprehensive-guide-to-ai'
 
     return (
         <div className="flex flex-col min-h-screen">

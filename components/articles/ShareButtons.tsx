@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
     FacebookShareButton,
     TwitterShareButton,
@@ -27,8 +27,16 @@ interface ShareButtonsProps {
     description?: string
 }
 
-export function ShareButtons({ url, title, description }: ShareButtonsProps) {
+export function ShareButtons({ url: initialUrl, title, description }: ShareButtonsProps) {
     const [copied, setCopied] = useState(false)
+    const [url, setUrl] = useState(initialUrl)
+
+    useEffect(() => {
+        // Set the actual URL on the client side
+        if (typeof window !== 'undefined') {
+            setUrl(window.location.href)
+        }
+    }, [])
 
     const handleCopyLink = async () => {
         try {

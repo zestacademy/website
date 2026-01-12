@@ -8,7 +8,7 @@ import { ArticleHeader, ArticleFooter } from "@/components/articles"
 export default function WhatIsAPIPage() {
     const articleTitle = "What Is an API? Understanding Application Programming Interfaces"
     const articleDescription = "Learn how APIs enable seamless communication between software applications and power modern digital experiences"
-    const articleUrl = typeof window !== 'undefined' ? window.location.href : 'https://zestacademy.in/articles/what-is-api'
+    const articleUrl = 'https://zestacademy.in/articles/what-is-api'
 
     return (
         <div className="flex flex-col min-h-screen">

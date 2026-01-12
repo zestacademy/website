@@ -10,7 +10,7 @@ import { ArticleHeader, ArticleFooter } from "@/components/articles"
 export default function DigitalElectronicsPage() {
     const articleTitle = "Digital Electronics Interview Questions & Answers"
     const articleDescription = "254 questions sorted by topic with circuit diagrams"
-    const articleUrl = typeof window !== 'undefined' ? window.location.href : 'https://zestacademy.in/articles/digital-electronics-interview-questions'
+    const articleUrl = 'https://zestacademy.in/articles/digital-electronics-interview-questions'
 
     return (
         <div className="flex flex-col min-h-screen">

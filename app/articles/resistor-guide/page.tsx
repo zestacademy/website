@@ -9,7 +9,7 @@ import { ArticleHeader, ArticleFooter } from "@/components/articles"
 export default function ResistorGuidePage() {
     const articleTitle = "Complete Guide to Resistors: Understanding the Foundation of Electronics"
     const articleDescription = "Master resistors from basic principles to advanced applications in modern circuit design"
-    const articleUrl = typeof window !== 'undefined' ? window.location.href : 'https://zestacademy.in/articles/resistor-guide'
+    const articleUrl = 'https://zestacademy.in/articles/resistor-guide'
 
     return (
         <div className="flex flex-col min-h-screen">

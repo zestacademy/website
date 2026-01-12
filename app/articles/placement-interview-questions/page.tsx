@@ -8,7 +8,7 @@ import { ArticleHeader, ArticleFooter } from "@/components/articles"
 export default function PlacementInterviewQuestionsPage() {
     const articleTitle = "Top 100 Placement Interview Questions & Answers"
     const articleDescription = "Comprehensive guide to ace your job interviews with expert answers"
-    const articleUrl = typeof window !== 'undefined' ? window.location.href : 'https://zestacademy.in/articles/placement-interview-questions'
+    const articleUrl = 'https://zestacademy.in/articles/placement-interview-questions'
 
     const questions = [
         {
