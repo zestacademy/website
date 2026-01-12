@@ -3,8 +3,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { CommentsSection } from "@/components/comments-section"
+import { ArticleHeader, ArticleFooter } from "@/components/articles"
 
 export default function PlacementInterviewQuestionsPage() {
+    const articleTitle = "Top 100 Placement Interview Questions & Answers"
+    const articleDescription = "Comprehensive guide to ace your job interviews with expert answers"
+    const articleUrl = 'https://zestacademy.in/articles/placement-interview-questions'
+
     const questions = [
         {
             number: 1,
@@ -210,6 +215,14 @@ export default function PlacementInterviewQuestionsPage() {
 
     return (
         <div className="flex flex-col min-h-screen">
+            {/* Article Header with Share and Download */}
+            <ArticleHeader 
+                title={articleTitle}
+                description={articleDescription}
+                url={articleUrl}
+                contentId="article-content"
+            />
+
             {/* Hero Section */}
             <section className="py-16 bg-gradient-to-b from-blue-50 to-background dark:from-blue-950/20 dark:to-background border-b">
                 <div className="container mx-auto px-4 max-w-4xl">
@@ -230,7 +243,7 @@ export default function PlacementInterviewQuestionsPage() {
             </section>
 
             {/* Questions Section */}
-            <section className="py-12 bg-background">
+            <section id="article-content" className="py-12 bg-background">
                 <div className="container mx-auto px-4 max-w-4xl">
                     <h2 className="text-3xl font-bold mb-8 text-center">Interview Questions & Answers</h2>
                     <Accordion type="single" collapsible className="w-full space-y-2">
@@ -275,6 +288,9 @@ export default function PlacementInterviewQuestionsPage() {
                     </Card>
                 </div>
             </section>
+
+            {/* Article Footer with Branding */}
+            <ArticleFooter />
 
             {/* Comments Section */}
             <CommentsSection courseId="placement-interview-questions" />

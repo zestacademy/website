@@ -5,24 +5,37 @@ import { CommentsSection } from "@/components/comments-section"
 import { Cpu, Binary, CircuitBoard, GitBranch, Clock, Database, AlertTriangle, HardDrive, Zap } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import Image from "next/image"
+import { ArticleHeader, ArticleFooter } from "@/components/articles"
 
 export default function DigitalElectronicsPage() {
+    const articleTitle = "Digital Electronics Interview Questions & Answers"
+    const articleDescription = "254 questions sorted by topic with circuit diagrams"
+    const articleUrl = 'https://zestacademy.in/articles/digital-electronics-interview-questions'
+
     return (
         <div className="flex flex-col min-h-screen">
+            {/* Article Header with Share and Download */}
+            <ArticleHeader 
+                title={articleTitle}
+                description={articleDescription}
+                url={articleUrl}
+                contentId="article-content"
+            />
+
             <section className="py-16 bg-gradient-to-b from-blue-50 to-background dark:from-blue-950/20 dark:to-background border-b">
                 <div className="container mx-auto px-4 max-w-5xl">
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">
-                        Digital Electronics Interview Questions &amp; Answers
+                        {articleTitle}
                     </h1>
                     <p className="text-lg text-muted-foreground text-center">
-                        254 questions sorted by topic with circuit diagrams
+                        {articleDescription}
                     </p>
                 </div>
             </section>
 
             <section className="py-12 bg-background">
                 <div className="container mx-auto px-4 max-w-5xl">
-                    <article className="prose prose-lg dark:prose-invert max-w-none">
+                    <article id="article-content" className="prose prose-lg dark:prose-invert max-w-none">
                         <Card className="mb-8">
                             <CardHeader>
                                 <CardTitle className="text-3xl flex items-center gap-3">
@@ -2279,6 +2292,9 @@ export default function DigitalElectronicsPage() {
                                 </Accordion>
                             </CardContent>
                         </Card>
+
+                        {/* Article Footer with Branding */}
+                        <ArticleFooter />
 
                         <div className="mt-12">
                             <CommentsSection courseId="digital-electronics-interview-questions" />

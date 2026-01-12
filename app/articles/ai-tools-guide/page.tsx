@@ -8,6 +8,7 @@ import { toolsData } from "./toolsData"
 // ... imports
 import Link from "next/link"
 import React from "react" // Ensure React is imported for types
+import { ArticleHeader, ArticleFooter } from "@/components/articles"
 
 const iconMap: Record<string, React.ElementType> = {
     Lightbulb,
@@ -21,6 +22,9 @@ const iconMap: Record<string, React.ElementType> = {
 }
 
 export default function AIToolsGuidePage() {
+    const articleTitle = "The Ultimate Guide to AI Tools: Supercharge Your Workflow in 2025"
+    const articleDescription = "Discover 84 powerful AI tools across 8 categories to transform your content creation, design, analytics, and productivity"
+    const articleUrl = 'https://zestacademy.in/articles/ai-tools-guide'
 
     // Helper to get domain for favicon
     const getFaviconUrl = (url: string) => {
@@ -34,14 +38,22 @@ export default function AIToolsGuidePage() {
 
     return (
         <div className="flex flex-col min-h-screen">
+            {/* Article Header with Share and Download */}
+            <ArticleHeader 
+                title={articleTitle}
+                description={articleDescription}
+                url={articleUrl}
+                contentId="article-content"
+            />
+
             {/* Hero Section */}
             <section className="py-16 bg-gradient-to-b from-purple-50 to-background dark:from-purple-950/20 dark:to-background border-b">
                 <div className="container mx-auto px-4 max-w-5xl">
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">
-                        The Ultimate Guide to AI Tools: Supercharge Your Workflow in 2025
+                        {articleTitle}
                     </h1>
                     <p className="text-lg text-muted-foreground text-center">
-                        Discover 84 powerful AI tools across 8 categories to transform your content creation, design, analytics, and productivity
+                        {articleDescription}
                     </p>
                 </div>
             </section>
@@ -49,7 +61,7 @@ export default function AIToolsGuidePage() {
             {/* Main Content */}
             <section className="py-12 bg-background">
                 <div className="container mx-auto px-4 max-w-5xl">
-                    <article className="prose prose-lg dark:prose-invert max-w-none">
+                    <article id="article-content" className="prose prose-lg dark:prose-invert max-w-none">
 
                         {/* Introduction */}
                         <Card className="mb-8">
@@ -157,6 +169,9 @@ export default function AIToolsGuidePage() {
                                 </p>
                             </CardContent>
                         </Card>
+
+                        {/* Article Footer with Branding */}
+                        <ArticleFooter />
 
                         {/* Comments Section */}
                         <CommentsSection courseId="ai-tools-guide" />

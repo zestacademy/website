@@ -3,18 +3,31 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CommentsSection } from "@/components/comments-section"
 import { Code, Network, Globe } from "lucide-react"
+import { ArticleHeader, ArticleFooter } from "@/components/articles"
 
 export default function WhatIsAPIPage() {
+    const articleTitle = "What Is an API? Understanding Application Programming Interfaces"
+    const articleDescription = "Learn how APIs enable seamless communication between software applications and power modern digital experiences"
+    const articleUrl = 'https://zestacademy.in/articles/what-is-api'
+
     return (
         <div className="flex flex-col min-h-screen">
+            {/* Article Header with Share and Download */}
+            <ArticleHeader 
+                title={articleTitle}
+                description={articleDescription}
+                url={articleUrl}
+                contentId="article-content"
+            />
+
             {/* Hero Section */}
             <section className="py-16 bg-gradient-to-b from-blue-50 to-background dark:from-blue-950/20 dark:to-background border-b">
                 <div className="container mx-auto px-4 max-w-5xl">
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">
-                        What Is an API? Understanding Application Programming Interfaces
+                        {articleTitle}
                     </h1>
                     <p className="text-lg text-muted-foreground text-center">
-                        Learn how APIs enable seamless communication between software applications and power modern digital experiences
+                        {articleDescription}
                     </p>
                 </div>
             </section>
@@ -22,7 +35,7 @@ export default function WhatIsAPIPage() {
             {/* Main Content */}
             <section className="py-12 bg-background">
                 <div className="container mx-auto px-4 max-w-5xl">
-                    <article className="prose prose-lg dark:prose-invert max-w-none">
+                    <article id="article-content" className="prose prose-lg dark:prose-invert max-w-none">
 
                         {/* What is API Section */}
                         <Card className="mb-8">
@@ -398,6 +411,9 @@ Parameters:
                                 </ul>
                             </CardContent>
                         </Card>
+
+                        {/* Article Footer with Branding */}
+                        <ArticleFooter />
 
                         {/* Comments Section */}
                         <CommentsSection courseId="what-is-api" />
