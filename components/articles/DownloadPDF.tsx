@@ -16,6 +16,8 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
     
     // Constants
     const IMAGE_LOAD_DELAY_MS = 1000 // Increased for better reliability
+    const LOGO_LOAD_TIMEOUT_MS = 2000
+    const IMAGE_LOAD_TIMEOUT_MS = 1000
 
     const handleDownload = async () => {
         setIsGenerating(true)
@@ -48,9 +50,7 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             // Add logo with error handling and proper loading
             const logo = document.createElement("img")
             // Use absolute URL for better compatibility on Vercel
-            const logoUrl = typeof window !== 'undefined' 
-                ? `${window.location.origin}/logo.png`
-                : '/logo.png'
+            const logoUrl = `${window.location.origin}/logo.png`
             logo.src = logoUrl
             logo.style.width = "100px"
             logo.style.height = "100px"
@@ -66,8 +66,8 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
                     logo.style.display = "none"
                     resolve()
                 })
-                // Timeout after 2 seconds
-                setTimeout(() => resolve(), 2000)
+                // Timeout after configured time
+                setTimeout(() => resolve(), LOGO_LOAD_TIMEOUT_MS)
             })
             
             header.appendChild(logo)
@@ -189,7 +189,7 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
                     return new Promise<void>((resolve) => {
                         img.addEventListener('load', () => resolve())
                         img.addEventListener('error', () => resolve())
-                        setTimeout(() => resolve(), 1000)
+                        setTimeout(() => resolve(), IMAGE_LOAD_TIMEOUT_MS)
                     })
                 })
             )
