@@ -4,18 +4,31 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CommentsSection } from "@/components/comments-section"
 import { Zap, Settings, Activity, CircuitBoard, Gauge, Radio } from "lucide-react"
 import Image from "next/image"
+import { ArticleHeader, ArticleFooter } from "@/components/articles"
 
 export default function ResistorGuidePage() {
+    const articleTitle = "Complete Guide to Resistors: Understanding the Foundation of Electronics"
+    const articleDescription = "Master resistors from basic principles to advanced applications in modern circuit design"
+    const articleUrl = typeof window !== 'undefined' ? window.location.href : 'https://zestacademy.in/articles/resistor-guide'
+
     return (
         <div className="flex flex-col min-h-screen">
+            {/* Article Header with Share and Download */}
+            <ArticleHeader 
+                title={articleTitle}
+                description={articleDescription}
+                url={articleUrl}
+                contentId="article-content"
+            />
+
             {/* Hero Section */}
             <section className="py-16 bg-gradient-to-b from-blue-50 to-background dark:from-blue-950/20 dark:to-background border-b">
                 <div className="container mx-auto px-4 max-w-5xl">
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">
-                        Complete Guide to Resistors: Understanding the Foundation of Electronics
+                        {articleTitle}
                     </h1>
                     <p className="text-lg text-muted-foreground text-center">
-                        Master resistors from basic principles to advanced applications in modern circuit design
+                        {articleDescription}
                     </p>
                 </div>
             </section>
@@ -23,7 +36,7 @@ export default function ResistorGuidePage() {
             {/* Main Content */}
             <section className="py-12 bg-background">
                 <div className="container mx-auto px-4 max-w-5xl">
-                    <article className="prose prose-lg dark:prose-invert max-w-none">
+                    <article id="article-content" className="prose prose-lg dark:prose-invert max-w-none">
 
 
 
@@ -782,6 +795,9 @@ export default function ResistorGuidePage() {
                                 </ul>
                             </CardContent>
                         </Card>
+
+                        {/* Article Footer with Branding */}
+                        <ArticleFooter />
 
                         {/* Comments Section */}
                         <CommentsSection courseId="resistor-guide" />

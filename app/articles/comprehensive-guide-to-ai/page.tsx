@@ -3,18 +3,31 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { CommentsSection } from "@/components/comments-section"
+import { ArticleHeader, ArticleFooter } from "@/components/articles"
 
 export default function ComprehensiveAIGuidePage() {
+    const articleTitle = "Comprehensive Guide to Artificial Intelligence: From Fundamentals to Modern Applications"
+    const articleDescription = "Explore the complete journey of AI—from basic concepts to cutting-edge applications"
+    const articleUrl = typeof window !== 'undefined' ? window.location.href : 'https://zestacademy.in/articles/comprehensive-guide-to-ai'
+
     return (
         <div className="flex flex-col min-h-screen">
+            {/* Article Header with Share and Download */}
+            <ArticleHeader 
+                title={articleTitle}
+                description={articleDescription}
+                url={articleUrl}
+                contentId="article-content"
+            />
+
             {/* Hero Section */}
             <section className="py-16 bg-gradient-to-b from-blue-50 to-background dark:from-blue-950/20 dark:to-background border-b">
                 <div className="container mx-auto px-4 max-w-5xl">
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">
-                        Comprehensive Guide to Artificial Intelligence: From Fundamentals to Modern Applications
+                        {articleTitle}
                     </h1>
                     <p className="text-lg text-muted-foreground text-center">
-                        Explore the complete journey of AI—from basic concepts to cutting-edge applications
+                        {articleDescription}
                     </p>
                 </div>
             </section>
@@ -22,7 +35,7 @@ export default function ComprehensiveAIGuidePage() {
             {/* Main Content */}
             <section className="py-12 bg-background">
                 <div className="container mx-auto px-4 max-w-5xl">
-                    <article className="prose prose-lg dark:prose-invert max-w-none">
+                    <article id="article-content" className="prose prose-lg dark:prose-invert max-w-none">
 
                         {/* What is AI Section */}
                         <Card className="mb-8">
@@ -880,6 +893,9 @@ export default function ComprehensiveAIGuidePage() {
                                 </div>
                             </CardContent>
                         </Card>
+
+                        {/* Article Footer with Branding */}
+                        <ArticleFooter />
 
                         {/* Comments Section */}
                         <CommentsSection courseId="ai-comprehensive-guide" />
