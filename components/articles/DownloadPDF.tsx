@@ -13,6 +13,9 @@ interface DownloadPDFProps {
 
 export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
     const [isGenerating, setIsGenerating] = useState(false)
+    
+    // Constants
+    const IMAGE_LOAD_DELAY_MS = 500
 
     const handleDownload = async () => {
         setIsGenerating(true)
@@ -20,6 +23,7 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             const content = document.getElementById(contentId)
             if (!content) {
                 console.error("Content element not found")
+                alert("Unable to generate PDF. Content not found.")
                 setIsGenerating(false)
                 return
             }
@@ -29,79 +33,159 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             wrapper.style.padding = "40px"
             wrapper.style.backgroundColor = "white"
             wrapper.style.width = "210mm" // A4 width
+            wrapper.style.fontFamily = "Arial, sans-serif"
 
             // Add header with logo and branding
             const header = document.createElement("div")
             header.style.textAlign = "center"
             header.style.marginBottom = "30px"
             header.style.paddingBottom = "20px"
-            header.style.borderBottom = "2px solid #2563eb"
+            header.style.borderBottom = "3px solid #2563eb"
+            header.style.backgroundColor = "#f8fafc"
+            header.style.padding = "20px"
+            header.style.borderRadius = "8px"
 
-            // Add logo
+            // Add logo with error handling
             const logo = document.createElement("img")
             logo.src = "/logo.png"
-            logo.style.width = "80px"
-            logo.style.height = "80px"
-            logo.style.marginBottom = "10px"
+            logo.style.width = "100px"
+            logo.style.height = "100px"
+            logo.style.marginBottom = "15px"
+            logo.style.objectFit = "contain"
+            logo.addEventListener("error", () => {
+                // If logo fails to load, hide it
+                logo.style.display = "none"
+            })
             header.appendChild(logo)
 
             // Add brand name
             const brandName = document.createElement("h1")
             brandName.textContent = "Zest Academy"
-            brandName.style.fontSize = "28px"
+            brandName.style.fontSize = "32px"
             brandName.style.fontWeight = "bold"
             brandName.style.color = "#1e40af"
-            brandName.style.marginBottom = "5px"
+            brandName.style.marginBottom = "8px"
+            brandName.style.marginTop = "0"
             header.appendChild(brandName)
 
             // Add tagline
             const tagline = document.createElement("p")
             tagline.textContent = "Master Engineering Fundamentals & Ace Interviews"
-            tagline.style.fontSize = "14px"
+            tagline.style.fontSize = "16px"
             tagline.style.color = "#64748b"
+            tagline.style.marginTop = "0"
+            tagline.style.marginBottom = "10px"
             header.appendChild(tagline)
+
+            // Add article title
+            const articleTitle = document.createElement("h2")
+            articleTitle.textContent = title
+            articleTitle.style.fontSize = "20px"
+            articleTitle.style.fontWeight = "600"
+            articleTitle.style.color = "#1e293b"
+            articleTitle.style.marginTop = "15px"
+            articleTitle.style.marginBottom = "5px"
+            articleTitle.style.paddingTop = "15px"
+            articleTitle.style.borderTop = "1px solid #e2e8f0"
+            header.appendChild(articleTitle)
+
+            // Add generation date
+            const dateInfo = document.createElement("p")
+            dateInfo.textContent = `Downloaded on ${new Date().toLocaleDateString("en-US", { 
+                year: "numeric", 
+                month: "long", 
+                day: "numeric" 
+            })}`
+            dateInfo.style.fontSize = "12px"
+            dateInfo.style.color = "#94a3b8"
+            dateInfo.style.marginTop = "5px"
+            dateInfo.style.marginBottom = "0"
+            header.appendChild(dateInfo)
 
             wrapper.appendChild(header)
 
             // Clone and append the article content
             const contentClone = content.cloneNode(true) as HTMLElement
             contentClone.style.color = "#000000"
+            contentClone.style.marginTop = "20px"
+            contentClone.style.marginBottom = "20px"
             wrapper.appendChild(contentClone)
 
-            // Add footer with branding
+            // Add comprehensive footer with copyright and branding
             const footer = document.createElement("div")
             footer.style.textAlign = "center"
-            footer.style.marginTop = "30px"
-            footer.style.paddingTop = "20px"
-            footer.style.borderTop = "2px solid #2563eb"
-            footer.style.fontSize = "12px"
-            footer.style.color = "#64748b"
+            footer.style.marginTop = "40px"
+            footer.style.borderTop = "3px solid #2563eb"
+            footer.style.backgroundColor = "#f8fafc"
+            footer.style.padding = "25px"
+            footer.style.borderRadius = "8px"
             
-            const footerText = document.createElement("p")
-            footerText.innerHTML = `© ${new Date().getFullYear()} Zest Academy. All rights reserved.<br>Visit us at zestacademy.in`
-            footer.appendChild(footerText)
+            // Copyright notice
+            const copyright = document.createElement("div")
+            copyright.style.fontSize = "13px"
+            copyright.style.color = "#475569"
+            copyright.style.marginBottom = "15px"
+            copyright.style.fontWeight = "600"
+            copyright.innerHTML = `© ${new Date().getFullYear()} Zest Academy. All Rights Reserved.`
+            footer.appendChild(copyright)
+
+            // Terms and conditions
+            const terms = document.createElement("div")
+            terms.style.fontSize = "11px"
+            terms.style.color = "#64748b"
+            terms.style.lineHeight = "1.6"
+            terms.style.marginBottom = "15px"
+            terms.innerHTML = `This document is the intellectual property of Zest Academy. Unauthorized reproduction,<br>distribution, or modification is strictly prohibited without written permission.`
+            footer.appendChild(terms)
+
+            // Website and contact info
+            const websiteInfo = document.createElement("div")
+            websiteInfo.style.fontSize = "12px"
+            websiteInfo.style.color = "#2563eb"
+            websiteInfo.style.fontWeight = "600"
+            websiteInfo.style.marginBottom = "10px"
+            websiteInfo.innerHTML = `Visit us at: <span style="text-decoration: underline;">https://zestacademy.in</span>`
+            footer.appendChild(websiteInfo)
+
+            // Watermark text
+            const watermark = document.createElement("div")
+            watermark.style.fontSize = "10px"
+            watermark.style.color = "#94a3b8"
+            watermark.style.marginTop = "10px"
+            watermark.style.fontStyle = "italic"
+            watermark.innerHTML = `Generated by Zest Academy PDF Export System`
+            footer.appendChild(watermark)
 
             wrapper.appendChild(footer)
 
-            // Temporarily add to document
+            // Temporarily add to document (position off-screen to avoid flickering)
+            wrapper.style.position = "absolute"
+            wrapper.style.left = "-9999px"
+            wrapper.style.top = "0"
             document.body.appendChild(wrapper)
 
-            // Generate PDF
+            // Wait for images to load
+            await new Promise(resolve => setTimeout(resolve, IMAGE_LOAD_DELAY_MS))
+
+            // Generate PDF with better quality settings
             const canvas = await html2canvas(wrapper, {
-                scale: 2,
+                scale: 2.5, // Higher scale for better quality
                 useCORS: true,
                 logging: false,
                 backgroundColor: "#ffffff",
+                windowWidth: wrapper.scrollWidth,
+                windowHeight: wrapper.scrollHeight,
             })
 
             // Remove temporary wrapper
             document.body.removeChild(wrapper)
 
-            const imgData = canvas.toDataURL("image/png")
+            const imgData = canvas.toDataURL("image/png", 1.0) // Maximum quality
             const pdf = new jsPDF({
                 orientation: "portrait",
                 unit: "mm",
                 format: "a4",
+                compress: true,
             })
 
             const imgWidth = 210 // A4 width in mm
@@ -128,6 +212,7 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             pdf.save(`${fileName}-zest-academy.pdf`)
         } catch (error) {
             console.error("Error generating PDF:", error)
+            alert("Failed to generate PDF. Please try again or contact support if the issue persists.")
         } finally {
             setIsGenerating(false)
         }
