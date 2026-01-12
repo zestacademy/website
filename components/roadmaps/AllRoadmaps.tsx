@@ -14,6 +14,17 @@ const roadmaps = [
         color: "from-yellow-500/20 to-blue-500/5",
         image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=2070&auto=format&fit=crop",
         link: "/roadmaps/python-basics"
+    },
+    {
+        title: "Internet of Things",
+        description: "Master IoT from sensor networks to cloud computing. Learn Arduino, Raspberry Pi, and build smart systems for real-world applications.",
+        level: "Intermediate",
+        levelColor: "bg-yellow-500",
+        duration: "8 Weeks",
+        courses: 39,
+        color: "from-purple-500/20 to-teal-500/5",
+        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
+        link: "/roadmaps/internet-of-things"
     }
 ]
 
@@ -69,7 +80,7 @@ export function AllRoadmaps() {
                                         </div>
                                         <div className="flex items-center gap-1">
                                             <BookOpen className="h-3.5 w-3.5" />
-                                            <span>{map.courses} {map.duration === "20 Days" ? "Days" : "Courses"}</span>
+                                            <span>{map.courses} {map.duration.includes("Days") ? "Days" : map.duration.includes("Weeks") ? "Lectures" : "Courses"}</span>
                                         </div>
                                     </div>
                                 </div>
