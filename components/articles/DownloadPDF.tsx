@@ -13,6 +13,9 @@ interface DownloadPDFProps {
 
 export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
     const [isGenerating, setIsGenerating] = useState(false)
+    
+    // Constants
+    const IMAGE_LOAD_DELAY_MS = 500
 
     const handleDownload = async () => {
         setIsGenerating(true)
@@ -49,10 +52,10 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             logo.style.height = "100px"
             logo.style.marginBottom = "15px"
             logo.style.objectFit = "contain"
-            logo.onerror = () => {
+            logo.addEventListener("error", () => {
                 // If logo fails to load, hide it
                 logo.style.display = "none"
-            }
+            })
             header.appendChild(logo)
 
             // Add brand name
@@ -112,7 +115,6 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             const footer = document.createElement("div")
             footer.style.textAlign = "center"
             footer.style.marginTop = "40px"
-            footer.style.paddingTop = "25px"
             footer.style.borderTop = "3px solid #2563eb"
             footer.style.backgroundColor = "#f8fafc"
             footer.style.padding = "25px"
@@ -163,7 +165,7 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             document.body.appendChild(wrapper)
 
             // Wait for images to load
-            await new Promise(resolve => setTimeout(resolve, 500))
+            await new Promise(resolve => setTimeout(resolve, IMAGE_LOAD_DELAY_MS))
 
             // Generate PDF with better quality settings
             const canvas = await html2canvas(wrapper, {
