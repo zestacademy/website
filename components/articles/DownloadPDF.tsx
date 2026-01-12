@@ -15,7 +15,7 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
     const [isGenerating, setIsGenerating] = useState(false)
     
     // Constants
-    const IMAGE_LOAD_DELAY_MS = 500
+    const IMAGE_LOAD_DELAY_MS = 1000 // Increased for better reliability
 
     const handleDownload = async () => {
         setIsGenerating(true)
@@ -45,17 +45,31 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             header.style.padding = "20px"
             header.style.borderRadius = "8px"
 
-            // Add logo with error handling
+            // Add logo with error handling and proper loading
             const logo = document.createElement("img")
-            logo.src = "/logo.png"
+            // Use absolute URL for better compatibility on Vercel
+            const logoUrl = typeof window !== 'undefined' 
+                ? `${window.location.origin}/logo.png`
+                : '/logo.png'
+            logo.src = logoUrl
             logo.style.width = "100px"
             logo.style.height = "100px"
             logo.style.marginBottom = "15px"
             logo.style.objectFit = "contain"
-            logo.addEventListener("error", () => {
-                // If logo fails to load, hide it
-                logo.style.display = "none"
+            logo.crossOrigin = "anonymous" // Enable CORS for image
+            
+            // Wait for logo to load or fail
+            await new Promise<void>((resolve) => {
+                logo.addEventListener("load", () => resolve())
+                logo.addEventListener("error", () => {
+                    // If logo fails to load, hide it
+                    logo.style.display = "none"
+                    resolve()
+                })
+                // Timeout after 2 seconds
+                setTimeout(() => resolve(), 2000)
             })
+            
             header.appendChild(logo)
 
             // Add brand name
@@ -164,18 +178,60 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             wrapper.style.top = "0"
             document.body.appendChild(wrapper)
 
-            // Wait for images to load
+            // Wait for all images to load with increased timeout
             await new Promise(resolve => setTimeout(resolve, IMAGE_LOAD_DELAY_MS))
 
+            // Try to ensure all images are loaded
+            const images = wrapper.getElementsByTagName('img')
+            await Promise.allSettled(
+                Array.from(images).map(img => {
+                    if (img.complete) return Promise.resolve()
+                    return new Promise<void>((resolve) => {
+                        img.addEventListener('load', () => resolve())
+                        img.addEventListener('error', () => resolve())
+                        setTimeout(() => resolve(), 1000)
+                    })
+                })
+            )
+
             // Generate PDF with better quality settings
-            const canvas = await html2canvas(wrapper, {
-                scale: 2.5, // Higher scale for better quality
-                useCORS: true,
-                logging: false,
-                backgroundColor: "#ffffff",
-                windowWidth: wrapper.scrollWidth,
-                windowHeight: wrapper.scrollHeight,
-            })
+            let canvas: HTMLCanvasElement
+            try {
+                canvas = await html2canvas(wrapper, {
+                    scale: 2.5, // Higher scale for better quality
+                    useCORS: true,
+                    allowTaint: false, // Don't allow tainted canvas
+                    logging: false,
+                    backgroundColor: "#ffffff",
+                    windowWidth: wrapper.scrollWidth,
+                    windowHeight: wrapper.scrollHeight,
+                    imageTimeout: 15000, // Increase timeout for images
+                    onclone: (clonedDoc) => {
+                        // Ensure cloned document has proper styling
+                        const clonedWrapper = clonedDoc.querySelector('[style*="210mm"]') as HTMLElement
+                        if (clonedWrapper) {
+                            clonedWrapper.style.visibility = 'visible'
+                        }
+                    }
+                })
+            } catch (canvasError) {
+                console.error("html2canvas error:", canvasError)
+                // Try fallback with allowTaint enabled for CORS issues
+                try {
+                    canvas = await html2canvas(wrapper, {
+                        scale: 2,
+                        allowTaint: true,
+                        useCORS: false,
+                        logging: false,
+                        backgroundColor: "#ffffff",
+                        windowWidth: wrapper.scrollWidth,
+                        windowHeight: wrapper.scrollHeight,
+                    })
+                } catch (fallbackError) {
+                    document.body.removeChild(wrapper)
+                    throw new Error(`Canvas generation failed: ${fallbackError instanceof Error ? fallbackError.message : 'Unknown error'}`)
+                }
+            }
 
             // Remove temporary wrapper
             document.body.removeChild(wrapper)
@@ -212,7 +268,8 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             pdf.save(`${fileName}-zest-academy.pdf`)
         } catch (error) {
             console.error("Error generating PDF:", error)
-            alert("Failed to generate PDF. Please try again or contact support if the issue persists.")
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+            alert(`Failed to generate PDF: ${errorMessage}\n\nPlease try again or contact support if the issue persists.`)
         } finally {
             setIsGenerating(false)
         }
