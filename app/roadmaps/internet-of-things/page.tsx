@@ -883,6 +883,7 @@ export default function InternetOfThingsRoadmapPage() {
                                                                     target="_blank" 
                                                                     rel="noopener noreferrer"
                                                                     className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 whitespace-nowrap"
+                                                                    aria-label={`Download PDF for Lecture ${lecture.number}: ${lecture.title}`}
                                                                 >
                                                                     <Download className="h-4 w-4" />
                                                                     <span>PDF</span>
