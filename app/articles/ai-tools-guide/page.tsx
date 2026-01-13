@@ -39,11 +39,11 @@ export default function AIToolsGuidePage() {
     return (
         <div className="flex flex-col min-h-screen">
             {/* Article Header with Share and Download */}
-            <ArticleHeader 
+            <ArticleHeader
                 title={articleTitle}
                 description={articleDescription}
                 url={articleUrl}
-                contentId="article-content"
+                pdfDownloadUrl="/pdfs/Ai-tools-guide.pdf"
             />
 
             {/* Hero Section */}
