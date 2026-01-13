@@ -152,7 +152,8 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Research and document IoT architecture for a specific use case with connectivity requirements"
+            assignment: "Research and document IoT architecture for a specific use case with connectivity requirements",
+            assignmentPdfUrl: "/pdfs/assignment-week1.pdf"
         },
         {
             week: 2,
@@ -199,7 +200,8 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Set up a basic sensor network simulation and analyze different connectivity protocols"
+            assignment: "Set up a basic sensor network simulation and analyze different connectivity protocols",
+            assignmentPdfUrl: "/pdfs/assignment-week2.pdf"
         },
         {
             week: 3,
@@ -256,7 +258,8 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Design a UAV-based sensor network for agricultural monitoring with M2M communication"
+            assignment: "Design a UAV-based sensor network for agricultural monitoring with M2M communication",
+            assignmentPdfUrl: "/pdfs/assignment-week3.pdf"
         },
         {
             week: 4,
@@ -303,7 +306,8 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Build an Arduino-based IoT device with multiple sensors and actuators"
+            assignment: "Build an Arduino-based IoT device with multiple sensors and actuators",
+            assignmentPdfUrl: "/pdfs/assignment-week4.pdf"
         },
         {
             week: 5,
@@ -330,7 +334,8 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Write Python programs for data processing and IoT device communication"
+            assignment: "Write Python programs for data processing and IoT device communication",
+            assignmentPdfUrl: "/pdfs/assignment-week5.pdf"
         },
         {
             week: 6,
@@ -387,7 +392,8 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Create a complete IoT system using Raspberry Pi with cloud connectivity"
+            assignment: "Create a complete IoT system using Raspberry Pi with cloud connectivity",
+            assignmentPdfUrl: "/pdfs/assignment-week6.pdf"
         },
         {
             week: 7,
@@ -434,7 +440,8 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Design an SDN-based IoT network architecture with OpenFlow"
+            assignment: "Design an SDN-based IoT network architecture with OpenFlow",
+            assignmentPdfUrl: "/pdfs/assignment-week7.pdf"
         },
         {
             week: 8,
@@ -531,7 +538,8 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Deploy an IoT application on cloud platform and implement fog computing layer"
+            assignment: "Deploy an IoT application on cloud platform and implement fog computing layer",
+            assignmentPdfUrl: "/pdfs/assignment-week8.pdf"
         },
         {
             week: 9,
@@ -609,7 +617,8 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Final Project: Design a complete smart city solution or connected vehicle system"
+            assignment: "Final Project: Design a complete smart city solution or connected vehicle system",
+            assignmentPdfUrl: "/pdfs/assignment-week9.pdf"
         },
         {
             week: 10,
@@ -660,7 +669,8 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Develop an Industrial IoT solution with predictive analytics capabilities"
+            assignment: "Develop an Industrial IoT solution with predictive analytics capabilities",
+            assignmentPdfUrl: "/pdfs/assignment-week10.pdf"
         },
         {
             week: 11,
@@ -711,7 +721,56 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Capstone Project: Build a comprehensive IoT solution integrating multiple technologies learned"
+            assignment: "Capstone Project: Build a comprehensive IoT solution integrating multiple technologies learned",
+            assignmentPdfUrl: "/pdfs/assignment-week11.pdf"
+        },
+        {
+            week: 12,
+            title: "Final Project & Assessment",
+            lectures: [
+                {
+                    number: 61,
+                    title: "Project Review & Best Practices",
+                    topics: [
+                        "Project review and feedback",
+                        "Best practices in IoT development",
+                        "Common pitfalls and solutions",
+                        "Industry standards review"
+                    ]
+                },
+                {
+                    number: 62,
+                    title: "IoT Project Documentation",
+                    topics: [
+                        "Technical documentation",
+                        "Architecture diagrams",
+                        "API documentation",
+                        "User guides and manuals"
+                    ]
+                },
+                {
+                    number: 63,
+                    title: "IoT Testing & Quality Assurance",
+                    topics: [
+                        "Testing strategies for IoT",
+                        "Hardware testing",
+                        "Integration testing",
+                        "Performance testing"
+                    ]
+                },
+                {
+                    number: 64,
+                    title: "Final Assessment & Next Steps",
+                    topics: [
+                        "Course review and recap",
+                        "Final assessment guidelines",
+                        "Career path in IoT",
+                        "Continuing education resources"
+                    ]
+                }
+            ],
+            assignment: "Final Assessment: Complete a comprehensive IoT project with documentation and presentation",
+            assignmentPdfUrl: "/pdfs/assignment-week12.pdf"
         }
     ]
 
@@ -736,8 +795,8 @@ export default function InternetOfThingsRoadmapPage() {
                 <div className="container mx-auto px-4 max-w-5xl relative z-10">
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <Badge className="bg-purple-500 text-white border-0">Intermediate</Badge>
-                        <Badge className="bg-blue-500 text-white border-0">11 Weeks</Badge>
-                        <Badge className="bg-teal-500 text-white border-0">60 Lectures</Badge>
+                        <Badge className="bg-blue-500 text-white border-0">12 Weeks</Badge>
+                        <Badge className="bg-teal-500 text-white border-0">64 Lectures</Badge>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">
                         Internet of Things (IoT) Learning Roadmap
@@ -745,7 +804,7 @@ export default function InternetOfThingsRoadmapPage() {
                     <p className="text-lg text-muted-foreground text-center mb-8 max-w-3xl mx-auto">
                         Master the Internet of Things from fundamentals to advanced applications. Learn sensor networks, 
                         Arduino, Raspberry Pi, cloud computing, and build real-world IoT solutions for smart cities, 
-                        connected vehicles, and smart grids.
+                        connected vehicles, and smart grids through 12 weeks of comprehensive study.
                     </p>
 
                     {/* Action Area */}
@@ -795,14 +854,14 @@ export default function InternetOfThingsRoadmapPage() {
                         <div className="flex items-center gap-3 bg-card p-4 rounded-lg border shadow-sm">
                             <Calendar className="h-8 w-8 text-blue-500" />
                             <div>
-                                <p className="text-2xl font-bold">11 Weeks</p>
+                                <p className="text-2xl font-bold">12 Weeks</p>
                                 <p className="text-sm text-muted-foreground">Total duration</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-3 bg-card p-4 rounded-lg border shadow-sm">
                             <Target className="h-8 w-8 text-teal-500" />
                             <div>
-                                <p className="text-2xl font-bold">11 Projects</p>
+                                <p className="text-2xl font-bold">12 Projects</p>
                                 <p className="text-sm text-muted-foreground">Hands-on practice</p>
                             </div>
                         </div>
@@ -817,7 +876,7 @@ export default function InternetOfThingsRoadmapPage() {
                         <div>
                             <h2 className="text-3xl font-bold mb-2">Weekly Learning Path</h2>
                             <p className="text-muted-foreground">
-                                Follow this structured 11-week curriculum covering 60 comprehensive lectures on IoT.
+                                Follow this structured 12-week curriculum covering 64 comprehensive lectures on IoT.
                             </p>
                         </div>
                     </div>
@@ -906,10 +965,24 @@ export default function InternetOfThingsRoadmapPage() {
 
                                         {/* Assignment */}
                                         <div className="bg-purple-50 dark:bg-purple-950/20 p-4 rounded-lg">
-                                            <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                                <Target className="h-4 w-4 text-purple-500" />
-                                                Weekly Assignment
-                                            </h4>
+                                            <div className="flex items-start justify-between gap-2 mb-2">
+                                                <h4 className="font-semibold text-foreground flex items-center gap-2">
+                                                    <Target className="h-4 w-4 text-purple-500" />
+                                                    Weekly Assignment
+                                                </h4>
+                                                {week.assignmentPdfUrl && (
+                                                    <a 
+                                                        href={week.assignmentPdfUrl} 
+                                                        target="_blank" 
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 whitespace-nowrap font-medium"
+                                                        aria-label={`Download assignment PDF for Week ${week.week}`}
+                                                    >
+                                                        <Download className="h-4 w-4" />
+                                                        <span>Download Assignment</span>
+                                                    </a>
+                                                )}
+                                            </div>
                                             <p className="text-foreground">{week.assignment}</p>
                                         </div>
                                     </CardContent>
@@ -944,7 +1017,7 @@ export default function InternetOfThingsRoadmapPage() {
                         </CardHeader>
                         <CardContent className="space-y-4 text-muted-foreground">
                             <p>
-                                After completing this 11-week IoT roadmap, you&apos;ll have comprehensive knowledge of 
+                                After completing this 12-week IoT roadmap, you&apos;ll have comprehensive knowledge of 
                                 Internet of Things technologies and applications. Here are recommended next steps:
                             </p>
                             <ul className="space-y-2 ml-6 list-disc">
