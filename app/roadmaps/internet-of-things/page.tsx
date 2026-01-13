@@ -1139,6 +1139,81 @@ export default function InternetOfThingsRoadmapPage() {
                         </CardContent>
                     </Card>
 
+                    {/* Bonus Quiz Section - Week 12: Data Handling, Analytics & Case Studies */}
+                    <Card className="mt-8 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/20 dark:to-cyan-950/20 border-teal-200 dark:border-teal-800">
+                        <CardHeader>
+                            <CardTitle className="text-2xl flex items-center gap-2">
+                                <BookOpen className="h-6 w-6 text-teal-600" />
+                                Bonus Quiz: Data Handling, Analytics & Case Studies
+                            </CardTitle>
+                            <p className="text-muted-foreground mt-2">
+                                Test your knowledge on data handling, analytics techniques, and real-world IoT case studies with these additional questions.
+                            </p>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center justify-between mb-4">
+                                <h4 className="font-semibold text-foreground">10 Multiple Choice Questions</h4>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => toggleAnswers(12)}
+                                    className="text-xs"
+                                >
+                                    {showAnswers[12] ? (
+                                        <>
+                                            <EyeOff className="h-3 w-3 mr-1" />
+                                            Hide Answers
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Eye className="h-3 w-3 mr-1" />
+                                            Show Answers
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+                            <div className="space-y-4">
+                                {[
+                                    { question: "Which \"V\" of Big Data refers to the speed of data generation?", options: ["Volume", "Variety", "Velocity", "Veracity"], answer: "c" },
+                                    { question: "What is \"Hadoop\"?", options: ["A type of sensor", "An open-source software framework for distributed processing of large datasets", "A new internet protocol", "A video game"], answer: "b" },
+                                    { question: "Qualitative analysis deals with data that is:", options: ["Numerical", "Descriptive/Categorical (e.g., text, audio)", "Statistical only", "Measured in kilograms"], answer: "b" },
+                                    { question: "Which statistical technique is used to compare variances between two or more groups?", options: ["Regression", "ANOVA (Analysis of Variance)", "Dispersion", "Counting"], answer: "b" },
+                                    { question: "In the \"AgriSens\" case study, which sensors were primarily used?", options: ["Heart rate sensors", "Soil moisture and water level sensors", "Accelerometers", "Traffic cameras"], answer: "b" },
+                                    { question: "What action did the AgriSens system take when water levels were low?", options: ["It shut down", "It sent an SMS and could automatically turn on solenoid valves", "It called the police", "It increased the temperature"], answer: "b" },
+                                    { question: "The \"AmbuSens\" system is designed for:", options: ["Agriculture monitoring", "Monitoring structural health of buildings", "Remote continuous monitoring of patients in ambulances", "Tracking wild animals"], answer: "c" },
+                                    { question: "Which privacy-aware mechanism is used in AmbuSens for patient identity?", options: ["Broadcasting names openly", "Hashing and reverse hashing of patient ID", "No ID is used", "Using GPS only"], answer: "b" },
+                                    { question: "In Activity Monitoring using smartphones, what happens to the Z-axis reading of the accelerometer when the phone is tilted?", options: ["It remains constant", "It changes (goes down/up) indicating orientation change relative to gravity", "It stops recording", "It becomes zero always"], answer: "b" },
+                                    { question: "What is a potential application of activity monitoring mentioned in the lectures?", options: ["Fall detection for the elderly", "Cooking assistance", "Email filtering", "Weather forecasting"], answer: "a" }
+                                ].map((mcq, mcqIdx) => (
+                                    <div key={mcqIdx} className="bg-white dark:bg-slate-900 p-4 rounded-lg border border-teal-200 dark:border-teal-900">
+                                        <p className="font-medium text-foreground mb-3">
+                                            {mcqIdx + 1}. {mcq.question}
+                                        </p>
+                                        <div className="space-y-2 ml-4">
+                                            {mcq.options.map((option, optIdx) => {
+                                                const optionLetter = String.fromCharCode(97 + optIdx) // a, b, c, d
+                                                const isCorrect = optionLetter === mcq.answer
+                                                return (
+                                                    <div 
+                                                        key={optIdx} 
+                                                        className={`p-2 rounded ${showAnswers[12] && isCorrect ? 'bg-green-100 dark:bg-green-900/30 border border-green-500' : 'bg-muted/50'}`}
+                                                    >
+                                                        <span className="text-sm text-foreground">
+                                                            {optionLetter}) {option}
+                                                            {showAnswers[12] && isCorrect && (
+                                                                <span className="ml-2 text-green-600 dark:text-green-400 font-semibold">✓ Correct</span>
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+
                     {/* Next Steps */}
                     <Card className="mt-8">
                         <CardHeader>
