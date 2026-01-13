@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Download, Loader2 } from "lucide-react"
 import { jsPDF } from "jspdf"
-import html2canvas from "html2canvas"
+import { toPng } from "html-to-image"
 
 interface DownloadPDFProps {
     title: string
@@ -13,9 +13,9 @@ interface DownloadPDFProps {
 
 export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
     const [isGenerating, setIsGenerating] = useState(false)
-    
+
     // Constants
-    const IMAGE_LOAD_DELAY_MS = 1000 // Increased for better reliability
+    const IMAGE_LOAD_DELAY_MS = 1000
     const LOGO_LOAD_TIMEOUT_MS = 2000
     const IMAGE_LOAD_TIMEOUT_MS = 1000
 
@@ -57,7 +57,7 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             logo.style.marginBottom = "15px"
             logo.style.objectFit = "contain"
             logo.crossOrigin = "anonymous" // Enable CORS for image
-            
+
             // Wait for logo to load or fail
             await new Promise<void>((resolve) => {
                 logo.addEventListener("load", () => resolve())
@@ -69,7 +69,7 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
                 // Timeout after configured time
                 setTimeout(() => resolve(), LOGO_LOAD_TIMEOUT_MS)
             })
-            
+
             header.appendChild(logo)
 
             // Add brand name
@@ -105,10 +105,10 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
 
             // Add generation date
             const dateInfo = document.createElement("p")
-            dateInfo.textContent = `Downloaded on ${new Date().toLocaleDateString("en-US", { 
-                year: "numeric", 
-                month: "long", 
-                day: "numeric" 
+            dateInfo.textContent = `Downloaded on ${new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
             })}`
             dateInfo.style.fontSize = "12px"
             dateInfo.style.color = "#94a3b8"
@@ -133,7 +133,7 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             footer.style.backgroundColor = "#f8fafc"
             footer.style.padding = "25px"
             footer.style.borderRadius = "8px"
-            
+
             // Copyright notice
             const copyright = document.createElement("div")
             copyright.style.fontSize = "13px"
@@ -172,71 +172,82 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
 
             wrapper.appendChild(footer)
 
-            // Temporarily add to document (position off-screen to avoid flickering)
-            wrapper.style.position = "absolute"
-            wrapper.style.left = "-9999px"
+            // Temporarily add to document (z-index -50 to hide from view but keep renderable)
+            wrapper.style.position = "fixed"
+            wrapper.style.left = "0"
             wrapper.style.top = "0"
+            wrapper.style.zIndex = "-50"
+
+            // Force light mode colors for the PDF generation by overriding CSS variables locally
+            // This ensures text is dark (visible) on the white background, even if the user is in dark mode
+            wrapper.style.setProperty('--foreground', '222.2 84% 4.9%') // Black-ish
+            wrapper.style.setProperty('--muted-foreground', '215.4 16.3% 46.9%') // Gray-ish
+            wrapper.style.setProperty('--card', '0 0% 100%')
+            wrapper.style.setProperty('--card-foreground', '222.2 84% 4.9%')
+            wrapper.style.setProperty('--popover', '0 0% 100%')
+            wrapper.style.setProperty('--popover-foreground', '222.2 84% 4.9%')
+            wrapper.style.setProperty('--primary', '217 91% 28%')
+            wrapper.style.setProperty('--primary-foreground', '210 40% 98%')
+            wrapper.style.setProperty('--secondary', '210 40% 96.1%')
+            wrapper.style.setProperty('--secondary-foreground', '222.2 47.4% 11.2%')
+            wrapper.style.setProperty('--muted', '210 40% 96.1%')
+            wrapper.style.setProperty('--accent', '38 92% 50%')
+            wrapper.style.setProperty('--accent-foreground', '0 0% 100%')
+            wrapper.style.setProperty('--destructive', '0 84.2% 60.2%')
+            wrapper.style.setProperty('--destructive-foreground', '210 40% 98%')
+            wrapper.style.setProperty('--border', '214.3 31.8% 91.4%')
+            wrapper.style.setProperty('--input', '214.3 31.8% 91.4%')
+            wrapper.style.setProperty('--ring', '217 91% 28%')
+
             document.body.appendChild(wrapper)
 
-            // Wait for all images to load with increased timeout
-            await new Promise(resolve => setTimeout(resolve, IMAGE_LOAD_DELAY_MS))
-
-            // Try to ensure all images are loaded
-            const images = wrapper.getElementsByTagName('img')
-            await Promise.allSettled(
-                Array.from(images).map(img => {
-                    if (img.complete) return Promise.resolve()
-                    return new Promise<void>((resolve) => {
-                        img.addEventListener('load', () => resolve())
-                        img.addEventListener('error', () => resolve())
-                        setTimeout(() => resolve(), IMAGE_LOAD_TIMEOUT_MS)
-                    })
-                })
-            )
-
-            // Generate PDF with better quality settings
-            let canvas: HTMLCanvasElement
-            try {
-                canvas = await html2canvas(wrapper, {
-                    scale: 2.5, // Higher scale for better quality
-                    useCORS: true,
-                    allowTaint: false, // Don't allow tainted canvas
-                    logging: false,
-                    backgroundColor: "#ffffff",
-                    windowWidth: wrapper.scrollWidth,
-                    windowHeight: wrapper.scrollHeight,
-                    imageTimeout: 15000, // Increase timeout for images
-                    onclone: (clonedDoc) => {
-                        // Ensure cloned document has proper styling
-                        const clonedWrapper = clonedDoc.querySelector('[style*="210mm"]') as HTMLElement
-                        if (clonedWrapper) {
-                            clonedWrapper.style.visibility = 'visible'
-                        }
-                    }
-                })
-            } catch (canvasError) {
-                console.error("html2canvas error:", canvasError)
-                // Try fallback with allowTaint enabled for CORS issues
+            // Pre-process all images to be friendly to html-to-image (avoid CORS)
+            const allImages = wrapper.getElementsByTagName('img')
+            await Promise.all(Array.from(allImages).map(async (img) => {
                 try {
-                    canvas = await html2canvas(wrapper, {
-                        scale: 2,
-                        allowTaint: true,
-                        useCORS: false,
-                        logging: false,
-                        backgroundColor: "#ffffff",
-                        windowWidth: wrapper.scrollWidth,
-                        windowHeight: wrapper.scrollHeight,
-                    })
-                } catch (fallbackError) {
-                    document.body.removeChild(wrapper)
-                    throw new Error(`Canvas generation failed: ${fallbackError instanceof Error ? fallbackError.message : 'Unknown error'}`)
+                    // Skip if no src
+                    if (!img.src) return;
+
+                    // Fetch and create blob URL
+                    const response = await fetch(img.src).catch(() => null);
+                    if (!response || !response.ok) {
+                        console.warn(`Failed to fetch image for PDF: ${img.src}`);
+                        // Optionally set a fallback or hide it
+                        img.style.display = 'none';
+                        return;
+                    }
+
+                    const blob = await response.blob();
+                    const objectUrl = URL.createObjectURL(blob);
+                    img.src = objectUrl;
+
+                    // Note: We're relying on browser cleanup or page unload for these blob URLs 
+                    // since this is a transient operation.
+                } catch (err) {
+                    console.warn("Error processing image for PDF:", err)
+                    img.style.display = 'none';
                 }
-            }
+            }))
+
+            // Wait a moment for layout to settle with new blob URLs
+            await new Promise(resolve => setTimeout(resolve, 500))
+
+            // Generate image using html-to-image
+            const imgData = await toPng(wrapper, {
+                cacheBust: true,
+                pixelRatio: 2.5, // Higher quality
+                backgroundColor: "#ffffff",
+                style: {
+                    visibility: 'visible',
+                    position: 'static',
+                    transform: 'none'
+                },
+                skipAutoScale: true,
+            })
 
             // Remove temporary wrapper
             document.body.removeChild(wrapper)
 
-            const imgData = canvas.toDataURL("image/png", 1.0) // Maximum quality
             const pdf = new jsPDF({
                 orientation: "portrait",
                 unit: "mm",
@@ -246,7 +257,15 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
 
             const imgWidth = 210 // A4 width in mm
             const pageHeight = 297 // A4 height in mm
-            const imgHeight = (canvas.height * imgWidth) / canvas.width
+
+            // Calculate dimensions of the generated image
+            const tempImg = new window.Image()
+            tempImg.src = imgData
+            await new Promise((resolve) => {
+                tempImg.onload = resolve
+            })
+
+            const imgHeight = (tempImg.height * imgWidth) / tempImg.width
             let heightLeft = imgHeight
 
             let position = 0
@@ -268,8 +287,13 @@ export function DownloadPDF({ title, contentId }: DownloadPDFProps) {
             pdf.save(`${fileName}-zest-academy.pdf`)
         } catch (error) {
             console.error("Error generating PDF:", error)
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
-            alert(`Failed to generate PDF: ${errorMessage}\n\nPlease try again or contact support if the issue persists.`)
+            const errorMessage = error instanceof Error
+                ? error.message
+                : typeof error === 'object' && error !== null
+                    ? JSON.stringify(error)
+                    : 'Unknown error occurred'
+
+            alert(`Failed to generate PDF. Error details: ${errorMessage}\n\nPlease try again.`)
         } finally {
             setIsGenerating(false)
         }
