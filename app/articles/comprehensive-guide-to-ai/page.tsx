@@ -17,7 +17,6 @@ export default function ComprehensiveAIGuidePage() {
                 title={articleTitle}
                 description={articleDescription}
                 url={articleUrl}
-                contentId="article-content"
             />
 
             {/* Hero Section */}

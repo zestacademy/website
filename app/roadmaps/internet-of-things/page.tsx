@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { CommentsSection } from "@/components/comments-section"
-import { Clock, Calendar, Target, CheckCircle2, Loader2, PlayCircle, Trophy } from "lucide-react"
+import { Clock, Calendar, Target, CheckCircle2, Loader2, PlayCircle, Trophy, Download } from "lucide-react"
 import { useRoadmapProgress } from "@/lib/hooks/useRoadmapProgress"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -17,6 +17,145 @@ export default function InternetOfThingsRoadmapPage() {
     const roadmapWeeks = [
         {
             week: 1,
+            title: "IoT Fundamentals & Connectivity Basics",
+            lectures: [
+                {
+                    number: 1,
+                    title: "Introduction to IoT - I",
+                    pdfUrl: "/pdfs/lec1.pdf",
+                    topics: [
+                        "What is Internet of Things",
+                        "IoT architecture and components",
+                        "IoT applications and use cases",
+                        "IoT ecosystem overview"
+                    ]
+                },
+                {
+                    number: 2,
+                    title: "Introduction to IoT - II",
+                    pdfUrl: "/pdfs/lec2.pdf",
+                    topics: [
+                        "IoT enabling technologies",
+                        "Sensors and actuators",
+                        "Communication protocols",
+                        "IoT platforms and services"
+                    ]
+                },
+                {
+                    number: 3,
+                    title: "Connectivity Technologies - I",
+                    pdfUrl: "/pdfs/lec3.pdf",
+                    topics: [
+                        "Wired vs wireless communication",
+                        "Short-range wireless technologies",
+                        "Wi-Fi and Bluetooth basics",
+                        "Network topologies"
+                    ]
+                },
+                {
+                    number: 4,
+                    title: "Connectivity Technologies - II",
+                    pdfUrl: "/pdfs/lec4.pdf",
+                    topics: [
+                        "Zigbee protocol",
+                        "LoRa and LoRaWAN",
+                        "Low power wide area networks",
+                        "Protocol comparison"
+                    ]
+                },
+                {
+                    number: 5,
+                    title: "Connectivity Technologies - III",
+                    pdfUrl: "/pdfs/lec5.pdf",
+                    topics: [
+                        "Cellular IoT (NB-IoT, LTE-M)",
+                        "5G for IoT applications",
+                        "Satellite communication",
+                        "Network selection criteria"
+                    ]
+                },
+                {
+                    number: 6,
+                    title: "Connectivity Technologies - IV",
+                    pdfUrl: "/pdfs/lec6.pdf",
+                    topics: [
+                        "MQTT protocol",
+                        "CoAP protocol",
+                        "HTTP/HTTPS for IoT",
+                        "Protocol selection guidelines"
+                    ]
+                },
+                {
+                    number: 7,
+                    title: "IoT Data Management - I",
+                    pdfUrl: "/pdfs/lec7.pdf",
+                    topics: [
+                        "Data collection methods",
+                        "Data preprocessing",
+                        "Data storage solutions",
+                        "Time-series databases"
+                    ]
+                },
+                {
+                    number: 8,
+                    title: "IoT Data Management - II",
+                    pdfUrl: "/pdfs/lec8.pdf",
+                    topics: [
+                        "Data analytics for IoT",
+                        "Real-time data processing",
+                        "Data visualization techniques",
+                        "Big data in IoT"
+                    ]
+                },
+                {
+                    number: 9,
+                    title: "IoT Security - I",
+                    pdfUrl: "/pdfs/lec9.pdf",
+                    topics: [
+                        "IoT security challenges",
+                        "Authentication mechanisms",
+                        "Encryption techniques",
+                        "Secure boot and firmware updates"
+                    ]
+                },
+                {
+                    number: 10,
+                    title: "IoT Security - II",
+                    pdfUrl: "/pdfs/lec10.pdf",
+                    topics: [
+                        "Network security",
+                        "Device management security",
+                        "Privacy concerns",
+                        "Security best practices"
+                    ]
+                },
+                {
+                    number: 11,
+                    title: "IoT Standards and Protocols",
+                    pdfUrl: "/pdfs/lec11.pdf",
+                    topics: [
+                        "IoT standards organizations",
+                        "Industry standards overview",
+                        "Compliance requirements",
+                        "Interoperability standards"
+                    ]
+                },
+                {
+                    number: 12,
+                    title: "IoT Architecture Patterns",
+                    pdfUrl: "/pdfs/lec12.pdf",
+                    topics: [
+                        "Edge computing architecture",
+                        "Gateway patterns",
+                        "Cloud-native IoT",
+                        "Hybrid architectures"
+                    ]
+                }
+            ],
+            assignment: "Research and document IoT architecture for a specific use case with connectivity requirements"
+        },
+        {
+            week: 2,
             title: "IoT Connectivity & Sensor Networks",
             lectures: [
                 {
@@ -63,7 +202,7 @@ export default function InternetOfThingsRoadmapPage() {
             assignment: "Set up a basic sensor network simulation and analyze different connectivity protocols"
         },
         {
-            week: 2,
+            week: 3,
             title: "Advanced Sensor Networks & Communication",
             lectures: [
                 {
@@ -120,7 +259,7 @@ export default function InternetOfThingsRoadmapPage() {
             assignment: "Design a UAV-based sensor network for agricultural monitoring with M2M communication"
         },
         {
-            week: 3,
+            week: 4,
             title: "Arduino Basics & Integration",
             lectures: [
                 {
@@ -167,7 +306,7 @@ export default function InternetOfThingsRoadmapPage() {
             assignment: "Build an Arduino-based IoT device with multiple sensors and actuators"
         },
         {
-            week: 4,
+            week: 5,
             title: "Python Programming for IoT",
             lectures: [
                 {
@@ -194,7 +333,7 @@ export default function InternetOfThingsRoadmapPage() {
             assignment: "Write Python programs for data processing and IoT device communication"
         },
         {
-            week: 5,
+            week: 6,
             title: "Raspberry Pi & IoT Implementation",
             lectures: [
                 {
@@ -251,7 +390,7 @@ export default function InternetOfThingsRoadmapPage() {
             assignment: "Create a complete IoT system using Raspberry Pi with cloud connectivity"
         },
         {
-            week: 6,
+            week: 7,
             title: "Software-Defined Networking for IoT",
             lectures: [
                 {
@@ -298,7 +437,7 @@ export default function InternetOfThingsRoadmapPage() {
             assignment: "Design an SDN-based IoT network architecture with OpenFlow"
         },
         {
-            week: 7,
+            week: 8,
             title: "Cloud, Fog & Edge Computing",
             lectures: [
                 {
@@ -395,9 +534,20 @@ export default function InternetOfThingsRoadmapPage() {
             assignment: "Deploy an IoT application on cloud platform and implement fog computing layer"
         },
         {
-            week: 8,
+            week: 9,
             title: "IoT Applications: Smart Systems",
             lectures: [
+                {
+                    number: 46,
+                    title: "Smart Cities and Smart Homes - I",
+                    pdfUrl: "/pdfs/lec46.pdf",
+                    topics: [
+                        "Introduction to smart cities",
+                        "Smart city components",
+                        "Smart home basics",
+                        "IoT in urban infrastructure"
+                    ]
+                },
                 {
                     number: 47,
                     title: "Smart Cities and Smart Homes - II",
@@ -460,6 +610,108 @@ export default function InternetOfThingsRoadmapPage() {
                 }
             ],
             assignment: "Final Project: Design a complete smart city solution or connected vehicle system"
+        },
+        {
+            week: 10,
+            title: "Advanced IoT Topics & Industrial Applications",
+            lectures: [
+                {
+                    number: 53,
+                    title: "Industrial IoT - I",
+                    pdfUrl: "/pdfs/lec53.pdf",
+                    topics: [
+                        "Introduction to IIoT",
+                        "Industry 4.0 concepts",
+                        "Industrial communication protocols",
+                        "Manufacturing automation"
+                    ]
+                },
+                {
+                    number: 54,
+                    title: "Industrial IoT - II",
+                    pdfUrl: "/pdfs/lec54.pdf",
+                    topics: [
+                        "Predictive maintenance",
+                        "Asset tracking",
+                        "Quality control systems",
+                        "IIoT case studies"
+                    ]
+                },
+                {
+                    number: 55,
+                    title: "IoT Analytics & Machine Learning",
+                    pdfUrl: "/pdfs/lec55.pdf",
+                    topics: [
+                        "ML for IoT data",
+                        "Anomaly detection",
+                        "Predictive analytics",
+                        "Edge AI applications"
+                    ]
+                },
+                {
+                    number: 56,
+                    title: "IoT Blockchain Integration",
+                    pdfUrl: "/pdfs/lec56.pdf",
+                    topics: [
+                        "Blockchain basics",
+                        "IoT and blockchain synergy",
+                        "Supply chain applications",
+                        "Decentralized IoT networks"
+                    ]
+                }
+            ],
+            assignment: "Develop an Industrial IoT solution with predictive analytics capabilities"
+        },
+        {
+            week: 11,
+            title: "Emerging IoT Technologies & Future Trends",
+            lectures: [
+                {
+                    number: 57,
+                    title: "Digital Twins in IoT",
+                    pdfUrl: "/pdfs/lec57.pdf",
+                    topics: [
+                        "Digital twin concepts",
+                        "Virtual modeling",
+                        "Real-time synchronization",
+                        "Use cases and benefits"
+                    ]
+                },
+                {
+                    number: 58,
+                    title: "IoT in Healthcare & Wearables",
+                    pdfUrl: "/pdfs/lec58.pdf",
+                    topics: [
+                        "Healthcare IoT applications",
+                        "Wearable devices",
+                        "Remote patient monitoring",
+                        "Health data analytics"
+                    ]
+                },
+                {
+                    number: 59,
+                    title: "IoT Ethics & Regulations",
+                    pdfUrl: "/pdfs/lec59.pdf",
+                    topics: [
+                        "Ethical considerations",
+                        "Privacy regulations (GDPR)",
+                        "Data governance",
+                        "Responsible IoT deployment"
+                    ]
+                },
+                {
+                    number: 60,
+                    title: "Future of IoT & Capstone",
+                    pdfUrl: "/pdfs/lec60.pdf",
+                    topics: [
+                        "Emerging IoT trends",
+                        "6G and beyond",
+                        "Quantum computing for IoT",
+                        "Career opportunities in IoT"
+                    ]
+                }
+            ],
+            assignment: "Capstone Project: Build a comprehensive IoT solution integrating multiple technologies learned"
         }
     ]
 
@@ -484,8 +736,8 @@ export default function InternetOfThingsRoadmapPage() {
                 <div className="container mx-auto px-4 max-w-5xl relative z-10">
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <Badge className="bg-purple-500 text-white border-0">Intermediate</Badge>
-                        <Badge className="bg-blue-500 text-white border-0">8 Weeks</Badge>
-                        <Badge className="bg-teal-500 text-white border-0">39 Lectures</Badge>
+                        <Badge className="bg-blue-500 text-white border-0">11 Weeks</Badge>
+                        <Badge className="bg-teal-500 text-white border-0">60 Lectures</Badge>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">
                         Internet of Things (IoT) Learning Roadmap
@@ -543,14 +795,14 @@ export default function InternetOfThingsRoadmapPage() {
                         <div className="flex items-center gap-3 bg-card p-4 rounded-lg border shadow-sm">
                             <Calendar className="h-8 w-8 text-blue-500" />
                             <div>
-                                <p className="text-2xl font-bold">8 Weeks</p>
+                                <p className="text-2xl font-bold">11 Weeks</p>
                                 <p className="text-sm text-muted-foreground">Total duration</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-3 bg-card p-4 rounded-lg border shadow-sm">
                             <Target className="h-8 w-8 text-teal-500" />
                             <div>
-                                <p className="text-2xl font-bold">8 Projects</p>
+                                <p className="text-2xl font-bold">11 Projects</p>
                                 <p className="text-sm text-muted-foreground">Hands-on practice</p>
                             </div>
                         </div>
@@ -565,7 +817,7 @@ export default function InternetOfThingsRoadmapPage() {
                         <div>
                             <h2 className="text-3xl font-bold mb-2">Weekly Learning Path</h2>
                             <p className="text-muted-foreground">
-                                Follow this structured 8-week curriculum covering 39 comprehensive lectures on IoT.
+                                Follow this structured 11-week curriculum covering 60 comprehensive lectures on IoT.
                             </p>
                         </div>
                     </div>
@@ -621,9 +873,23 @@ export default function InternetOfThingsRoadmapPage() {
                                             <div className="space-y-3">
                                                 {week.lectures.map((lecture, lectureIdx) => (
                                                     <div key={lectureIdx} className="bg-muted/50 p-3 rounded-lg">
-                                                        <h5 className="font-medium text-foreground mb-2">
-                                                            Lecture {lecture.number}: {lecture.title}
-                                                        </h5>
+                                                        <div className="flex items-start justify-between gap-2 mb-2">
+                                                            <h5 className="font-medium text-foreground">
+                                                                Lecture {lecture.number}: {lecture.title}
+                                                            </h5>
+                                                            {lecture.pdfUrl && (
+                                                                <a 
+                                                                    href={lecture.pdfUrl} 
+                                                                    target="_blank" 
+                                                                    rel="noopener noreferrer"
+                                                                    className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 whitespace-nowrap"
+                                                                    aria-label={`Download PDF for Lecture ${lecture.number}: ${lecture.title}`}
+                                                                >
+                                                                    <Download className="h-4 w-4" />
+                                                                    <span>PDF</span>
+                                                                </a>
+                                                            )}
+                                                        </div>
                                                         <ul className="space-y-1 ml-4">
                                                             {lecture.topics.map((topic, topicIdx) => (
                                                                 <li key={topicIdx} className="text-sm text-muted-foreground list-disc">
@@ -678,7 +944,7 @@ export default function InternetOfThingsRoadmapPage() {
                         </CardHeader>
                         <CardContent className="space-y-4 text-muted-foreground">
                             <p>
-                                After completing this 8-week IoT roadmap, you&apos;ll have comprehensive knowledge of 
+                                After completing this 11-week IoT roadmap, you&apos;ll have comprehensive knowledge of 
                                 Internet of Things technologies and applications. Here are recommended next steps:
                             </p>
                             <ul className="space-y-2 ml-6 list-disc">
