@@ -38,7 +38,7 @@ service cloud.firestore {
     // --- LMS: Enrollments & Progress ---
     // Structure: enrollments/{enrollmentId} where ID is usually userId_courseId
     match /enrollments/{enrollmentId} {
-      allow read: if isOwner(resource.data.userId) || isAdmin(); 
+      allow read: if (isSignedIn() && enrollmentId.matches(request.auth.uid + "_.*")) || isAdmin(); 
       allow create: if (isSignedIn() && request.resource.data.userId == request.auth.uid) || isAdmin();
       allow update, delete: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
       
