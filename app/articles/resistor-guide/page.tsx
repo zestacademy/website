@@ -18,7 +18,6 @@ export default function ResistorGuidePage() {
                 title={articleTitle}
                 description={articleDescription}
                 url={articleUrl}
-                contentId="article-content"
             />
 
             {/* Hero Section */}

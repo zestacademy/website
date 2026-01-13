@@ -220,7 +220,6 @@ export default function PlacementInterviewQuestionsPage() {
                 title={articleTitle}
                 description={articleDescription}
                 url={articleUrl}
-                contentId="article-content"
             />
 
             {/* Hero Section */}

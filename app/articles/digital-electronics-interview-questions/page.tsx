@@ -19,7 +19,6 @@ export default function DigitalElectronicsPage() {
                 title={articleTitle}
                 description={articleDescription}
                 url={articleUrl}
-                contentId="article-content"
             />
 
             <section className="py-16 bg-gradient-to-b from-blue-50 to-background dark:from-blue-950/20 dark:to-background border-b">
