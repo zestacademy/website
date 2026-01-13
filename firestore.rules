@@ -41,6 +41,16 @@ service cloud.firestore {
       allow read: if isOwner(resource.data.userId) || isAdmin(); 
       allow create: if (isSignedIn() && request.resource.data.userId == request.auth.uid) || isAdmin();
       allow update, delete: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+      
+      match /quiz_attempts/{attemptId} {
+      	allow read, write: if isSignedIn() && enrollmentId.matches(request.auth.uid + "_.*");
+      }
+    }
+
+    // --- Leaderboards ---
+    match /leaderboards/{roadmapId}/users/{userId} {
+      allow read: if true;
+      allow write: if isOwner(userId) || isAdmin();
     }
 
     // --- Community: Discussions ---

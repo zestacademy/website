@@ -10,18 +10,11 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { QuizSection } from "@/components/QuizSection"
 
 export default function InternetOfThingsRoadmapPage() {
     const router = useRouter()
     const { user, loading, progress, startRoadmap, toggleDayCompletion } = useRoadmapProgress("internet-of-things")
-    const [showAnswers, setShowAnswers] = useState<Record<number, boolean>>({})
-
-    const toggleAnswers = (weekNumber: number) => {
-        setShowAnswers(prev => ({
-            ...prev,
-            [weekNumber]: !prev[weekNumber]
-        }))
-    }
 
     const roadmapWeeks = [
         {
@@ -884,8 +877,8 @@ export default function InternetOfThingsRoadmapPage() {
                         Internet of Things (IoT) Learning Roadmap
                     </h1>
                     <p className="text-lg text-muted-foreground text-center mb-8 max-w-3xl mx-auto">
-                        Master the Internet of Things from fundamentals to advanced applications. Learn sensor networks, 
-                        Arduino, Raspberry Pi, cloud computing, and build real-world IoT solutions for smart cities, 
+                        Master the Internet of Things from fundamentals to advanced applications. Learn sensor networks,
+                        Arduino, Raspberry Pi, cloud computing, and build real-world IoT solutions for smart cities,
                         connected vehicles, and smart grids.
                     </p>
 
@@ -1019,9 +1012,9 @@ export default function InternetOfThingsRoadmapPage() {
                                                                 Lecture {lecture.number}: {lecture.title}
                                                             </h5>
                                                             {lecture.pdfUrl && (
-                                                                <a 
-                                                                    href={lecture.pdfUrl} 
-                                                                    target="_blank" 
+                                                                <a
+                                                                    href={lecture.pdfUrl}
+                                                                    target="_blank"
                                                                     rel="noopener noreferrer"
                                                                     className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 whitespace-nowrap"
                                                                     aria-label={`Download PDF for Lecture ${lecture.number}: ${lecture.title}`}
@@ -1058,59 +1051,18 @@ export default function InternetOfThingsRoadmapPage() {
                                         {week.mcqs && week.mcqs.length > 0 && (
                                             <>
                                                 <Separator />
-                                                <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
-                                                    <div className="flex items-center justify-between mb-4">
-                                                        <h4 className="font-semibold text-foreground flex items-center gap-2">
-                                                            <BookOpen className="h-4 w-4 text-blue-500" />
-                                                            Multiple Choice Questions ({week.mcqs.length} questions)
-                                                        </h4>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => toggleAnswers(week.week)}
-                                                            className="text-xs"
-                                                        >
-                                                            {showAnswers[week.week] ? (
-                                                                <>
-                                                                    <EyeOff className="h-3 w-3 mr-1" />
-                                                                    Hide Answers
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <Eye className="h-3 w-3 mr-1" />
-                                                                    Show Answers
-                                                                </>
-                                                            )}
-                                                        </Button>
-                                                    </div>
-                                                    <div className="space-y-4">
-                                                        {week.mcqs.map((mcq, mcqIdx) => (
-                                                            <div key={mcqIdx} className="bg-white dark:bg-slate-900 p-4 rounded-lg border border-blue-200 dark:border-blue-900">
-                                                                <p className="font-medium text-foreground mb-3">
-                                                                    {mcqIdx + 1}. {mcq.question}
-                                                                </p>
-                                                                <div className="space-y-2 ml-4">
-                                                                    {mcq.options.map((option, optIdx) => {
-                                                                        const optionLetter = String.fromCharCode(97 + optIdx) // a, b, c, d
-                                                                        const isCorrect = optionLetter === mcq.answer
-                                                                        return (
-                                                                            <div 
-                                                                                key={optIdx} 
-                                                                                className={`p-2 rounded ${showAnswers[week.week] && isCorrect ? 'bg-green-100 dark:bg-green-900/30 border border-green-500' : 'bg-muted/50'}`}
-                                                                            >
-                                                                                <span className="text-sm text-foreground">
-                                                                                    {optionLetter}) {option}
-                                                                                    {showAnswers[week.week] && isCorrect && (
-                                                                                        <span className="ml-2 text-green-600 dark:text-green-400 font-semibold">✓ Correct</span>
-                                                                                    )}
-                                                                                </span>
-                                                                            </div>
-                                                                        )
-                                                                    })}
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
+                                                <div className="mt-6">
+                                                    <h4 className="font-semibold text-foreground flex items-center gap-2 mb-4">
+                                                        <BookOpen className="h-5 w-5 text-blue-500" />
+                                                        Weekly Assessment
+                                                    </h4>
+                                                    <QuizSection
+                                                        weekNumber={week.week}
+                                                        title={`Week ${week.week} Quiz`}
+                                                        mcqs={week.mcqs}
+                                                        roadmapId="internet-of-things"
+                                                        isEnrolled={isEnrolled}
+                                                    />
                                                 </div>
                                             </>
                                         )}
@@ -1151,29 +1103,12 @@ export default function InternetOfThingsRoadmapPage() {
                             </p>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-center justify-between mb-4">
-                                <h4 className="font-semibold text-foreground">10 Multiple Choice Questions</h4>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => toggleAnswers(12)}
-                                    className="text-xs"
-                                >
-                                    {showAnswers[12] ? (
-                                        <>
-                                            <EyeOff className="h-3 w-3 mr-1" />
-                                            Hide Answers
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Eye className="h-3 w-3 mr-1" />
-                                            Show Answers
-                                        </>
-                                    )}
-                                </Button>
-                            </div>
-                            <div className="space-y-4">
-                                {[
+                            <QuizSection
+                                weekNumber={12}
+                                title="Bonus Quiz: Data Handling, Analytics & Case Studies"
+                                roadmapId="internet-of-things"
+                                isEnrolled={isEnrolled}
+                                mcqs={[
                                     { question: "Which \"V\" of Big Data refers to the speed of data generation?", options: ["Volume", "Variety", "Velocity", "Veracity"], answer: "c" },
                                     { question: "What is \"Hadoop\"?", options: ["A type of sensor", "An open-source software framework for distributed processing of large datasets", "A new internet protocol", "A video game"], answer: "b" },
                                     { question: "Qualitative analysis deals with data that is:", options: ["Numerical", "Descriptive/Categorical (e.g., text, audio)", "Statistical only", "Measured in kilograms"], answer: "b" },
@@ -1184,33 +1119,8 @@ export default function InternetOfThingsRoadmapPage() {
                                     { question: "Which privacy-aware mechanism is used in AmbuSens for patient identity?", options: ["Broadcasting names openly", "Hashing and reverse hashing of patient ID", "No ID is used", "Using GPS only"], answer: "b" },
                                     { question: "In Activity Monitoring using smartphones, what happens to the Z-axis reading of the accelerometer when the phone is tilted?", options: ["It remains constant", "It changes (goes down/up) indicating orientation change relative to gravity", "It stops recording", "It becomes zero always"], answer: "b" },
                                     { question: "What is a potential application of activity monitoring mentioned in the lectures?", options: ["Fall detection for the elderly", "Cooking assistance", "Email filtering", "Weather forecasting"], answer: "a" }
-                                ].map((mcq, mcqIdx) => (
-                                    <div key={mcqIdx} className="bg-white dark:bg-slate-900 p-4 rounded-lg border border-teal-200 dark:border-teal-900">
-                                        <p className="font-medium text-foreground mb-3">
-                                            {mcqIdx + 1}. {mcq.question}
-                                        </p>
-                                        <div className="space-y-2 ml-4">
-                                            {mcq.options.map((option, optIdx) => {
-                                                const optionLetter = String.fromCharCode(97 + optIdx) // a, b, c, d
-                                                const isCorrect = optionLetter === mcq.answer
-                                                return (
-                                                    <div 
-                                                        key={optIdx} 
-                                                        className={`p-2 rounded ${showAnswers[12] && isCorrect ? 'bg-green-100 dark:bg-green-900/30 border border-green-500' : 'bg-muted/50'}`}
-                                                    >
-                                                        <span className="text-sm text-foreground">
-                                                            {optionLetter}) {option}
-                                                            {showAnswers[12] && isCorrect && (
-                                                                <span className="ml-2 text-green-600 dark:text-green-400 font-semibold">✓ Correct</span>
-                                                            )}
-                                                        </span>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                                ]}
+                            />
                         </CardContent>
                     </Card>
 
@@ -1221,7 +1131,7 @@ export default function InternetOfThingsRoadmapPage() {
                         </CardHeader>
                         <CardContent className="space-y-4 text-muted-foreground">
                             <p>
-                                After completing this 11-week IoT roadmap, you&apos;ll have comprehensive knowledge of 
+                                After completing this 11-week IoT roadmap, you&apos;ll have comprehensive knowledge of
                                 Internet of Things technologies and applications. Here are recommended next steps:
                             </p>
                             <ul className="space-y-2 ml-6 list-disc">

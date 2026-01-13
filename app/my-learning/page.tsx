@@ -17,7 +17,8 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 
 const COURSE_METADATA: Record<string, { title: string, link: string, icon: any }> = {
-    "python-basics": { title: "Python Basics Roadmap", link: "/roadmaps/python-basics", icon: PlayCircle }
+    "python-basics": { title: "Python Basics Roadmap", link: "/roadmaps/python-basics", icon: PlayCircle },
+    "internet-of-things": { title: "IoT Roadmap", link: "/roadmaps/internet-of-things", icon: BookOpen }
 }
 
 export default function MyLearningPage() {
@@ -261,6 +262,14 @@ export default function MyLearningPage() {
                                                                     <span>{percentage}% Complete</span>
                                                                     <span>{enrollment.completedDays.length}/{enrollment.totalDays} Lessons</span>
                                                                 </div>
+                                                                {enrollment.totalScore !== undefined && (
+                                                                    <div className="flex justify-between text-xs font-medium pt-1">
+                                                                        <span className="text-purple-600 dark:text-purple-400 flex items-center gap-1">
+                                                                            <Trophy className="h-3 w-3" />
+                                                                            Score: {enrollment.totalScore} / {enrollment.maxPossibleScore || '?'}
+                                                                        </span>
+                                                                    </div>
+                                                                )}
                                                                 <Progress value={percentage} className="h-2" />
                                                             </div>
 
