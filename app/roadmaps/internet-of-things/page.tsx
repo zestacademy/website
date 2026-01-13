@@ -4,15 +4,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { CommentsSection } from "@/components/comments-section"
-import { Clock, Calendar, Target, CheckCircle2, Loader2, PlayCircle, Trophy, Download } from "lucide-react"
+import { Clock, Calendar, Target, CheckCircle2, Loader2, PlayCircle, Trophy, Download, BookOpen, Eye, EyeOff } from "lucide-react"
 import { useRoadmapProgress } from "@/lib/hooks/useRoadmapProgress"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export default function InternetOfThingsRoadmapPage() {
     const router = useRouter()
     const { user, loading, progress, startRoadmap, toggleDayCompletion } = useRoadmapProgress("internet-of-things")
+    const [showAnswers, setShowAnswers] = useState<Record<number, boolean>>({})
+
+    const toggleAnswers = (weekNumber: number) => {
+        setShowAnswers(prev => ({
+            ...prev,
+            [weekNumber]: !prev[weekNumber]
+        }))
+    }
 
     const roadmapWeeks = [
         {
@@ -152,7 +161,19 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Research and document IoT architecture for a specific use case with connectivity requirements"
+            assignment: "Research and document IoT architecture for a specific use case with connectivity requirements",
+            mcqs: [
+                { question: "What is the projected number of \"Things\" connected to the Internet in the near future mentioned in the lectures?", options: ["5 billion", "10 billion", "Over 20 billion", "50 million"], answer: "c" },
+                { question: "Which of the following is NOT listed as a component of the unification of technologies in IoT?", options: ["Cloud computing", "Machine learning", "Big-data", "Manual data entry"], answer: "d" },
+                { question: "In the context of IoT addressing, why is there a need for IPv6?", options: ["Because IPv4 is too expensive", "Because of an address crunch due to the massive number of devices", "Because IPv6 is faster for streaming", "Because sensors cannot use IPv4"], answer: "b" },
+                { question: "Machine-to-Machine (M2M) communication is primarily characterized by:", options: ["Frequent human intervention", "Being free of any human intervention", "Only wired connections", "Use exclusively in healthcare"], answer: "b" },
+                { question: "Which protocol is specifically designed for low-power Wireless Personal Area Networks over IPv6?", options: ["HTTP", "6LoWPAN", "FTP", "SMTP"], answer: "b" },
+                { question: "The 6LoWPAN protocol allows which type of devices to connect to the Internet?", options: ["High-power workstations only", "Smallest devices with limited processing ability", "Only routers", "Only smartphones"], answer: "b" },
+                { question: "Which organization created the 6LoWPAN standard?", options: ["IEEE", "ISO", "IETF", "W3C"], answer: "c" },
+                { question: "What is a primary characteristic of a Smart Grid consumer?", options: ["They can only consume energy, not monitor it", "They can program smart meters for load balancing and pricing choices", "They must manually read meters every day", "They cannot use electricity during peak hours"], answer: "b" },
+                { question: "Which technology is often used for supply chain management and counterfeit prevention in pharmaceuticals?", options: ["Bluetooth", "RFID", "Z-Wave", "6LoWPAN"], answer: "b" },
+                { question: "In an M2M overview, which layer comes immediately after the \"Sensors\" layer?", options: ["Processing", "Network", "Actuation", "Information Extraction"], answer: "b" }
+            ]
         },
         {
             week: 2,
@@ -199,7 +220,19 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Set up a basic sensor network simulation and analyze different connectivity protocols"
+            assignment: "Set up a basic sensor network simulation and analyze different connectivity protocols",
+            mcqs: [
+                { question: "What does MQTT stand for?", options: ["Message Query Telemetry Transport", "Message Queue Telemetry Transport", "Management Queue Transport Tool", "Mobile Queue Telemetry Transfer"], answer: "b" },
+                { question: "Which architecture model does MQTT utilize?", options: ["Request-Response", "Publish-Subscribe", "Peer-to-Peer", "Master-Slave"], answer: "b" },
+                { question: "What is the role of the \"Broker\" in MQTT?", options: ["It generates the data", "It consumes the data", "It creates a direct link between client and server", "It is the central communication point that dispatches messages between senders and receivers"], answer: "d" },
+                { question: "In MQTT, what character is used as a single-level wildcard?", options: ["#", "*", "+", "%"], answer: "c" },
+                { question: "What does CoAP stand for?", options: ["Connection Application Protocol", "Constrained Application Protocol", "Computer Application Process", "Communication Access Protocol"], answer: "b" },
+                { question: "CoAP is a web transfer protocol designed for use with:", options: ["High-speed fiber networks", "Constrained nodes and networks", "Video streaming servers", "Desktop computers only"], answer: "b" },
+                { question: "Which transport layer protocol does CoAP typically run over?", options: ["TCP", "UDP", "SCTP", "ICMP"], answer: "b" },
+                { question: "What does AMQP stand for?", options: ["Advanced Message Queuing Protocol", "Automated Message Query Process", "Application Message Queuing Point", "Advanced Mobile Query Protocol"], answer: "a" },
+                { question: "What is the basic unit of data in AMQP?", options: ["Packet", "Datagram", "Frame", "Segment"], answer: "c" },
+                { question: "Which feature is a main advantage of Secure MQTT (SMQTT)?", options: ["Faster data transfer", "Broadcast encryption where one message is encrypted and delivered to multiple nodes", "No need for a broker", "Uses HTTP instead of TCP"], answer: "b" }
+            ]
         },
         {
             week: 3,
@@ -256,7 +289,19 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Design a UAV-based sensor network for agricultural monitoring with M2M communication"
+            assignment: "Design a UAV-based sensor network for agricultural monitoring with M2M communication",
+            mcqs: [
+                { question: "Which of the following is NOT a mode of operation for NFC?", options: ["Peer-to-peer mode", "Read/Write mode", "Card emulation mode", "Router mode"], answer: "d" },
+                { question: "How many slaves can a single Bluetooth master connect to in a piconet?", options: ["Up to 5", "Up to 7", "Up to 10", "Unlimited"], answer: "b" },
+                { question: "In Bluetooth networking, what is a \"Scatternet\"?", options: ["A single master and one slave", "A device that is turned off", "An interconnection of multiple piconets", "A security protocol"], answer: "c" },
+                { question: "Which protocol is explicitly mentioned as suitable for industrial applications like closed-loop regulatory control?", options: ["Bluetooth", "ISA100.11a", "NFC", "RFID"], answer: "b" },
+                { question: "Which IEEE standard defines the physical and MAC layers for Zigbee?", options: ["IEEE 802.11", "IEEE 802.3", "IEEE 802.15.4", "IEEE 802.16"], answer: "c" },
+                { question: "In a Wireless Sensor Network (WSN), which unit powers the device?", options: ["Sensing unit", "Processing unit", "Communication unit", "Power unit"], answer: "d" },
+                { question: "Ideally, sensor nodes should be:", options: ["Expensive and large", "Low cost and easily dispensable", "Wired only", "Incapable of adaptation"], answer: "b" },
+                { question: "In the context of WSNs, \"Scalability\" refers to:", options: ["The physical size of the sensor", "Providing acceptable service levels in the presence of a large number of nodes", "The battery life of a single node", "Measuring weight"], answer: "b" },
+                { question: "What is a \"Sink\" in a sensor network?", options: ["A node that generates data", "A node that acts as a gateway or collection point for data", "A broken sensor", "The power source"], answer: "b" },
+                { question: "A \"multi-hop\" communication strategy in WSNs is used to:", options: ["Reduce the number of sensors", "Send data from a source node to a sink via intermediate nodes", "Avoid using batteries", "Increase the size of the sensors"], answer: "b" }
+            ]
         },
         {
             week: 4,
@@ -303,7 +348,19 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Build an Arduino-based IoT device with multiple sensors and actuators"
+            assignment: "Build an Arduino-based IoT device with multiple sensors and actuators",
+            mcqs: [
+                { question: "In WSN target tracking, what is \"Push-based formulation\"?", options: ["Nodes compute the target position and periodically notify the sink", "The sink queries the nodes", "A tracker follows the trail", "The target sends its own coordinates"], answer: "a" },
+                { question: "What is \"k-barrier coverage\"?", options: ["At least 1 sensor detects an intruder", "At least k sensors detect an intruder crossing a barrier", "Covering k different distinct points", "Using k sensors for the whole area"], answer: "b" },
+                { question: "In \"Area Coverage,\" what is the objective?", options: ["To cover a specific line", "To cover only specific points", "To ensure each point in a region is monitored by at least one sensor", "To cover the barrier between two countries"], answer: "c" },
+                { question: "If the communication range (Rc) is at least twice the sensing range (Rs), what does coverage imply?", options: ["Nothing", "Connectivity", "Interference", "Failure"], answer: "b" },
+                { question: "In Wireless Multimedia Sensor Networks (WMSNs), why are Scalar Sensor (SS) nodes used alongside Camera Sensor (CS) nodes?", options: ["SS nodes are more expensive", "SS nodes detect events to trigger the power-hungry CS nodes", "CS nodes cannot detect motion", "SS nodes provide high-definition video"], answer: "b" },
+                { question: "Which algorithm is used for minimizing overlap while covering crossings in WSNs?", options: ["TCP/IP", "OGDC (Optimal Geographical Density Control)", "Dijkstra's algorithm", "RSA encryption"], answer: "b" },
+                { question: "What is \"Dead Reckoning\" used for in localization?", options: ["Calculating battery life", "Estimating position based on distance and angle from a known node", "Determining if a node is dead", "Counting the number of nodes"], answer: "b" },
+                { question: "In \"Participatory Sensing,\" who forms the sensor network?", options: ["Fixed cameras on the street", "People carrying smartphones equipped with sensors", "Satellites", "Robots only"], answer: "b" },
+                { question: "Which topology is typically used for UAV (Drone) networks to ensure reliability and flexibility?", options: ["Star topology", "Bus topology", "Mesh topology (Flat or Hierarchical)", "Ring topology"], answer: "c" },
+                { question: "\"Topology Management\" in WSNs is primarily concerned with:", options: ["Painting the sensors", "Managing connectivity and coverage of the network over time", "Manufacturing the sensors", "Disposing of sensors"], answer: "b" }
+            ]
         },
         {
             week: 5,
@@ -330,7 +387,19 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Write Python programs for data processing and IoT device communication"
+            assignment: "Write Python programs for data processing and IoT device communication",
+            mcqs: [
+                { question: "Which issue does \"Device Interoperability\" address?", options: ["User authentication", "Seamless operation between heterogeneous devices with different standards/protocols", "Increasing battery life", "Reducing the cost of devices"], answer: "b" },
+                { question: "What is a \"Universal Middleware Bridge\" (UMB) used for?", options: ["Connecting the physical bridge to the internet", "Solving interoperability problems by creating virtual maps among physical devices", "Powering the Arduino", "Writing Python code"], answer: "b" },
+                { question: "The Arduino platform consists of:", options: ["Only software", "Only hardware", "Both a programmable circuit board (hardware) and a software IDE", "Only a USB cable"], answer: "c" },
+                { question: "Which function in Arduino is analogous to the `main()` function in C/C++?", options: ["`loop()`", "`start()`", "`setup()`", "`run()`"], answer: "c" },
+                { question: "What does the `loop()` function in Arduino do?", options: ["It runs only once", "It initializes variables", "It iterates the specified task continuously", "It shuts down the board"], answer: "c" },
+                { question: "To configure a pin as an output in Arduino, which function is used?", options: ["`digitalWrite()`", "`pinMode()`", "`analogRead()`", "`serial.begin()`"], answer: "b" },
+                { question: "What does `digitalWrite(12, HIGH)` do?", options: ["Reads data from pin 12", "Sets pin 12 to a low voltage", "Sets pin 12 to a high voltage (turns it on)", "Measures the height of pin 12"], answer: "c" },
+                { question: "What is the function of `delay(1000)` in an Arduino sketch?", options: ["Pauses the program for 1000 microseconds", "Pauses the program for 1000 seconds", "Pauses the program for 1000 milliseconds (1 second)", "Stops the program forever"], answer: "c" },
+                { question: "Which Arduino board has more pins and 4 UARTs compared to the Uno?", options: ["Arduino Nano", "Arduino Mega", "Arduino Mini", "Arduino Lilypad"], answer: "b" },
+                { question: "In the servo motor library for Arduino, what does the `write()` function typically control?", options: ["The speed of the motor", "The angle/position of the motor shaft (e.g., 0 to 180 degrees)", "The voltage of the motor", "The color of the motor"], answer: "b" }
+            ]
         },
         {
             week: 6,
@@ -387,7 +456,19 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Create a complete IoT system using Raspberry Pi with cloud connectivity"
+            assignment: "Create a complete IoT system using Raspberry Pi with cloud connectivity",
+            mcqs: [
+                { question: "Which of the following is a characteristic of the Python programming language?", options: ["It requires strict syntax rules and complex compilation", "It is a versatile, easy-to-script, and easy-to-read language", "It cannot be used for IoT", "It is a closed-source software"], answer: "b" },
+                { question: "In Python, what is a \"List\"?", options: ["An ordered sequence of items that can be changed", "An unordered collection of key-value pairs", "A sequence that cannot be changed", "A single integer"], answer: "a" },
+                { question: "What is a \"Tuple\" in Python?", options: ["A mutable list", "An ordered sequence of items that cannot be changed once created", "A dictionary key", "A looping structure"], answer: "b" },
+                { question: "Which keyword is used to define a function in Python?", options: ["`function`", "`fun`", "`def`", "`define`"], answer: "c" },
+                { question: "How is a Raspberry Pi different from an Arduino?", options: ["Raspberry Pi is a microcontroller; Arduino is a full computer", "Raspberry Pi is a fully functional computer; Arduino is a microcontroller", "Raspberry Pi cannot run Python", "Arduino has an Operating System; Raspberry Pi does not"], answer: "b" },
+                { question: "What is the default operating system used for Raspberry Pi in the lectures?", options: ["Windows 10", "macOS", "Raspbian (a Linux variant)", "Android"], answer: "c" },
+                { question: "What does \"GPIO\" stand for in the context of Raspberry Pi?", options: ["General Purpose Input Output", "Graphics Processing Input Output", "Global Position Input Output", "General Power Input Output"], answer: "a" },
+                { question: "To access the Raspberry Pi remotely via a command line, which protocol is commonly enabled?", options: ["FTP", "SSH", "HTTP", "SMTP"], answer: "b" },
+                { question: "In Python, indentation is used for:", options: ["Comments", "Aesthetics only", "Defining blocks of code (like loops and functions)", "Nothing"], answer: "c" },
+                { question: "Which library is used in Python for handling CSV files?", options: ["`import excel`", "`import csv`", "`import text`", "`import spreadsheet`"], answer: "b" }
+            ]
         },
         {
             week: 7,
@@ -434,7 +515,19 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Design an SDN-based IoT network architecture with OpenFlow"
+            assignment: "Design an SDN-based IoT network architecture with OpenFlow",
+            mcqs: [
+                { question: "To interface a DHT sensor (Temperature/Humidity) with Raspberry Pi, which type of library is typically imported in Python?", options: ["`import cv2`", "`import Adafruit_DHT`", "`import socket`", "`import numpy`"], answer: "b" },
+                { question: "When programming a UDP client in Python on Raspberry Pi, which socket type is used?", options: ["`SOCK_STREAM`", "`SOCK_DGRAM`", "`SOCK_RAW`", "`SOCK_SEQPACKET`"], answer: "b" },
+                { question: "What does the function `socket.bind((IP, PORT))` do in a server script?", options: ["Connects to a remote server", "Associates the socket with a specific network interface and port number", "Sends data", "Closes the connection"], answer: "b" },
+                { question: "In the context of the \"remote data logging\" case study, where is the sensor data stored?", options: ["Only on the sensor", "On the client Raspberry Pi only", "Sent to a server and saved in a file (e.g., DataLog.txt)", "It is discarded immediately"], answer: "c" },
+                { question: "Which Python library is primarily used for plotting data (e.g., temperature graphs)?", options: ["`matplotlib.pyplot`", "`socket`", "`sys`", "`Adafruit_DHT`"], answer: "a" },
+                { question: "In a Python script, what does `data.split(',')` do?", options: ["Deletes the data", "Splits a string into a list of substrings based on the comma delimiter", "Joins strings together with commas", "Plots the data"], answer: "b" },
+                { question: "Why might one use `GPIO.BOARD` mode in a Raspberry Pi Python script?", options: ["To use the physical pin numbers on the header", "To use the Broadcom chip-specific pin numbers", "To disable the pins", "To use the board as a skateboard"], answer: "a" },
+                { question: "In the implementation of the cooling fan system, what triggered the fan to turn on?", options: ["A random timer", "A manual switch only", "If the temperature reading exceeded a threshold (e.g., 20 degrees)", "If the humidity was zero"], answer: "c" },
+                { question: "What is the purpose of `figure.canvas.draw()` in a matplotlib animation loop?", options: ["To close the window", "To save the image to a file", "To redraw the plot with new data without closing the window", "To stop the script"], answer: "c" },
+                { question: "In the client-server architecture demonstrated, if you have 100 clients, where do you update the data processing logic?", options: ["On every single client manually", "On the single server script", "You have to buy new hardware", "You cannot update it"], answer: "b" }
+            ]
         },
         {
             week: 8,
@@ -531,7 +624,19 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Deploy an IoT application on cloud platform and implement fog computing layer"
+            assignment: "Deploy an IoT application on cloud platform and implement fog computing layer",
+            mcqs: [
+                { question: "What is the main advantage of Cloud Computing described as \"Elasticity\"?", options: ["The hardware is made of rubber", "The ability to dynamically scale resources up or down based on demand", "The cost is fixed regardless of usage", "It only works for small applications"], answer: "b" },
+                { question: "Which Cloud service model provides the consumer with the ability to deploy consumer-created applications?", options: ["SaaS (Software as a Service)", "PaaS (Platform as a Service)", "IaaS (Infrastructure as a Service)", "DaaS (Data as a Service)"], answer: "b" },
+                { question: "In the SaaS model, who controls the underlying cloud infrastructure?", options: ["The end-user", "The service provider", "The government", "The hardware manufacturer only"], answer: "b" },
+                { question: "Which deployment model involves a cloud infrastructure provisioned for exclusive use by a single organization?", options: ["Public Cloud", "Community Cloud", "Private Cloud", "Hybrid Cloud"], answer: "c" },
+                { question: "Which simulator is described as a \"packet-level simulator\" that monitors energy consumption of data center components?", options: ["CloudSim", "GreenCloud", "CloudAnalyst", "iCanCloud"], answer: "b" },
+                { question: "CloudSim is a simulation framework written in which environment?", options: ["C++", "Python", "Java", "Ruby"], answer: "c" },
+                { question: "In Software Defined Networking (SDN) for IoT, what is \"Mobi-Flow\"?", options: ["A static routing protocol", "A proactive rule placement scheme depending on users' movement", "A battery saving mode", "A type of sensor"], answer: "b" },
+                { question: "What does the \"Odin\" SDN framework use to communicate with the controller?", options: ["An agent placed at access points", "A direct wire to every device", "Satellite links", "Bluetooth only"], answer: "a" },
+                { question: "Which characteristic of Cloud Computing ensures resource usage is monitored and billed accordingly?", options: ["Broad network access", "Measured service", "Resource pooling", "On-demand self-service"], answer: "b" },
+                { question: "What is a \"Hybrid Cloud\"?", options: ["A cloud that runs on diesel and battery", "A composition of two or more distinct cloud infrastructures (private, community, or public)", "A cloud that is only for storage", "A cloud that is always offline"], answer: "b" }
+            ]
         },
         {
             week: 9,
@@ -609,7 +714,19 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Final Project: Design a complete smart city solution or connected vehicle system"
+            assignment: "Final Project: Design a complete smart city solution or connected vehicle system",
+            mcqs: [
+                { question: "What is OpenStack?", options: ["A proprietary operating system", "A collection of open-source technologies to create a cloud infrastructure", "A database management system", "A type of sensor"], answer: "b" },
+                { question: "Which OpenStack component is responsible for \"Identity Service\" (authentication and authorization)?", options: ["Nova", "Horizon", "Keystone", "Glance"], answer: "c" },
+                { question: "What is the dashboard/GUI component of OpenStack called?", options: ["Horizon", "Neutron", "Cinder", "Swift"], answer: "a" },
+                { question: "In OpenStack, what is \"Nova\" responsible for?", options: ["Image service", "Compute service (launching instances)", "Networking", "Block storage"], answer: "b" },
+                { question: "Why is \"Caching\" important in a Sensor-Cloud environment?", options: ["To increase the energy consumption of sensors", "To serve multiple users requesting the same data without re-querying the physical sensors repeatedly", "To delete data faster", "To heat up the servers"], answer: "b" },
+                { question: "In the context of Fog Computing, where are \"Time-sensitive\" data analyzed?", options: ["In the distant public cloud", "Very near to the data source (at the Fog node)", "In the archive", "They are not analyzed"], answer: "b" },
+                { question: "Which of the following is a reason to use Fog Computing?", options: ["Cloud has infinite bandwidth", "Sending all data to the cloud consumes too much bandwidth and adds latency", "Fog nodes are more powerful than Cloud servers", "Fog computing eliminates the need for sensors"], answer: "b" },
+                { question: "In the Sensor-Cloud architecture, what is a \"Virtual Sensor\"?", options: ["A fake sensor that produces random data", "An emulation/image of a physical sensor that users interact with", "A sensor that is broken", "A video game controller"], answer: "b" },
+                { question: "What is \"Internal Caching\" in Sensor-Cloud?", options: ["Storing data on the user's laptop", "Caching data within the sensor-cloud infrastructure for different virtual sensors", "Storing data on the physical sensor node itself", "Printing the data"], answer: "b" },
+                { question: "How does Fog computing assist in a medical emergency scenario?", options: ["By waiting weeks to process data", "By providing real-time analysis and immediate decision making at the edge", "By turning off the ambulance", "By encrypting data so no one can read it"], answer: "b" }
+            ]
         },
         {
             week: 10,
@@ -660,7 +777,19 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Develop an Industrial IoT solution with predictive analytics capabilities"
+            assignment: "Develop an Industrial IoT solution with predictive analytics capabilities",
+            mcqs: [
+                { question: "Which of the following is a core objective of a Smart City?", options: ["To increase pollution", "To use ICT to offer advanced services to citizens (e.g., smart transport, healthcare)", "To stop people from using technology", "To remove all schools"], answer: "b" },
+                { question: "In the context of connected vehicles, what does V2X stand for?", options: ["Vehicle to X (Everything/Infrastructure/Vehicle)", "Vehicle to X-ray", "Video to Xylophone", "Virtual to X"], answer: "a" },
+                { question: "Which communication standard is specifically associated with Wireless Access in Vehicular Environments (WAVE)?", options: ["IEEE 802.11p (DSRC)", "IEEE 802.15.4", "Bluetooth Low Energy", "LoRaWAN"], answer: "a" },
+                { question: "What is the role of \"Data Fusion\" in IoT?", options: ["To confuse the user", "To combine data from multiple sources to provide better insight and qualitative inferences", "To delete duplicate files", "To disconnect sensors"], answer: "b" },
+                { question: "Which level of data fusion involves an \"ensemble of decisions\"?", options: ["Pixel level", "Feature level", "Decision level", "Signal level"], answer: "c" },
+                { question: "What is a major challenge in Smart Cities related to \"Big Data\"?", options: ["There is not enough data", "Transfer, storage, and analytics of gigantic volumes of data are expensive and processing-intensive", "Data is always small and structured", "Computers are too fast"], answer: "b" },
+                { question: "In Intelligent Connected Vehicles (ICV), how can cooperation between vehicles help?", options: ["By allowing them to collide", "By enabling decisions to keep safe distance and avoid collisions", "By racing each other", "By disconnecting from the network"], answer: "b" },
+                { question: "What is \"Content Centric Networking\" (CCN) in the context of vehicular networks?", options: ["Routing based on IP addresses", "Routing based on the name of the content rather than the location", "Using only text messages", "A social network for cars"], answer: "b" },
+                { question: "Which mathematical method is NOT typically used for Data Fusion?", options: ["Bayesian analysis", "Artificial Neural Networks (ANN)", "Theory of Evidence (Belief functions)", "Random guessing"], answer: "d" },
+                { question: "In a smart city education scenario, how does the system improve safety?", options: ["By isolating the school from the city", "By connecting the school transport, traffic control, and hospitals to handle emergencies seamlessly", "By removing buses", "By stopping parents from tracking their children"], answer: "b" }
+            ]
         },
         {
             week: 11,
@@ -711,7 +840,19 @@ export default function InternetOfThingsRoadmapPage() {
                     ]
                 }
             ],
-            assignment: "Capstone Project: Build a comprehensive IoT solution integrating multiple technologies learned"
+            assignment: "Capstone Project: Build a comprehensive IoT solution integrating multiple technologies learned",
+            mcqs: [
+                { question: "What distinguishes a Smart Grid from a traditional electrical grid?", options: ["Smart Grid has one-way communication", "Smart Grid allows two-way communication and monitoring between utility and consumer", "Smart Grid uses only fossil fuels", "Smart Grid has no meters"], answer: "b" },
+                { question: "What is \"Time-of-Use\" pricing in Smart Grids?", options: ["A fixed price all year round", "Pricing that varies based on peak and off-peak hours", "Free electricity at night", "Paying based on the time it takes to pay the bill"], answer: "b" },
+                { question: "What is the role of the Meter Data Management System (MDMS) in a Smart Grid?", options: ["It is a physical meter in the house", "It generates electricity", "It is a centralized system that handles data from smart meters and decides pricing", "It cuts the wires"], answer: "c" },
+                { question: "What does IIoT stand for?", options: ["International Internet of Things", "Industrial Internet of Things", "Intelligent Internet of Things", "Internal Internet of Things"], answer: "b" },
+                { question: "The primary goal of IIoT is to create a ________ version of a physical plant.", options: ["Virtualized", "Paper", "Plastic", "Silent"], answer: "a" },
+                { question: "How are robots expected to change in an IIoT environment?", options: ["They will replace all humans", "They will become less intelligent", "They will communicate, think, act, and work collaboratively with humans", "They will only do one task forever"], answer: "c" },
+                { question: "What is \"Peak Load\" in the context of energy management?", options: ["The minimum energy used", "The time when energy demand is highest", "The weight of the transmission lines", "The cost of the meter"], answer: "b" },
+                { question: "Which communication technology is noted as attractive for Smart Grid sensor networks due to low data rate and short range?", options: ["Satellite", "Fiber Optics", "Zigbee", "5G"], answer: "c" },
+                { question: "What is a benefit of Smart Grid for stakeholders?", options: ["Increased power blackouts", "Reduced inefficiencies in energy delivery and better integration of renewables", "Higher cost of maintenance", "Less data availability"], answer: "b" },
+                { question: "In IIoT, what does the convergence of technologies (Cloud, Big Data, M2M) enable?", options: ["Slower production", "Intelligent manufacturing and improved productivity", "Manual labor increase", "Isolation of machines"], answer: "b" }
+            ]
         }
     ]
 
@@ -912,6 +1053,67 @@ export default function InternetOfThingsRoadmapPage() {
                                             </h4>
                                             <p className="text-foreground">{week.assignment}</p>
                                         </div>
+
+                                        {/* MCQ Section */}
+                                        {week.mcqs && week.mcqs.length > 0 && (
+                                            <>
+                                                <Separator />
+                                                <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
+                                                    <div className="flex items-center justify-between mb-4">
+                                                        <h4 className="font-semibold text-foreground flex items-center gap-2">
+                                                            <BookOpen className="h-4 w-4 text-blue-500" />
+                                                            Multiple Choice Questions ({week.mcqs.length} questions)
+                                                        </h4>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => toggleAnswers(week.week)}
+                                                            className="text-xs"
+                                                        >
+                                                            {showAnswers[week.week] ? (
+                                                                <>
+                                                                    <EyeOff className="h-3 w-3 mr-1" />
+                                                                    Hide Answers
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <Eye className="h-3 w-3 mr-1" />
+                                                                    Show Answers
+                                                                </>
+                                                            )}
+                                                        </Button>
+                                                    </div>
+                                                    <div className="space-y-4">
+                                                        {week.mcqs.map((mcq, mcqIdx) => (
+                                                            <div key={mcqIdx} className="bg-white dark:bg-slate-900 p-4 rounded-lg border border-blue-200 dark:border-blue-900">
+                                                                <p className="font-medium text-foreground mb-3">
+                                                                    {mcqIdx + 1}. {mcq.question}
+                                                                </p>
+                                                                <div className="space-y-2 ml-4">
+                                                                    {mcq.options.map((option, optIdx) => {
+                                                                        const optionLetter = String.fromCharCode(97 + optIdx) // a, b, c, d
+                                                                        const isCorrect = optionLetter === mcq.answer
+                                                                        return (
+                                                                            <div 
+                                                                                key={optIdx} 
+                                                                                className={`p-2 rounded ${showAnswers[week.week] && isCorrect ? 'bg-green-100 dark:bg-green-900/30 border border-green-500' : 'bg-muted/50'}`}
+                                                                            >
+                                                                                <span className="text-sm text-foreground">
+                                                                                    {optionLetter}) {option}
+                                                                                    {showAnswers[week.week] && isCorrect && (
+                                                                                        <span className="ml-2 text-green-600 dark:text-green-400 font-semibold">✓ Correct</span>
+                                                                                    )}
+                                                                                </span>
+                                                                            </div>
+                                                                        )
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
                                     </CardContent>
                                 </Card>
                             )
