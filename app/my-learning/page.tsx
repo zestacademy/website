@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { AnimatedCounter } from "@/components/ui/animated-counter"
 import { CircularProgress } from "@/components/ui/circular-progress"
+import { useToast } from "@/components/ui/toast-provider"
 
 const COURSE_METADATA: Record<string, { title: string, link: string, icon: any }> = {
     "python-basics": { title: "Python Basics Roadmap", link: "/roadmaps/python-basics", icon: PlayCircle },
@@ -25,6 +26,7 @@ const COURSE_METADATA: Record<string, { title: string, link: string, icon: any }
 
 export default function MyLearningPage() {
     const router = useRouter()
+    const { showToast } = useToast()
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -85,10 +87,10 @@ export default function MyLearningPage() {
                 updatedAt: new Date().toISOString()
             }, { merge: true })
 
-            alert("Profile updated successfully!")
+            showToast("Profile updated successfully!", "success")
         } catch (error) {
             console.error("Error updating profile:", error)
-            alert("Failed to update profile.")
+            showToast("Failed to update profile.", "error")
         } finally {
             setSaving(false)
         }
