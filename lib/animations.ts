@@ -18,10 +18,18 @@ export const durations = {
   slow: 500,
 } as const
 
+// Cache the media query for performance
+let reducedMotionQuery: MediaQueryList | null = null
+
 // Check if user prefers reduced motion
 export const prefersReducedMotion = () => {
   if (typeof window === 'undefined') return false
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  
+  if (!reducedMotionQuery) {
+    reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  }
+  
+  return reducedMotionQuery.matches
 }
 
 // Apply animation only if user doesn't prefer reduced motion

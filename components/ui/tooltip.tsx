@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode, useState } from 'react'
+import { ReactNode, useState, useRef } from 'react'
 import { cn } from '@/lib/utils'
 
 interface TooltipProps {
@@ -17,7 +17,7 @@ export function Tooltip({
   delay = 200 
 }: TooltipProps) {
   const [isVisible, setIsVisible] = useState(false)
-  let timeoutId: NodeJS.Timeout
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const positionClasses = {
     top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
@@ -34,13 +34,15 @@ export function Tooltip({
   }
 
   const handleMouseEnter = () => {
-    timeoutId = setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setIsVisible(true)
     }, delay)
   }
 
   const handleMouseLeave = () => {
-    clearTimeout(timeoutId)
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
     setIsVisible(false)
   }
 

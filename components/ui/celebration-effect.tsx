@@ -14,21 +14,28 @@ interface CelebrationEffectProps {
   show: boolean
   message?: string
   onComplete?: () => void
+  confettiCount?: number
 }
 
-export function CelebrationEffect({ show, message = "Amazing!", onComplete }: CelebrationEffectProps) {
+const CONFETTI_COLORS = ['#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899']
+
+export function CelebrationEffect({ 
+  show, 
+  message = "Amazing!", 
+  onComplete,
+  confettiCount = 50 
+}: CelebrationEffectProps) {
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([])
 
   useEffect(() => {
     if (show) {
-      const colors = ['#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899']
       const pieces: ConfettiPiece[] = []
       
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < confettiCount; i++) {
         pieces.push({
           id: i,
           x: Math.random() * 100,
-          color: colors[Math.floor(Math.random() * colors.length)],
+          color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
           delay: Math.random() * 0.5
         })
       }
@@ -42,7 +49,7 @@ export function CelebrationEffect({ show, message = "Amazing!", onComplete }: Ce
       
       return () => clearTimeout(timer)
     }
-  }, [show, onComplete])
+  }, [show, onComplete, confettiCount])
 
   if (!show) return null
 
