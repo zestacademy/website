@@ -15,6 +15,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { BookOpen, PlayCircle, Clock, History, Save, User as UserIcon, Loader2, Trophy, Flame, Settings, Star } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { AnimatedCounter } from "@/components/ui/animated-counter"
+import { CircularProgress } from "@/components/ui/circular-progress"
 
 const COURSE_METADATA: Record<string, { title: string, link: string, icon: any }> = {
     "python-basics": { title: "Python Basics Roadmap", link: "/roadmaps/python-basics", icon: PlayCircle },
@@ -155,44 +157,50 @@ export default function MyLearningPage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                <div className="flex items-center justify-between p-3 bg-background rounded-lg border shadow-sm">
+                                <div className="flex items-center justify-between p-3 bg-background rounded-lg border shadow-sm transition-all hover:shadow-md hover:scale-[1.02] duration-200">
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600">
+                                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 transition-transform hover:scale-110 duration-200">
                                             <BookOpen className="h-5 w-5" />
                                         </div>
                                         <div>
                                             <p className="text-sm font-medium text-muted-foreground">Enrolled</p>
-                                            <p className="text-xl font-bold">{enrollments.length}</p>
+                                            <p className="text-xl font-bold">
+                                                <AnimatedCounter value={enrollments.length} />
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="h-1 w-12 bg-blue-500/20 rounded-full overflow-hidden">
-                                        <div className="h-full bg-blue-500" style={{ width: `${Math.min(enrollments.length * 10, 100)}%` }}></div>
+                                        <div className="h-full bg-blue-500 transition-all duration-500" style={{ width: `${Math.min(enrollments.length * 10, 100)}%` }}></div>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center justify-between p-3 bg-background rounded-lg border shadow-sm">
+                                <div className="flex items-center justify-between p-3 bg-background rounded-lg border shadow-sm transition-all hover:shadow-md hover:scale-[1.02] duration-200">
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-full text-purple-600">
+                                        <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-full text-purple-600 transition-transform hover:scale-110 duration-200">
                                             <PlayCircle className="h-5 w-5" />
                                         </div>
                                         <div>
                                             <p className="text-sm font-medium text-muted-foreground">Lessons Completed</p>
-                                            <p className="text-xl font-bold">{totalProgress}</p>
+                                            <p className="text-xl font-bold">
+                                                <AnimatedCounter value={totalProgress} />
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="h-1 w-12 bg-purple-500/20 rounded-full overflow-hidden">
-                                        <div className="h-full bg-purple-500 w-1/2"></div>
+                                        <div className="h-full bg-purple-500 w-1/2 transition-all duration-500"></div>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center justify-between p-3 bg-background rounded-lg border shadow-sm">
+                                <div className="flex items-center justify-between p-3 bg-background rounded-lg border shadow-sm transition-all hover:shadow-md hover:scale-[1.02] duration-200">
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-full text-orange-600">
+                                        <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-full text-orange-600 transition-transform hover:scale-110 duration-200 animate-pulse-subtle">
                                             <Flame className="h-5 w-5" />
                                         </div>
                                         <div>
                                             <p className="text-sm font-medium text-muted-foreground">Streak</p>
-                                            <p className="text-xl font-bold">1 Day</p>
+                                            <p className="text-xl font-bold">
+                                                <AnimatedCounter value={1} suffix=" Day" />
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

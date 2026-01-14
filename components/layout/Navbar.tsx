@@ -5,6 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Search, Sun, Moon } from "lucide-react"
 import { useTheme } from "next-themes"
+import { useState, useEffect } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,6 +21,16 @@ import { cn } from "@/lib/utils"
 export function Navbar() {
     const { setTheme } = useTheme()
     const pathname = usePathname()
+    const [scrolled, setScrolled] = useState(false)
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20)
+        }
+        
+        window.addEventListener('scroll', handleScroll, { passive: true })
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
 
     const navLinks = [
         { href: "/", label: "Home" },
@@ -30,9 +41,14 @@ export function Navbar() {
     ]
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className={cn(
+            "sticky top-0 z-50 w-full border-b transition-all duration-300",
+            scrolled 
+                ? "bg-background/80 backdrop-blur-lg shadow-sm" 
+                : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+        )}>
             <div className="container flex h-16 items-center mx-auto px-4 justify-between">
-                <Link href="/" className="flex items-center space-x-2 mr-8">
+                <Link href="/" className="flex items-center space-x-2 mr-8 transition-transform hover:scale-105 duration-200">
                     <div className="relative h-10 w-10 mr-1">
                         <Image
                             src="/logo.png"
@@ -58,11 +74,14 @@ export function Navbar() {
                                 key={link.href}
                                 href={link.href}
                                 className={cn(
-                                    "transition-colors hover:text-primary",
+                                    "relative transition-colors hover:text-primary py-1",
                                     isActive ? "text-foreground" : "text-muted-foreground"
                                 )}
                             >
                                 {link.label}
+                                {isActive && (
+                                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full animate-in slide-in-from-bottom-1 duration-300" />
+                                )}
                             </Link>
                         )
                     })}
@@ -70,10 +89,10 @@ export function Navbar() {
 
                 <div className="flex items-center space-x-4">
                     <div className="hidden lg:block relative w-64">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground transition-colors" />
                         <Input
                             placeholder="Search topics..."
-                            className="pl-9 h-9 bg-muted/40 border-none focus-visible:ring-1 focus-visible:ring-primary"
+                            className="pl-9 h-9 bg-muted/40 border-none focus-visible:ring-1 focus-visible:ring-primary transition-all duration-200 focus-visible:bg-background"
                         />
                     </div>
 
