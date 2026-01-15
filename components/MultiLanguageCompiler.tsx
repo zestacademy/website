@@ -21,6 +21,9 @@ const LANGUAGE_INFO = {
     sql: { icon: Database, label: "SQL", filename: "query.sql", version: "SQLite 3" }
 }
 
+// Firebase Functions base URL - configurable via environment variable
+const FIREBASE_FUNCTIONS_URL = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_URL || "https://us-central1-zest-academy.cloudfunctions.net"
+
 export default function MultiLanguageCompiler() {
     const [language, setLanguage] = useState<Language>("python")
     const [code, setCode] = useState<string>(DEFAULT_CODE.python)
@@ -73,8 +76,7 @@ export default function MultiLanguageCompiler() {
     const runJavaScriptCode = async () => {
         setOutput("")
         try {
-            const functionUrl = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_URL || "https://us-central1-zest-academy.cloudfunctions.net"
-            const response = await fetch(`${functionUrl}/executeJavascript`, {
+            const response = await fetch(`${FIREBASE_FUNCTIONS_URL}/executeJavascript`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -103,8 +105,7 @@ export default function MultiLanguageCompiler() {
     const runSqlCode = async () => {
         setOutput("")
         try {
-            const functionUrl = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_URL || "https://us-central1-zest-academy.cloudfunctions.net"
-            const response = await fetch(`${functionUrl}/executeSql`, {
+            const response = await fetch(`${FIREBASE_FUNCTIONS_URL}/executeSql`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
