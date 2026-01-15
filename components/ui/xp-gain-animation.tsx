@@ -13,15 +13,25 @@ export function XPGainAnimation({ amount, show, onComplete }: XPGainAnimationPro
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    if (show) {
+    if (show && !isVisible) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsVisible(true)
-      const timer = setTimeout(() => {
-        setIsVisible(false)
-        onComplete?.()
-      }, 2000)
-      return () => clearTimeout(timer)
+    } else if (!show && isVisible) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsVisible(false)
     }
-  }, [show, onComplete])
+  }, [show, isVisible])
+
+  useEffect(() => {
+    if (!isVisible) return
+
+    const timer = setTimeout(() => {
+      setIsVisible(false)
+      onComplete?.()
+    }, 2000)
+    
+    return () => clearTimeout(timer)
+  }, [isVisible, onComplete])
 
   if (!isVisible) return null
 

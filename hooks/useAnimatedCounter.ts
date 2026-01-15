@@ -18,14 +18,19 @@ export function useAnimatedCounter(
 
   useEffect(() => {
     if (prefersReducedMotion()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCount(end)
       return
     }
 
+    let frameId: number
+    let cancelled = false
     const startTime = Date.now()
     const range = end - start
 
     const updateCount = () => {
+      if (cancelled) return
+      
       const elapsed = Date.now() - startTime
       const progress = Math.min(elapsed / duration, 1)
       
@@ -36,14 +41,17 @@ export function useAnimatedCounter(
       setCount(Math.floor(currentCount))
 
       if (progress < 1) {
-        requestAnimationFrame(updateCount)
+        frameId = requestAnimationFrame(updateCount)
       } else {
         setCount(end)
       }
     }
 
-    const animationFrame = requestAnimationFrame(updateCount)
-    return () => cancelAnimationFrame(animationFrame)
+    frameId = requestAnimationFrame(updateCount)
+    return () => {
+      cancelled = true
+      if (frameId) cancelAnimationFrame(frameId)
+    }
   }, [end, duration, start])
 
   return count

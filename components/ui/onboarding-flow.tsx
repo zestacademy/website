@@ -29,11 +29,15 @@ export function OnboardingFlow({
   const [show, setShow] = useState(false)
 
   useEffect(() => {
-    // Check if onboarding was already completed
-    const completed = localStorage.getItem(storageKey)
-    if (!completed) {
-      setShow(true)
+    const checkCompletion = async () => {
+      // Check if onboarding was already completed
+      const completed = localStorage.getItem(storageKey)
+      if (!completed) {
+        setShow(true)
+      }
     }
+    
+    checkCompletion()
   }, [storageKey])
 
   const handleNext = () => {

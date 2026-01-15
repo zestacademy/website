@@ -12,11 +12,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { BookOpen, PlayCircle, Clock, History, Save, User as UserIcon, Loader2, Trophy, Flame, Settings, Star } from "lucide-react"
+import { BookOpen, PlayCircle, History, User as UserIcon, Loader2, Trophy, Flame, Settings, Star } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { AnimatedCounter } from "@/components/ui/animated-counter"
-import { CircularProgress } from "@/components/ui/circular-progress"
 import { useToast } from "@/components/ui/toast-provider"
 
 const COURSE_METADATA: Record<string, { title: string, link: string, icon: any }> = {
@@ -97,8 +96,6 @@ export default function MyLearningPage() {
     }
 
     // Derived Stats
-    const completedCourses = enrollments.filter(e => e.completedDays?.length === e.totalDays).length
-    const coursesInProgress = enrollments.length - completedCourses
     const totalProgress = enrollments.reduce((acc, curr) => acc + (curr.completedDays?.length || 0), 0)
 
     if (loading) {

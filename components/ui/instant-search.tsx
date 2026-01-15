@@ -132,7 +132,7 @@ export function InstantSearch({
             </div>
           ) : query.length >= 2 ? (
             <div className="p-4 text-center text-muted-foreground">
-              <p className="text-sm">No results found for "{query}"</p>
+              <p className="text-sm">No results found for &quot;{query}&quot;</p>
             </div>
           ) : null}
         </div>

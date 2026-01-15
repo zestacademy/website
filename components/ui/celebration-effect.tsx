@@ -19,6 +19,21 @@ interface CelebrationEffectProps {
 
 const CONFETTI_COLORS = ['#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899']
 
+function generateConfettiPieces(count: number): ConfettiPiece[] {
+  const pieces: ConfettiPiece[] = []
+  
+  for (let i = 0; i < count; i++) {
+    pieces.push({
+      id: i,
+      x: Math.random() * 100,
+      color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+      delay: Math.random() * 0.5
+    })
+  }
+  
+  return pieces
+}
+
 export function CelebrationEffect({ 
   show, 
   message = "Amazing!", 
@@ -26,30 +41,33 @@ export function CelebrationEffect({
   confettiCount = 50 
 }: CelebrationEffectProps) {
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([])
+  const [isShowing, setIsShowing] = useState(false)
 
   useEffect(() => {
-    if (show) {
-      const pieces: ConfettiPiece[] = []
-      
-      for (let i = 0; i < confettiCount; i++) {
-        pieces.push({
-          id: i,
-          x: Math.random() * 100,
-          color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
-          delay: Math.random() * 0.5
-        })
-      }
-      
-      setConfetti(pieces)
-      
-      const timer = setTimeout(() => {
-        setConfetti([])
-        onComplete?.()
-      }, 3000)
-      
-      return () => clearTimeout(timer)
+    if (show && !isShowing) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsShowing(true)
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setConfetti(generateConfettiPieces(confettiCount))
+    } else if (!show && isShowing) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsShowing(false)
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setConfetti([])
     }
-  }, [show, onComplete, confettiCount])
+  }, [show, isShowing, confettiCount])
+
+  useEffect(() => {
+    if (!isShowing) return
+
+    const timer = setTimeout(() => {
+      setConfetti([])
+      setIsShowing(false)
+      onComplete?.()
+    }, 3000)
+    
+    return () => clearTimeout(timer)
+  }, [isShowing, onComplete])
 
   if (!show) return null
 

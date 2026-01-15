@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Skeleton, ArticleCardSkeleton, CourseCardSkeleton } from '@/components/ui/skeleton'
+import { ArticleCardSkeleton, CourseCardSkeleton } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/toast-provider'
 import { AnimatedCounter } from '@/components/ui/animated-counter'
 import { CircularProgress } from '@/components/ui/circular-progress'

@@ -25,14 +25,19 @@ export function CircularProgress({
   
   useEffect(() => {
     if (prefersReducedMotion()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplayValue(value)
       return
     }
 
+    let frameId: number
+    let cancelled = false
     const duration = 1000
     const startTime = Date.now()
     
     const animate = () => {
+      if (cancelled) return
+      
       const elapsed = Date.now() - startTime
       const progress = Math.min(elapsed / duration, 1)
       const easeOutQuad = (t: number) => t * (2 - t)
@@ -40,11 +45,16 @@ export function CircularProgress({
       setDisplayValue(Math.round(value * easeOutQuad(progress)))
       
       if (progress < 1) {
-        requestAnimationFrame(animate)
+        frameId = requestAnimationFrame(animate)
       }
     }
     
-    requestAnimationFrame(animate)
+    frameId = requestAnimationFrame(animate)
+    
+    return () => {
+      cancelled = true
+      if (frameId) cancelAnimationFrame(frameId)
+    }
   }, [value])
 
   const radius = (size - strokeWidth) / 2
