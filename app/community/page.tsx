@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { MessageSquare, Code, Briefcase, Coffee, ArrowRight, Rocket } from "lucide-react"
+import { MessageSquare, Code, Briefcase, Coffee, ArrowRight, Rocket, Terminal } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Leaderboard } from "@/components/Leaderboard"
@@ -16,10 +16,10 @@ const FORUMS = [
         bg: "bg-orange-100 dark:bg-orange-900/20"
     },
     {
-        id: "python-help",
-        title: "Python Help",
-        description: "Stuck on a Python problem? Ask for help here.",
-        icon: Code,
+        id: "compiler",
+        title: "Python Compiler",
+        description: "Practice Python instantly with our fully working online compiler.",
+        icon: Terminal,
         color: "text-blue-500",
         bg: "bg-blue-100 dark:bg-blue-900/20"
     },
