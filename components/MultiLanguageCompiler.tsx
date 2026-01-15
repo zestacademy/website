@@ -73,7 +73,8 @@ export default function MultiLanguageCompiler() {
     const runJavaScriptCode = async () => {
         setOutput("")
         try {
-            const response = await fetch("https://us-central1-zest-academy.cloudfunctions.net/executeJavascript", {
+            const functionUrl = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_URL || "https://us-central1-zest-academy.cloudfunctions.net"
+            const response = await fetch(`${functionUrl}/executeJavascript`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -91,7 +92,6 @@ export default function MultiLanguageCompiler() {
             if (result.stdout) outputText += result.stdout
             if (result.stderr) outputText += "\n" + result.stderr
             outputText += `\n\n⏱️ Execution time: ${result.time}`
-            outputText += `\n💾 Memory usage: ${result.memory}`
             
             setOutput(outputText)
         } catch (error) {
@@ -103,7 +103,8 @@ export default function MultiLanguageCompiler() {
     const runSqlCode = async () => {
         setOutput("")
         try {
-            const response = await fetch("https://us-central1-zest-academy.cloudfunctions.net/executeSql", {
+            const functionUrl = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_URL || "https://us-central1-zest-academy.cloudfunctions.net"
+            const response = await fetch(`${functionUrl}/executeSql`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

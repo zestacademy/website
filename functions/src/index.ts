@@ -95,7 +95,6 @@ export const executeJavascript = functions.https.onRequest(async (req, res) => {
         const startTime = Date.now();
         let stdout = '';
         let stderr = '';
-        let memoryUsage = 0;
 
         // Execute with timeout and resource limits
         const result = await new Promise<{ stdout: string; stderr: string; error?: string }>((resolve) => {
@@ -105,7 +104,10 @@ export const executeJavascript = functions.https.onRequest(async (req, res) => {
                 filePath
             ], {
                 timeout: timeout,
-                env: {}, // Empty environment to restrict access
+                env: {
+                    PATH: process.env.PATH || '/usr/local/bin:/usr/bin:/bin',
+                    NODE_ENV: 'sandbox'
+                }, // Minimal environment for Node.js execution
             });
 
             child.stdout.on('data', (data) => {
@@ -117,9 +119,6 @@ export const executeJavascript = functions.https.onRequest(async (req, res) => {
             });
 
             child.on('close', (code) => {
-                const memInfo = process.memoryUsage();
-                memoryUsage = Math.round(memInfo.heapUsed / 1024 / 1024); // MB
-                
                 if (code === 0) {
                     resolve({ stdout, stderr });
                 } else if (code === null) {
@@ -142,8 +141,7 @@ export const executeJavascript = functions.https.onRequest(async (req, res) => {
         res.status(200).json({
             stdout: result.stdout,
             stderr: result.stderr || result.error || '',
-            time: `${executionTime}ms`,
-            memory: `${memoryUsage}MB`
+            time: `${executionTime}ms`
         });
 
     } catch (error: any) {
@@ -156,11 +154,60 @@ export const executeJavascript = functions.https.onRequest(async (req, res) => {
         res.status(500).json({
             stdout: '',
             stderr: error.message || 'Internal server error',
-            time: '0ms',
-            memory: '0MB'
+            time: '0ms'
         });
     }
 });
+
+// SQL test schema and data
+const SQL_INIT_SCHEMA = `
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        age INTEGER,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        price REAL NOT NULL,
+        category TEXT,
+        stock INTEGER DEFAULT 0
+    );
+
+    CREATE TABLE IF NOT EXISTS orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        product_id INTEGER,
+        quantity INTEGER,
+        order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (product_id) REFERENCES products(id)
+    );
+
+    INSERT OR IGNORE INTO users (id, name, email, age) VALUES
+        (1, 'Alice Johnson', 'alice@example.com', 28),
+        (2, 'Bob Smith', 'bob@example.com', 35),
+        (3, 'Charlie Brown', 'charlie@example.com', 42),
+        (4, 'Diana Prince', 'diana@example.com', 30),
+        (5, 'Eve Wilson', 'eve@example.com', 25);
+
+    INSERT OR IGNORE INTO products (id, name, price, category, stock) VALUES
+        (1, 'Laptop', 999.99, 'Electronics', 50),
+        (2, 'Mouse', 29.99, 'Electronics', 200),
+        (3, 'Keyboard', 79.99, 'Electronics', 150),
+        (4, 'Monitor', 299.99, 'Electronics', 75),
+        (5, 'Desk Chair', 199.99, 'Furniture', 30);
+
+    INSERT OR IGNORE INTO orders (id, user_id, product_id, quantity) VALUES
+        (1, 1, 1, 1),
+        (2, 1, 2, 2),
+        (3, 2, 3, 1),
+        (4, 3, 4, 2),
+        (5, 4, 5, 1);
+`;
 
 // SQL Compiler Endpoint
 export const executeSql = functions.https.onRequest(async (req, res) => {
@@ -198,54 +245,7 @@ export const executeSql = functions.https.onRequest(async (req, res) => {
         db = new Database(dbPath);
 
         // Load predefined schema and test data
-        db.exec(`
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT UNIQUE NOT NULL,
-                age INTEGER,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
-
-            CREATE TABLE IF NOT EXISTS products (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                price REAL NOT NULL,
-                category TEXT,
-                stock INTEGER DEFAULT 0
-            );
-
-            CREATE TABLE IF NOT EXISTS orders (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER,
-                product_id INTEGER,
-                quantity INTEGER,
-                order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id),
-                FOREIGN KEY (product_id) REFERENCES products(id)
-            );
-
-            INSERT OR IGNORE INTO users (id, name, email, age) VALUES
-                (1, 'Alice Johnson', 'alice@example.com', 28),
-                (2, 'Bob Smith', 'bob@example.com', 35),
-                (3, 'Charlie Brown', 'charlie@example.com', 42),
-                (4, 'Diana Prince', 'diana@example.com', 30),
-                (5, 'Eve Wilson', 'eve@example.com', 25);
-
-            INSERT OR IGNORE INTO products (id, name, price, category, stock) VALUES
-                (1, 'Laptop', 999.99, 'Electronics', 50),
-                (2, 'Mouse', 29.99, 'Electronics', 200),
-                (3, 'Keyboard', 79.99, 'Electronics', 150),
-                (4, 'Monitor', 299.99, 'Electronics', 75),
-                (5, 'Desk Chair', 199.99, 'Furniture', 30);
-
-            INSERT OR IGNORE INTO orders (id, user_id, product_id, quantity) VALUES
-                (1, 1, 1, 1),
-                (2, 1, 2, 2),
-                (3, 2, 3, 1),
-                (4, 3, 4, 2),
-                (5, 4, 5, 1);
-        `);
+        db.exec(SQL_INIT_SCHEMA);
 
         const startTime = Date.now();
         let rows: any[] = [];
