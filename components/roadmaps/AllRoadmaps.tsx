@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Card } from "@/components/ui/card"
 import { Clock, BookOpen } from "lucide-react"
 import Link from "next/link"
 
@@ -26,7 +27,7 @@ export function AllRoadmaps() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {roadmaps.map((map, idx) => {
-                        const CardContent = (
+                        const Content = (
                             <>
                                 <div className="h-40 relative overflow-hidden">
                                     <div className={`absolute inset-0 bg-gradient-to-br ${map.color} opacity-60 z-10 transition-opacity group-hover:opacity-80`} />
@@ -65,12 +66,16 @@ export function AllRoadmaps() {
                         );
 
                         return map.link ? (
-                            <Link key={idx} href={map.link} className="bg-card rounded-xl overflow-hidden border border-border group hover:border-blue-500/50 transition-all hover:-translate-y-1 hover:shadow-lg cursor-pointer">
-                                {CardContent}
+                            <Link key={idx} href={map.link} className="block h-full">
+                                <Card interactive className="h-full overflow-hidden border-border group hover:border-blue-500/50 p-0">
+                                    {Content}
+                                </Card>
                             </Link>
                         ) : (
-                            <div key={idx} className="bg-card rounded-xl overflow-hidden border border-border group hover:border-blue-500/50 transition-all hover:-translate-y-1 hover:shadow-lg">
-                                {CardContent}
+                            <div key={idx} className="block h-full">
+                                <Card interactive className="h-full overflow-hidden border-border group hover:border-blue-500/50 p-0">
+                                    {Content}
+                                </Card>
                             </div>
                         );
                     })}

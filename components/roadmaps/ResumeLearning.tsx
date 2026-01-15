@@ -4,6 +4,8 @@ import { Share2, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useUserEnrollments } from "@/lib/hooks/useUserEnrollments"
+import { CourseCardSkeleton } from "@/components/ui/skeleton"
+import { Tooltip } from "@/components/ui/tooltip"
 import { getRoadmapById } from "@/lib/roadmaps"
 import { useRouter } from "next/navigation"
 
@@ -12,7 +14,12 @@ export function ResumeLearning() {
     const router = useRouter()
 
     if (loading) {
-        return <div className="py-8 text-center">Loading progress...</div>
+        return (
+            <div className="container mx-auto px-4 py-8 space-y-4">
+                <CourseCardSkeleton />
+                <CourseCardSkeleton />
+            </div>
+        )
     }
 
     if (!user || enrollments.length === 0) {
@@ -76,9 +83,11 @@ export function ResumeLearning() {
                                         >
                                             Continue <ArrowRight className="ml-2 h-4 w-4" />
                                         </Button>
-                                        <Button variant="outline" className="text-muted-foreground hover:text-foreground">
-                                            <Share2 className="mr-2 h-4 w-4" /> Share
-                                        </Button>
+                                        <Tooltip content="Share your progress">
+                                            <Button variant="outline" className="text-muted-foreground hover:text-foreground">
+                                                <Share2 className="mr-2 h-4 w-4" /> Share
+                                            </Button>
+                                        </Tooltip>
                                     </div>
                                 </div>
                             </div>
