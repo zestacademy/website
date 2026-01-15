@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import Script from "next/script"
 import Editor from "@monaco-editor/react"
 import { Button } from "@/components/ui/button"
 import { Play, RotateCcw, Loader2, Terminal, Trash2, Database, Code2 } from "lucide-react"
@@ -28,6 +27,7 @@ export default function MultiLanguageCompiler() {
     const [output, setOutput] = useState<string>("")
     const [isRunning, setIsRunning] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pyodideRef = useRef<any>(null)
 
     // Load Pyodide when component mounts
@@ -38,7 +38,7 @@ export default function MultiLanguageCompiler() {
             script.async = true
             script.onload = async () => {
                 try {
-                    // @ts-ignore
+                    // @ts-expect-error - Pyodide is loaded from external CDN
                     const pyodide = await window.loadPyodide({
                         stdout: (text: string) => {
                             setOutput((prev) => prev + text + "\n")
@@ -64,8 +64,9 @@ export default function MultiLanguageCompiler() {
         setOutput("")
         try {
             await pyodideRef.current.runPythonAsync(code)
-        } catch (error: any) {
-            setOutput((prev) => prev + `Error: ${error.message}\n`)
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            setOutput((prev) => prev + `Error: ${errorMessage}\n`)
         }
     }
 
@@ -93,8 +94,9 @@ export default function MultiLanguageCompiler() {
             outputText += `\n💾 Memory usage: ${result.memory}`
             
             setOutput(outputText)
-        } catch (error: any) {
-            setOutput(`Error: ${error.message}\n\nNote: Make sure Firebase Functions are deployed.`)
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            setOutput(`Error: ${errorMessage}\n\nNote: Make sure Firebase Functions are deployed.`)
         }
     }
 
@@ -128,6 +130,7 @@ export default function MultiLanguageCompiler() {
                 outputText += columns.map(() => "---").join("|") + "\n"
                 
                 // Add data rows
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 result.rows.forEach((row: any) => {
                     outputText += columns.map(col => String(row[col] ?? "NULL")).join(" | ") + "\n"
                 })
@@ -139,8 +142,9 @@ export default function MultiLanguageCompiler() {
             
             outputText += `\n\n⏱️ Execution time: ${result.time}`
             setOutput(outputText)
-        } catch (error: any) {
-            setOutput(`Error: ${error.message}\n\nNote: Make sure Firebase Functions are deployed.`)
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            setOutput(`Error: ${errorMessage}\n\nNote: Make sure Firebase Functions are deployed.`)
         }
     }
 
