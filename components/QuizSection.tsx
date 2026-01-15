@@ -88,9 +88,9 @@ export function QuizSection({ weekNumber, title, mcqs, roadmapId, isEnrolled }: 
     return (
         <div className="space-y-6">
             {isQuizComplete && (
-                <div className={`p-6 rounded-lg border ${localResult.passed ? 'bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-900' : 'bg-orange-50 border-orange-200 dark:bg-orange-950/20 dark:border-orange-900'}`}>
+                <div className={`p-6 rounded-lg border animate-slideUp ${localResult.passed ? 'bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-900' : 'bg-orange-50 border-orange-200 dark:bg-orange-950/20 dark:border-orange-900'}`}>
                     <div className="flex items-center gap-4">
-                        <div className={`p-3 rounded-full ${localResult.passed ? 'bg-green-200 dark:bg-green-900 text-green-700 dark:text-green-300' : 'bg-orange-200 dark:bg-orange-900 text-orange-700 dark:text-orange-300'}`}>
+                        <div className={`p-3 rounded-full animate-scaleIn ${localResult.passed ? 'bg-green-200 dark:bg-green-900 text-green-700 dark:text-green-300' : 'bg-orange-200 dark:bg-orange-900 text-orange-700 dark:text-orange-300'}`}>
                             {localResult.passed ? <Trophy className="h-8 w-8" /> : <AlertCircle className="h-8 w-8" />}
                         </div>
                         <div>
@@ -126,13 +126,13 @@ export function QuizSection({ weekNumber, title, mcqs, roadmapId, isEnrolled }: 
                                         const isSelected = selectedAnswers[idx] === optionLetter
                                         const isAnswer = mcq.answer === optionLetter
 
-                                        let optionStyle = "hover:bg-accent hover:text-accent-foreground cursor-pointer"
+                                         let optionStyle = "hover:bg-accent hover:text-accent-foreground cursor-pointer transition-all duration-200"
 
                                         if (showFeedback) {
                                             if (isAnswer) {
-                                                optionStyle = "bg-green-100 dark:bg-green-900/40 border-green-500 text-green-900 dark:text-green-100"
+                                                optionStyle = "bg-green-100 dark:bg-green-900/40 border-green-500 text-green-900 dark:text-green-100 animate-scaleIn"
                                             } else if (isSelected && !isAnswer) {
-                                                optionStyle = "bg-red-100 dark:bg-red-900/40 border-red-500 text-red-900 dark:text-red-100"
+                                                optionStyle = "bg-red-100 dark:bg-red-900/40 border-red-500 text-red-900 dark:text-red-100 animate-shake"
                                             } else {
                                                 optionStyle = "opacity-50"
                                             }
