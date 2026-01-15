@@ -1,6 +1,6 @@
 "use client"
 
-import PythonCompiler from "@/components/PythonCompiler"
+import MultiLanguageCompiler from "@/components/MultiLanguageCompiler"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -15,11 +15,11 @@ export default function CompilerPage() {
                     <Button variant="ghost" onClick={() => router.back()} size="sm">
                         <ArrowLeft className="mr-2 h-4 w-4" /> Back to Community
                     </Button>
-                    <h1 className="text-xl font-bold">Python Compiler</h1>
+                    <h1 className="text-xl font-bold">Multi-Language Compiler</h1>
                 </div>
 
                 <div className="flex-1 min-h-0">
-                    <PythonCompiler />
+                    <MultiLanguageCompiler />
                 </div>
             </div>
         </div>
