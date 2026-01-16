@@ -1,5 +1,28 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```env
+# Firebase Configuration (required for authentication and database)
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_firebase_measurement_id
+
+# JDoodle API (required for C compiler functionality)
+NEXT_PUBLIC_JDOODLE_CLIENT_ID=your_jdoodle_client_id
+NEXT_PUBLIC_JDOODLE_CLIENT_SECRET=your_jdoodle_client_secret
+```
+
+**Note**: 
+- The C Compiler requires JDoodle API credentials to function. Sign up at [JDoodle](https://www.jdoodle.com/compiler-api/) to get free API credentials (200 requests/day on the free tier).
+- The Web Playground (HTML/CSS/JS) and SQL Practice Lab work client-side and do not require any API keys.
+
 ## Getting Started
 
 First, run the development server:
