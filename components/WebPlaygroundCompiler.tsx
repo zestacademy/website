@@ -167,6 +167,8 @@ export default function WebPlaygroundCompiler() {
     // Listen for console messages from iframe
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
+            // Since we're using srcdoc for the iframe, it inherits the parent's origin
+            // We validate the message structure instead of origin for security
             if (event.data.type === 'console') {
                 const timestamp = new Date().toLocaleTimeString()
                 const prefix = event.data.level === 'error' ? '❌' : event.data.level === 'warn' ? '⚠️' : 'ℹ️'

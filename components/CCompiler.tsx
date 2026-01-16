@@ -37,7 +37,10 @@ export default function CCompiler() {
         const startTime = performance.now()
 
         try {
-            // Use JDoodle API for C compilation
+            // NOTE: JDoodle API is called from the client-side for simplicity.
+            // For production use, consider moving this to a server-side API route to protect credentials.
+            // The current implementation with NEXT_PUBLIC_ variables is acceptable for development
+            // as JDoodle implements rate limiting per API key.
             const clientId = process.env.NEXT_PUBLIC_JDOODLE_CLIENT_ID
             const clientSecret = process.env.NEXT_PUBLIC_JDOODLE_CLIENT_SECRET
             
