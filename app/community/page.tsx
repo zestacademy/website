@@ -24,6 +24,30 @@ const FORUMS = [
         bg: "bg-blue-100 dark:bg-blue-900/20"
     },
     {
+        id: "web-playground",
+        title: "Web Playground",
+        description: "Build websites with HTML, CSS & JavaScript in real-time.",
+        icon: Code,
+        color: "text-cyan-500",
+        bg: "bg-cyan-100 dark:bg-cyan-900/20"
+    },
+    {
+        id: "sql-practice",
+        title: "SQL Practice Lab",
+        description: "Learn SQL queries with in-memory SQLite database.",
+        icon: MessageSquare,
+        color: "text-indigo-500",
+        bg: "bg-indigo-100 dark:bg-indigo-900/20"
+    },
+    {
+        id: "c-compiler",
+        title: "C Programming Compiler",
+        description: "Compile and run C programs with GCC compiler online.",
+        icon: Terminal,
+        color: "text-emerald-500",
+        bg: "bg-emerald-100 dark:bg-emerald-900/20"
+    },
+    {
         id: "projects",
         title: "Project Showcase",
         description: "Show off what you've built and get feedback.",

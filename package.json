@@ -31,6 +31,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-share": "^5.2.2",
+    "sql.js": "^1.13.0",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
