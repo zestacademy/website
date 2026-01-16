@@ -44,8 +44,8 @@ export default function CCompiler() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    clientId: 'b6f84d43daa610b16b2e70fd2db6ef2c', // Public demo client ID
-                    clientSecret: 'ed86f7a5f5d8eb827847a2c55d6f8b2fe19bf321e45bfbb5edc7ef07f6c285e9', // Public demo secret
+                    clientId: process.env.NEXT_PUBLIC_JDOODLE_CLIENT_ID || 'b6f84d43daa610b16b2e70fd2db6ef2c',
+                    clientSecret: process.env.NEXT_PUBLIC_JDOODLE_CLIENT_SECRET || 'ed86f7a5f5d8eb827847a2c55d6f8b2fe19bf321e45bfbb5edc7ef07f6c285e9',
                     script: code,
                     stdin: input,
                     language: 'c',
