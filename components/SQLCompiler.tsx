@@ -180,8 +180,7 @@ export default function SQLCompiler() {
                 strategy="afterInteractive"
                 onLoad={async () => {
                     try {
-                        // @ts-ignore
-                        const initSqlJs = window.initSqlJs
+                        const initSqlJs = (window as any).initSqlJs
                         const SQL = await initSqlJs({
                             locateFile: (file: string) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
                         })

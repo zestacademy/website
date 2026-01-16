@@ -14,12 +14,14 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
 NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_firebase_measurement_id
 
-# JDoodle API (optional - for C compiler, falls back to demo credentials)
+# JDoodle API (required for C compiler functionality)
 NEXT_PUBLIC_JDOODLE_CLIENT_ID=your_jdoodle_client_id
 NEXT_PUBLIC_JDOODLE_CLIENT_SECRET=your_jdoodle_client_secret
 ```
 
-To get JDoodle API credentials, sign up at [JDoodle](https://www.jdoodle.com/compiler-api/).
+**Note**: 
+- The C Compiler requires JDoodle API credentials to function. Sign up at [JDoodle](https://www.jdoodle.com/compiler-api/) to get free API credentials (200 requests/day on the free tier).
+- The Web Playground (HTML/CSS/JS) and SQL Practice Lab work client-side and do not require any API keys.
 
 ## Getting Started
 

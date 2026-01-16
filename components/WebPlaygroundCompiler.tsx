@@ -110,7 +110,7 @@ export default function WebPlaygroundCompiler() {
                     type: 'console', 
                     level: 'log', 
                     message: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')
-                }, '*');
+                }, window.location.origin);
                 originalLog.apply(console, args);
             };
             
@@ -119,7 +119,7 @@ export default function WebPlaygroundCompiler() {
                     type: 'console', 
                     level: 'error', 
                     message: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')
-                }, '*');
+                }, window.location.origin);
                 originalError.apply(console, args);
             };
             
@@ -128,7 +128,7 @@ export default function WebPlaygroundCompiler() {
                     type: 'console', 
                     level: 'warn', 
                     message: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ')
-                }, '*');
+                }, window.location.origin);
                 originalWarn.apply(console, args);
             };
             
@@ -138,7 +138,7 @@ export default function WebPlaygroundCompiler() {
                     type: 'console', 
                     level: 'error', 
                     message: 'Error: ' + e.message + ' at line ' + e.lineno
-                }, '*');
+                }, window.location.origin);
             });
         })();
     </script>

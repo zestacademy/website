@@ -38,14 +38,24 @@ export default function CCompiler() {
 
         try {
             // Use JDoodle API for C compilation
+            const clientId = process.env.NEXT_PUBLIC_JDOODLE_CLIENT_ID
+            const clientSecret = process.env.NEXT_PUBLIC_JDOODLE_CLIENT_SECRET
+            
+            if (!clientId || !clientSecret) {
+                setCompileError('C Compiler is not configured. Please contact the administrator to set up JDoodle API credentials.')
+                setStatus("error")
+                setIsRunning(false)
+                return
+            }
+            
             const response = await fetch('https://api.jdoodle.com/v1/execute', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    clientId: process.env.NEXT_PUBLIC_JDOODLE_CLIENT_ID || 'b6f84d43daa610b16b2e70fd2db6ef2c',
-                    clientSecret: process.env.NEXT_PUBLIC_JDOODLE_CLIENT_SECRET || 'ed86f7a5f5d8eb827847a2c55d6f8b2fe19bf321e45bfbb5edc7ef07f6c285e9',
+                    clientId: clientId,
+                    clientSecret: clientSecret,
                     script: code,
                     stdin: input,
                     language: 'c',
