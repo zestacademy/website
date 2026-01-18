@@ -15,7 +15,15 @@ service cloud.firestore {
 
     // Helper function to check if user is the specific Admin
     function isAdmin() {
-      return request.auth != null && request.auth.token.email == 'zestacademy@rsmk.co.in';
+      return request.auth != null && (
+        request.auth.token.email == 'zestacademy@rsmk.co.in' || 
+        request.auth.token.email == 'zestacademyonline@gmail.com'
+      );
+    }
+    
+    // Allow collection group queries for comments for admins
+    match /{path=**}/comments/{commentId} {
+      allow read: if isAdmin();
     }
     
     // Helper function to validate comment content

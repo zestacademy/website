@@ -39,7 +39,7 @@ export default function AdminDashboard() {
 
     const router = useRouter();
     const auth = getAuth();
-    const ADMIN_EMAIL = "zestacademyonline@gmail.com";
+    const ADMIN_EMAILS = ["zestacademyonline@gmail.com", "zestacademy@rsmk.co.in"];
 
     useEffect(() => {
         let unsubscribeMsgs: (() => void) | null = null;
@@ -57,7 +57,7 @@ export default function AdminDashboard() {
                 return;
             }
 
-            if (user.email !== ADMIN_EMAIL) {
+            if (!user.email || !ADMIN_EMAILS.includes(user.email)) {
                 setIsUnauthorized(true);
                 setLoading(false);
                 return;
