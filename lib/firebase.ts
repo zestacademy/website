@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getDatabase } from "firebase/database";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -26,6 +27,8 @@ const db = initializeFirestore(app, {
     experimentalForceLongPolling: true,
 });
 
+const database = getDatabase(app, "https://zest-academy-default-rtdb.firebaseio.com/");
+
 // Analytics (only on client side and if supported)
 let analytics: any;
 
@@ -39,4 +42,4 @@ if (typeof window !== "undefined") {
     }).catch((e) => console.error("Analytics not supported", e));
 }
 
-export { app, auth, db, analytics };
+export { app, auth, db, database, analytics };

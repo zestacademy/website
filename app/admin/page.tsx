@@ -1,14 +1,16 @@
 "use client"
 
 import { useEffect, useState } from 'react';
-import { db } from '@/lib/firebase';
+import { db, database } from '@/lib/firebase';
 import { collection, query, orderBy, onSnapshot, Timestamp, deleteDoc, doc, collectionGroup } from 'firebase/firestore';
+import { ref, onValue } from 'firebase/database';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { Trash2, MessageSquare, Mail, AlertTriangle } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 interface ContactMessage {
     id: string;
@@ -31,21 +33,24 @@ interface Comment {
 export default function AdminDashboard() {
     const [messages, setMessages] = useState<ContactMessage[]>([]);
     const [comments, setComments] = useState<Comment[]>([]);
+
     const [loading, setLoading] = useState(true);
     const [isUnauthorized, setIsUnauthorized] = useState(false);
 
     const router = useRouter();
     const auth = getAuth();
-    const ADMIN_EMAIL = "zestacademy@rsmk.co.in";
+    const ADMIN_EMAIL = "zestacademyonline@gmail.com";
 
     useEffect(() => {
         let unsubscribeMsgs: (() => void) | null = null;
         let unsubscribeComments: (() => void) | null = null;
 
+
         const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
             // Cleanup existing listeners on auth change
             if (unsubscribeMsgs) unsubscribeMsgs();
             if (unsubscribeComments) unsubscribeComments();
+
 
             if (!user) {
                 router.push('/login');
@@ -83,13 +88,14 @@ export default function AdminDashboard() {
                     refPath: doc.ref.path,
                     ...doc.data()
                 })) as Comment[]);
-                setLoading(false);
             }, (error) => {
                 if (error.code !== 'permission-denied') {
                     console.error("Error fetching comments:", error);
                 }
-                setLoading(false);
             });
+
+            // Set loading to false after setting up all listeners for admin
+            setLoading(false);
         });
 
         return () => {
@@ -177,6 +183,7 @@ export default function AdminDashboard() {
                             <MessageSquare className="h-4 w-4" /> Discussion Moderation
                             <span className="ml-1 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">{comments.length}</span>
                         </TabsTrigger>
+
                     </TabsList>
 
                     {/* MESSAGES TAB */}
