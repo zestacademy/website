@@ -1,11 +1,11 @@
 "use client"
 
-import WebPlaygroundCompiler from "@/components/WebPlaygroundCompiler"
+import CCompiler from "@/components/CCompiler"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 
-export default function WebPlaygroundPage() {
+export default function CCompilerPage() {
     const router = useRouter()
 
     return (
@@ -13,13 +13,13 @@ export default function WebPlaygroundPage() {
             <div className="container mx-auto px-4 py-4 max-w-7xl flex-1 flex flex-col">
                 <div className="flex items-center gap-4 mb-4">
                     <Button variant="ghost" onClick={() => router.back()} size="sm">
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Community
+                        <ArrowLeft className="mr-2 h-4 w-4" /> Back
                     </Button>
-                    <h1 className="text-xl font-bold">Web Playground – HTML, CSS & JavaScript</h1>
+                    <h1 className="text-xl font-bold">C Programming Compiler</h1>
                 </div>
 
                 <div className="flex-1 min-h-0">
-                    <WebPlaygroundCompiler />
+                    <CCompiler />
                 </div>
             </div>
         </div>

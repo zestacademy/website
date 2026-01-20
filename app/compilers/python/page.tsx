@@ -13,7 +13,7 @@ export default function CompilerPage() {
             <div className="container mx-auto px-4 py-4 max-w-7xl flex-1 flex flex-col">
                 <div className="flex items-center gap-4 mb-4">
                     <Button variant="ghost" onClick={() => router.back()} size="sm">
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Community
+                        <ArrowLeft className="mr-2 h-4 w-4" /> Back
                     </Button>
                     <h1 className="text-xl font-bold">Python Compiler</h1>
                 </div>

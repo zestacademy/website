@@ -36,6 +36,7 @@ export function Navbar() {
         { href: "/", label: "Home" },
         { href: "/courses", label: "Courses" },
         { href: "/explore", label: "Skills" },
+        { href: "/compilers", label: "Compilers" },
         { href: "/community", label: "Community" },
         { href: "/my-learning", label: "My Learning" },
     ]

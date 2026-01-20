@@ -1,10 +1,12 @@
 "use client"
 
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog"
+import PythonCompiler from "@/components/PythonCompiler"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { CommentsSection } from "@/components/comments-section"
-import { Clock, Calendar, Target, CheckCircle2, Loader2, PlayCircle, Trophy } from "lucide-react"
+import { Clock, Calendar, Target, CheckCircle2, Loader2, PlayCircle, Trophy, Terminal } from "lucide-react"
 import { useCourseProgress } from "@/lib/hooks/useCourseProgress"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -303,6 +305,8 @@ export default function PythonBasicsCoursePage() {
                         )}
                     </div>
 
+
+
                     {/* Stats Section */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mt-12">
                         <div className="flex items-center gap-3 bg-card p-4 rounded-lg border shadow-sm">
@@ -495,6 +499,27 @@ export default function PythonBasicsCoursePage() {
                     </div>
                 </div>
             </section>
+
+            {/* Floating Compiler Button with Dialog */}
+            <div className="fixed bottom-8 right-8 z-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button
+                            size="lg"
+                            className="gap-2 shadow-2xl rounded-full px-6 bg-blue-600 hover:bg-blue-700 hover:scale-105 transition-all text-white border-2 border-white/20"
+                        >
+                            <Terminal className="h-5 w-5" />
+                            <span className="hidden sm:inline">Python Compiler</span>
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-[95vw] w-full h-[95vh] p-0 gap-0 bg-background border-none shadow-2xl">
+                        <DialogTitle className="sr-only">Python Online Compiler</DialogTitle>
+                        <div className="h-full w-full overflow-hidden p-4">
+                            <PythonCompiler />
+                        </div>
+                    </DialogContent>
+                </Dialog>
+            </div>
         </div>
     )
 }
