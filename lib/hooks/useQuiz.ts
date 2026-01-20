@@ -11,7 +11,7 @@ export interface QuizResult {
     timestamp: string
 }
 
-export function useQuiz(roadmapId: string) {
+export function useQuiz(courseId: string) {
     const [user, setUser] = useState<User | null>(null)
     const [quizScores, setQuizScores] = useState<Record<number, QuizResult>>({})
     const [loading, setLoading] = useState(true)
@@ -28,11 +28,11 @@ export function useQuiz(roadmapId: string) {
     }, [])
 
     useEffect(() => {
-        if (!user || !roadmapId) return
+        if (!user || !courseId) return
 
         const fetchScores = async () => {
             try {
-                const enrollmentId = `${user.uid}_${roadmapId}`
+                const enrollmentId = `${user.uid}_${courseId}`
                 const quizRef = collection(db, "enrollments", enrollmentId, "quiz_attempts")
                 const snapshot = await getDocs(quizRef)
 
@@ -49,12 +49,12 @@ export function useQuiz(roadmapId: string) {
         }
 
         fetchScores()
-    }, [user, roadmapId])
+    }, [user, courseId])
 
     const saveScore = async (weekNumber: number, score: number, total: number) => {
         if (!user) return
 
-        const enrollmentId = `${user.uid}_${roadmapId}`
+        const enrollmentId = `${user.uid}_${courseId}`
         const result: QuizResult = {
             score,
             total,
@@ -96,7 +96,7 @@ export function useQuiz(roadmapId: string) {
         })
 
         // Update Leaderboard
-        const leaderboardRef = doc(db, "leaderboards", roadmapId, "users", currentUser.uid)
+        const leaderboardRef = doc(db, "leaderboards", courseId, "users", currentUser.uid)
         await setDoc(leaderboardRef, {
             userId: currentUser.uid,
             displayName: currentUser.displayName || "Anonymous",

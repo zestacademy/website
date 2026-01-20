@@ -5,16 +5,16 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { CommentsSection } from "@/components/comments-section"
 import { Clock, Calendar, Target, CheckCircle2, Loader2, PlayCircle, Trophy } from "lucide-react"
-import { useRoadmapProgress } from "@/lib/hooks/useRoadmapProgress"
+import { useCourseProgress } from "@/lib/hooks/useCourseProgress"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { useRouter } from "next/navigation"
 
-export default function PythonBasicsRoadmapPage() {
+export default function PythonBasicsCoursePage() {
     const router = useRouter()
-    const { user, loading, progress, startRoadmap, toggleDayCompletion } = useRoadmapProgress("python-basics")
+    const { user, loading, progress, startCourse, toggleDayCompletion } = useCourseProgress("python-basics")
 
-    const roadmapDays = [
+    const courseDays = [
         {
             day: 1,
             title: "Introduction + Setup",
@@ -247,7 +247,7 @@ export default function PythonBasicsRoadmapPage() {
         "Learn Git + GitHub basics"
     ]
 
-    const completionPercentage = progress ? Math.round((progress.completedDays.length / roadmapDays.length) * 100) : 0
+    const completionPercentage = progress ? Math.round((progress.completedDays.length / courseDays.length) * 100) : 0
     const isEnrolled = !!progress
 
     return (
@@ -262,7 +262,7 @@ export default function PythonBasicsRoadmapPage() {
                         <Badge className="bg-purple-500 text-white border-0">Basic to Advanced</Badge>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">
-                        20-Day Python Learning Roadmap
+                        20-Day Python Learning Course
                     </h1>
                     <p className="text-lg text-muted-foreground text-center mb-8 max-w-3xl mx-auto">
                         Complete Python journey from basics to advanced concepts. Build real projects and master Python in just 20 days!
@@ -281,8 +281,8 @@ export default function PythonBasicsRoadmapPage() {
                             </div>
                         ) : !isEnrolled ? (
                             <div className="text-center space-y-4">
-                                <Button size="lg" onClick={() => startRoadmap(roadmapDays.length)} className="font-semibold shadow-lg text-lg px-8 bg-blue-600 hover:bg-blue-700">
-                                    <PlayCircle className="mr-2 h-5 w-5" /> Start This Roadmap
+                                <Button size="lg" onClick={() => startCourse(courseDays.length)} className="font-semibold shadow-lg text-lg px-8 bg-blue-600 hover:bg-blue-700">
+                                    <PlayCircle className="mr-2 h-5 w-5" /> Start This Course
                                 </Button>
                                 <p className="text-sm text-muted-foreground">Join 1,200+ students learning Python today.</p>
                             </div>
@@ -290,7 +290,7 @@ export default function PythonBasicsRoadmapPage() {
                             <div className="w-full max-w-md space-y-2">
                                 <div className="flex justify-between text-sm font-medium">
                                     <span>Your Progress</span>
-                                    <span>{completionPercentage}% ({progress.completedDays.length}/{roadmapDays.length} Days)</span>
+                                    <span>{completionPercentage}% ({progress.completedDays.length}/{courseDays.length} Days)</span>
                                 </div>
                                 <Progress value={completionPercentage} className="h-3" />
                                 {completionPercentage === 100 && (
@@ -342,9 +342,9 @@ export default function PythonBasicsRoadmapPage() {
                         </div>
                     </div>
 
-                    {/* Roadmap Days */}
+                    {/* Course Days */}
                     <div className="space-y-6">
-                        {roadmapDays.map((day, idx) => {
+                        {courseDays.map((day, idx) => {
                             const isCompleted = progress?.completedDays.includes(day.day) || false
 
                             return (
@@ -475,7 +475,7 @@ export default function PythonBasicsRoadmapPage() {
                         </CardHeader>
                         <CardContent className="space-y-4 text-muted-foreground">
                             <p>
-                                After completing this 20-day roadmap, you&apos;ll have a solid foundation in Python programming.
+                                After completing this 20-day course, you&apos;ll have a solid foundation in Python programming.
                                 Here are some recommended next steps:
                             </p>
                             <ul className="space-y-2 ml-6 list-disc">
@@ -491,7 +491,7 @@ export default function PythonBasicsRoadmapPage() {
 
                     {/* Comments Section */}
                     <div className="mt-12">
-                        <CommentsSection courseId="python-basics-roadmap" />
+                        <CommentsSection courseId="python-basics" />
                     </div>
                 </div>
             </section>

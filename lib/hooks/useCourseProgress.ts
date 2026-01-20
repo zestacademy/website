@@ -5,7 +5,7 @@ import { onAuthStateChanged, User } from "firebase/auth"
 
 export interface EnrollmentData {
     userId: string
-    roadmapId: string
+    courseId: string
     startedAt: string
     completedDays: number[]
     totalDays: number
@@ -13,7 +13,7 @@ export interface EnrollmentData {
     lastAccessed: string
 }
 
-export function useRoadmapProgress(roadmapId: string) {
+export function useCourseProgress(courseId: string) {
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
     const [progress, setProgress] = useState<EnrollmentData | null>(null)
@@ -30,9 +30,9 @@ export function useRoadmapProgress(roadmapId: string) {
     }, [])
 
     useEffect(() => {
-        if (!user || !roadmapId) return
+        if (!user || !courseId) return
 
-        const enrollmentId = `${user.uid}_${roadmapId}`
+        const enrollmentId = `${user.uid}_${courseId}`
         const docRef = doc(db, "enrollments", enrollmentId)
 
         const unsubscribe = onSnapshot(docRef, (docSnap) => {
@@ -45,14 +45,14 @@ export function useRoadmapProgress(roadmapId: string) {
         })
 
         return () => unsubscribe()
-    }, [user, roadmapId])
+    }, [user, courseId])
 
-    const startRoadmap = async (totalDays: number) => {
+    const startCourse = async (totalDays: number) => {
         if (!user) return
-        const enrollmentId = `${user.uid}_${roadmapId}`
+        const enrollmentId = `${user.uid}_${courseId}`
         const initialData: EnrollmentData = {
             userId: user.uid,
-            roadmapId,
+            courseId,
             startedAt: new Date().toISOString(),
             completedDays: [],
             totalDays,
@@ -65,7 +65,7 @@ export function useRoadmapProgress(roadmapId: string) {
     const toggleDayCompletion = async (day: number) => {
         if (!user || !progress) return
 
-        const enrollmentId = `${user.uid}_${roadmapId}`
+        const enrollmentId = `${user.uid}_${courseId}`
         const isCompleted = progress.completedDays.includes(day)
         const docRef = doc(db, "enrollments", enrollmentId)
 
@@ -82,5 +82,5 @@ export function useRoadmapProgress(roadmapId: string) {
         }
     }
 
-    return { user, loading, progress, startRoadmap, toggleDayCompletion }
+    return { user, loading, progress, startCourse, toggleDayCompletion }
 }

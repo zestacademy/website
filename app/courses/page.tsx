@@ -1,13 +1,13 @@
 "use client"
 import { useState, useEffect } from "react"
-import { RoadmapHero } from "@/components/roadmaps/RoadmapHero"
-import { ResumeLearning } from "@/components/roadmaps/ResumeLearning"
-import { AllRoadmaps } from "@/components/roadmaps/AllRoadmaps"
+import { CourseHero } from "@/components/courses/CourseHero"
+import { ResumeLearning } from "@/components/courses/ResumeLearning"
+import { AllCourses } from "@/components/courses/AllCourses"
 import { FeatureSpotlight } from "@/components/ui/feature-spotlight"
 import { useUserEnrollments } from "@/lib/hooks/useUserEnrollments"
 import { Button } from "@/components/ui/button"
 
-export default function RoadmapsPage() {
+export default function CoursesPage() {
     const [showSpotlight, setShowSpotlight] = useState(false)
     const { user, loading } = useUserEnrollments()
 
@@ -22,14 +22,14 @@ export default function RoadmapsPage() {
 
     return (
         <div className="flex flex-col min-h-screen">
-            <RoadmapHero />
+            <CourseHero />
             <ResumeLearning />
-            <AllRoadmaps />
+            <AllCourses />
 
             {showSpotlight && (
                 <FeatureSpotlight
                     title="Interactive Learning"
-                    description="Click on any roadmap to track your progress and earn certificates."
+                    description="Click on any course to track your progress and earn certificates."
                     position="bottom"
                     onClose={() => setShowSpotlight(false)}
                 >

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { HeroSection } from "@/components/home/HeroSection";
 import { ExploreSection } from "@/components/home/ExploreSection";
-import { RoadmapSection } from "@/components/home/RoadmapSection";
+import { CourseSection } from "@/components/home/StructuredCoursesSection";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { CategoriesSection } from "@/components/home/CategoriesSection";
 import { CoursesSection } from "@/components/home/CoursesSection";
@@ -57,7 +57,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <HeroSection />
       <ExploreSection />
-      <RoadmapSection />
+      <CourseSection />
       <HowItWorksSection />
       <CategoriesSection />
       <CoursesSection />

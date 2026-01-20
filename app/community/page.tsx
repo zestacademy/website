@@ -111,10 +111,10 @@ export default function CommunityPage() {
                             <TabsTrigger value="python">Python Basics</TabsTrigger>
                         </TabsList>
                         <TabsContent value="iot" className="mt-6">
-                            <Leaderboard roadmapId="internet-of-things" title="IoT Roadmap" />
+                            <Leaderboard courseId="internet-of-things" title="IoT Course" />
                         </TabsContent>
                         <TabsContent value="python" className="mt-6">
-                            <Leaderboard roadmapId="python-basics" title="Python Basics" />
+                            <Leaderboard courseId="python-basics" title="Python Basics" />
                         </TabsContent>
                     </Tabs>
                 </div>

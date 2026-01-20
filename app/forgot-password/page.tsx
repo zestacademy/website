@@ -68,7 +68,7 @@ export default function ForgotPasswordPage() {
                 <div className="relative z-20 mt-auto">
                     <blockquote className="space-y-2">
                         <p className="text-lg">
-                            &ldquo;This platform has completely transformed how I approach learning technical skills. The interactive roadmaps are a game changer.&rdquo;
+                            &ldquo;This platform has completely transformed how I approach learning technical skills. The interactive courses are a game changer.&rdquo;
                         </p>
                     </blockquote>
                 </div>

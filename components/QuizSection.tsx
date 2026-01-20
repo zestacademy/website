@@ -18,12 +18,12 @@ interface QuizSectionProps {
     weekNumber: number
     title: string
     mcqs: MCQ[]
-    roadmapId: string
+    courseId: string
     isEnrolled: boolean
 }
 
-export function QuizSection({ weekNumber, title, mcqs, roadmapId, isEnrolled }: QuizSectionProps) {
-    const { params: { user, quizScores }, saveScore } = useQuiz(roadmapId)
+export function QuizSection({ weekNumber, title, mcqs, courseId, isEnrolled }: QuizSectionProps) {
+    const { params: { user, quizScores }, saveScore } = useQuiz(courseId)
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({})
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [localResult, setLocalResult] = useState<{ score: number, total: number, passed: boolean } | null>(null)
@@ -80,7 +80,7 @@ export function QuizSection({ weekNumber, title, mcqs, roadmapId, isEnrolled }: 
             <div className="bg-muted/30 p-6 rounded-lg border border-dashed text-center">
                 <BookOpen className="h-10 w-10 mx-auto text-muted-foreground mb-3 opacity-50" />
                 <h4 className="font-semibold text-lg mb-2">Quiz Locked</h4>
-                <p className="text-muted-foreground">Start the roadmap to unlock this assignment and track your progress.</p>
+                <p className="text-muted-foreground">Start the course to unlock this assignment and track your progress.</p>
             </div>
         )
     }
@@ -126,7 +126,7 @@ export function QuizSection({ weekNumber, title, mcqs, roadmapId, isEnrolled }: 
                                         const isSelected = selectedAnswers[idx] === optionLetter
                                         const isAnswer = mcq.answer === optionLetter
 
-                                         let optionStyle = "hover:bg-accent hover:text-accent-foreground cursor-pointer transition-all duration-200"
+                                        let optionStyle = "hover:bg-accent hover:text-accent-foreground cursor-pointer transition-all duration-200"
 
                                         if (showFeedback) {
                                             if (isAnswer) {

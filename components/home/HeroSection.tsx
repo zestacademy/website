@@ -105,8 +105,8 @@ export function HeroSection() {
                             onSearch={async (query) => {
                                 await new Promise(resolve => setTimeout(resolve, 300))
                                 const items = [
-                                    { id: '/roadmaps/python-basics', title: 'Python Basics', description: 'Master Python programming', category: 'Roadmap' },
-                                    { id: '/roadmaps/internet-of-things', title: 'Internet of Things', description: 'Learn IoT & Embedded Systems', category: 'Roadmap' },
+                                    { id: '/courses/python-basics', title: 'Python Basics', description: 'Master Python programming', category: 'Course' },
+                                    { id: '/courses/internet-of-things', title: 'Internet of Things', description: 'Learn IoT & Embedded Systems', category: 'Course' },
                                     { id: '/explore', title: 'Explore Skills', description: 'Browse all available skills', category: 'Page' },
                                 ]
                                 return items.filter(i => i.title.toLowerCase().includes(query.toLowerCase()))
@@ -118,10 +118,10 @@ export function HeroSection() {
 
                     {/* CTAs */}
                     <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-                        <Link href="/roadmaps">
+                        <Link href="/courses">
                             <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all">
                                 <TrendingUp className="mr-2 h-5 w-5" />
-                                Start with a Roadmap
+                                Start with a Course
                             </Button>
                         </Link>
                         <Link href="/explore">
@@ -139,7 +139,7 @@ export function HeroSection() {
                         </div>
                         <div className="text-center">
                             <p className="text-3xl font-bold"><AnimatedCounter value={42} /></p>
-                            <p className="text-sm text-blue-200">Roadmaps</p>
+                            <p className="text-sm text-blue-200">Courses</p>
                         </div>
                         <div className="text-center">
                             <p className="text-3xl font-bold"><AnimatedCounter value={150} />+</p>

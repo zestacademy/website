@@ -27,14 +27,14 @@ export function Navbar() {
         const handleScroll = () => {
             setScrolled(window.scrollY > 20)
         }
-        
+
         window.addEventListener('scroll', handleScroll, { passive: true })
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
     const navLinks = [
         { href: "/", label: "Home" },
-        { href: "/roadmaps", label: "Roadmaps" },
+        { href: "/courses", label: "Courses" },
         { href: "/explore", label: "Skills" },
         { href: "/community", label: "Community" },
         { href: "/my-learning", label: "My Learning" },
@@ -43,8 +43,8 @@ export function Navbar() {
     return (
         <header className={cn(
             "sticky top-0 z-50 w-full border-b transition-all duration-300",
-            scrolled 
-                ? "bg-background/80 backdrop-blur-lg shadow-sm" 
+            scrolled
+                ? "bg-background/80 backdrop-blur-lg shadow-sm"
                 : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
         )}>
             <div className="container flex h-16 items-center mx-auto px-4 justify-between">

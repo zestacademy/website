@@ -3,7 +3,7 @@ import { Map, BookOpen, Code, Briefcase, CheckCircle } from "lucide-react"
 const steps = [
     {
         number: "01",
-        title: "Choose a Roadmap",
+        title: "Choose a Course",
         description: "Select a structured learning path tailored to your engineering goals and skill level.",
         icon: Map,
         color: "text-blue-600 dark:text-blue-400"
@@ -49,7 +49,7 @@ export function HowItWorksSection() {
                             {index < steps.length - 1 && (
                                 <div className="hidden lg:block absolute top-16 left-[60%] w-full h-0.5 bg-gradient-to-r from-primary/30 to-muted"></div>
                             )}
-                            
+
                             <div className="relative flex flex-col items-center text-center space-y-4">
                                 {/* Icon container */}
                                 <div className={`relative p-6 rounded-2xl bg-muted/50 ${step.color} group-hover:scale-110 transition-transform`}>

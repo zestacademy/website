@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
 
-export function RoadmapHero() {
+export function CourseHero() {
     return (
         <section className="relative py-20 md:py-28 bg-gradient-to-br from-blue-700 to-blue-900 text-white overflow-hidden text-center">
             {/* Background Mesh/Gradient */}
@@ -13,7 +13,7 @@ export function RoadmapHero() {
                     Chart Your Career Course
                 </h1>
                 <p className="text-blue-100 max-w-2xl mx-auto mb-10 text-lg leading-relaxed">
-                    Don't just learn random skills. Follow our curated, step-by-step roadmaps
+                    Don't just learn random skills. Follow our curated, step-by-step courses
                     designed by industry experts to take you from beginner to professional efficiently.
                 </p>
 
@@ -21,7 +21,7 @@ export function RoadmapHero() {
                     <div className="relative w-full">
                         <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
                         <Input
-                            placeholder="Find your path (e.g. Python, Design, DevOps)"
+                            placeholder="Find your course (e.g. Python, Design, DevOps)"
                             className="w-full pl-12 h-12 bg-white text-gray-900 placeholder:text-gray-500 focus-visible:ring-blue-300 rounded-r-none border-0 shadow-lg"
                         />
                     </div>

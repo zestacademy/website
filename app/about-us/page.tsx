@@ -23,7 +23,7 @@ export default function AboutUs() {
                     <div className="space-y-6">
                         <h2 className="text-3xl font-bold text-foreground">Our Mission</h2>
                         <p className="text-lg text-muted-foreground leading-relaxed">
-                            We believe that quality education should be accessible, structured, and practical. Our mission is to bridge the gap between academic theory and industry requirements by providing comprehensive roadmaps and hands-on projects.
+                            We believe that quality education should be accessible, structured, and practical. Our mission is to bridge the gap between academic theory and industry requirements by providing comprehensive courses and hands-on projects.
                         </p>
                         <p className="text-lg text-muted-foreground leading-relaxed">
                             Whether you are starting from scratch or looking to level up your existing skills, Zest Academy provides the guidance and resources you need to succeed in the ever-evolving tech landscape.
@@ -43,7 +43,7 @@ export default function AboutUs() {
                     <h2 className="text-3xl font-bold text-center mb-12">Why Choose Us?</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {[
-                            { title: "Structured Learning", icon: "📚", desc: "Curated roadmaps to guide you from beginner to expert." },
+                            { title: "Structured Learning", icon: "📚", desc: "Curated courses to guide you from beginner to expert." },
                             { title: "Community Driven", icon: "🤝", desc: "Learn alongside thousands of other ambitious students." },
                             { title: "Industry Relevance", icon: "💼", desc: "Skills that top companies are actually looking for." }
                         ].map((value, idx) => (

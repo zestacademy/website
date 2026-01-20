@@ -17,11 +17,11 @@ interface LeaderboardEntry {
 }
 
 interface LeaderboardProps {
-    roadmapId: string
+    courseId: string
     title: string
 }
 
-export function Leaderboard({ roadmapId, title }: LeaderboardProps) {
+export function Leaderboard({ courseId, title }: LeaderboardProps) {
     const [entries, setEntries] = useState<LeaderboardEntry[]>([])
     const [loading, setLoading] = useState(true)
 
@@ -30,7 +30,7 @@ export function Leaderboard({ roadmapId, title }: LeaderboardProps) {
             setLoading(true)
             try {
                 const q = query(
-                    collection(db, "leaderboards", roadmapId, "users"),
+                    collection(db, "leaderboards", courseId, "users"),
                     orderBy("totalScore", "desc"),
                     limit(20)
                 )
@@ -46,7 +46,7 @@ export function Leaderboard({ roadmapId, title }: LeaderboardProps) {
         }
 
         fetchLeaderboard()
-    }, [roadmapId])
+    }, [courseId])
 
     const getRankIcon = (index: number) => {
         switch (index) {

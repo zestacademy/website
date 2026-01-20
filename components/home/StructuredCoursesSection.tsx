@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge"
 
 const paths: any[] = []
 
-export function RoadmapSection() {
+export function CourseSection() {
     return (
         <section className="container mx-auto py-20 px-4 bg-gradient-to-b from-muted/30 to-background">
             <div className="text-center mb-12">
@@ -12,9 +12,9 @@ export function RoadmapSection() {
                     <Target className="h-4 w-4" />
                     <span className="text-sm font-semibold">Signature Feature</span>
                 </div>
-                <h2 className="text-4xl font-bold tracking-tight mb-3">Structured Learning Roadmaps</h2>
+                <h2 className="text-4xl font-bold tracking-tight mb-3">Structured Learning Courses</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                    Follow proven paths designed by engineers, for engineers. Each roadmap takes you from fundamentals to interview readiness.
+                    Follow proven paths designed by engineers, for engineers. Each course takes you from fundamentals to interview readiness.
                 </p>
             </div>
 
@@ -69,7 +69,7 @@ export function RoadmapSection() {
 
             <div className="text-center">
                 <Button size="lg" variant="outline" className="font-semibold">
-                    View All Learning Paths
+                    View All Courses
                     <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
             </div>

@@ -1,7 +1,7 @@
 import { ExploreHero } from "@/components/explore/ExploreHero"
 import { CategoryGrid } from "@/components/explore/CategoryGrid"
 import { TrendingCourses } from "@/components/explore/TrendingCourses"
-import { RoadmapSection } from "@/components/home/RoadmapSection"
+import { CourseSection } from "@/components/home/StructuredCoursesSection"
 import { FeaturedArticles } from "@/components/explore/FeaturedArticles"
 
 export default function ExplorePage() {
@@ -12,7 +12,7 @@ export default function ExplorePage() {
             <FeaturedArticles />
             <TrendingCourses />
             <div className="bg-muted/30">
-                <RoadmapSection />
+                <CourseSection />
             </div>
         </div>
     )

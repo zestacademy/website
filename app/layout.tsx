@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Zest Academy - Master Engineering Fundamentals & Ace Interviews",
-  description: "Structured learning paths for engineering students. Master Data Structures, System Design, and interview preparation with expert-crafted roadmaps.",
+  description: "Structured learning paths for engineering students. Master Data Structures, System Design, and interview preparation with expert-crafted courses.",
   icons: {
     icon: "/logo.png",
   },

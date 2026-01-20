@@ -22,7 +22,7 @@ export function ArticleFooter() {
                         <h3 className="text-2xl font-bold text-foreground">Zest Academy</h3>
                     </div>
                     <p className="text-muted-foreground text-sm max-w-2xl mx-auto">
-                        Master Engineering Fundamentals & Ace Interviews. Structured learning paths for engineering students with expert-crafted roadmaps.
+                        Master Engineering Fundamentals & Ace Interviews. Structured learning paths for engineering students with expert-crafted courses.
                     </p>
                 </div>
 
@@ -32,7 +32,7 @@ export function ArticleFooter() {
                         <GraduationCap className="h-8 w-8 text-blue-600 mb-3" />
                         <h4 className="font-semibold mb-2">Expert Learning Paths</h4>
                         <p className="text-sm text-muted-foreground">
-                            Curated roadmaps designed by industry experts
+                            Curated courses designed by industry experts
                         </p>
                     </div>
                     <div className="flex flex-col items-center text-center p-4 rounded-lg bg-background border">
@@ -55,14 +55,14 @@ export function ArticleFooter() {
                 <div className="text-center py-6 px-4 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white mb-8">
                     <h3 className="text-xl font-bold mb-2">Ready to Level Up Your Skills?</h3>
                     <p className="text-sm mb-4 opacity-90">
-                        Explore our comprehensive roadmaps and learning resources
+                        Explore our comprehensive courses and learning resources
                     </p>
                     <div className="flex flex-wrap justify-center gap-3">
                         <Link
-                            href="/roadmaps"
+                            href="/courses"
                             className="px-6 py-2 bg-white text-blue-600 rounded-md font-semibold hover:bg-blue-50 transition-colors"
                         >
-                            Explore Roadmaps
+                            Explore Courses
                         </Link>
                         <Link
                             href="/explore"

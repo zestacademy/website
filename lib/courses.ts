@@ -1,4 +1,4 @@
-export const roadmaps = [
+export const courses = [
     {
         id: "python-basics", // Added an ID for easy lookup
         title: "Python Basics",
@@ -9,7 +9,7 @@ export const roadmaps = [
         courses: 20,
         color: "from-yellow-500/20 to-blue-500/5",
         image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=2070&auto=format&fit=crop",
-        link: "/roadmaps/python-basics"
+        link: "/courses/python-basics"
     },
     {
         id: "internet-of-things", // Added an ID for easy lookup
@@ -21,10 +21,10 @@ export const roadmaps = [
         courses: 39,
         color: "from-purple-500/20 to-teal-500/5",
         image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
-        link: "/roadmaps/internet-of-things"
+        link: "/courses/internet-of-things"
     }
 ]
 
-export function getRoadmapById(id: string) {
-    return roadmaps.find(r => r.id === id) || roadmaps.find(r => r.link.includes(id))
+export function getCourseById(id: string) {
+    return courses.find(r => r.id === id) || courses.find(r => r.link.includes(id))
 }

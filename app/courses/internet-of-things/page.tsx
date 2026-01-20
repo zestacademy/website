@@ -5,18 +5,18 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { CommentsSection } from "@/components/comments-section"
 import { Clock, Calendar, Target, CheckCircle2, Loader2, PlayCircle, Trophy, Download, BookOpen, Eye, EyeOff } from "lucide-react"
-import { useRoadmapProgress } from "@/lib/hooks/useRoadmapProgress"
+import { useCourseProgress } from "@/lib/hooks/useCourseProgress"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { QuizSection } from "@/components/QuizSection"
 
-export default function InternetOfThingsRoadmapPage() {
+export default function InternetOfThingsCoursePage() {
     const router = useRouter()
-    const { user, loading, progress, startRoadmap, toggleDayCompletion } = useRoadmapProgress("internet-of-things")
+    const { user, loading, progress, startCourse, toggleDayCompletion } = useCourseProgress("internet-of-things")
 
-    const roadmapWeeks = [
+    const courseWeeks = [
         {
             week: 1,
             title: "IoT Fundamentals & Connectivity Basics",
@@ -858,7 +858,7 @@ export default function InternetOfThingsRoadmapPage() {
         "Explore open-source IoT platforms like ThingsBoard or Home Assistant"
     ]
 
-    const totalWeeks = roadmapWeeks.length
+    const totalWeeks = courseWeeks.length
     const completionPercentage = progress ? Math.round((progress.completedDays.length / totalWeeks) * 100) : 0
     const isEnrolled = !!progress
 
@@ -874,7 +874,7 @@ export default function InternetOfThingsRoadmapPage() {
                         <Badge className="bg-teal-500 text-white border-0">60 Lectures</Badge>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">
-                        Internet of Things (IoT) Learning Roadmap
+                        Internet of Things (IoT) Learning Course
                     </h1>
                     <p className="text-lg text-muted-foreground text-center mb-8 max-w-3xl mx-auto">
                         Master the Internet of Things from fundamentals to advanced applications. Learn sensor networks,
@@ -895,8 +895,8 @@ export default function InternetOfThingsRoadmapPage() {
                             </div>
                         ) : !isEnrolled ? (
                             <div className="text-center space-y-4">
-                                <Button size="lg" onClick={() => startRoadmap(totalWeeks)} className="font-semibold shadow-lg text-lg px-8 bg-purple-600 hover:bg-purple-700">
-                                    <PlayCircle className="mr-2 h-5 w-5" /> Start This Roadmap
+                                <Button size="lg" onClick={() => startCourse(totalWeeks)} className="font-semibold shadow-lg text-lg px-8 bg-purple-600 hover:bg-purple-700">
+                                    <PlayCircle className="mr-2 h-5 w-5" /> Start This Course
                                 </Button>
                                 <p className="text-sm text-muted-foreground">Join thousands of students learning IoT.</p>
                             </div>
@@ -956,9 +956,9 @@ export default function InternetOfThingsRoadmapPage() {
                         </div>
                     </div>
 
-                    {/* Roadmap Weeks */}
+                    {/* Course Weeks */}
                     <div className="space-y-6">
-                        {roadmapWeeks.map((week, idx) => {
+                        {courseWeeks.map((week, idx) => {
                             const isCompleted = progress?.completedDays.includes(week.week) || false
 
                             return (
@@ -1060,7 +1060,7 @@ export default function InternetOfThingsRoadmapPage() {
                                                         weekNumber={week.week}
                                                         title={`Week ${week.week} Quiz`}
                                                         mcqs={week.mcqs}
-                                                        roadmapId="internet-of-things"
+                                                        courseId="internet-of-things"
                                                         isEnrolled={isEnrolled}
                                                     />
                                                 </div>
@@ -1106,7 +1106,7 @@ export default function InternetOfThingsRoadmapPage() {
                             <QuizSection
                                 weekNumber={12}
                                 title="Bonus Quiz: Data Handling, Analytics & Case Studies"
-                                roadmapId="internet-of-things"
+                                courseId="internet-of-things"
                                 isEnrolled={isEnrolled}
                                 mcqs={[
                                     { question: "Which \"V\" of Big Data refers to the speed of data generation?", options: ["Volume", "Variety", "Velocity", "Veracity"], answer: "c" },
@@ -1131,7 +1131,7 @@ export default function InternetOfThingsRoadmapPage() {
                         </CardHeader>
                         <CardContent className="space-y-4 text-muted-foreground">
                             <p>
-                                After completing this 11-week IoT roadmap, you&apos;ll have comprehensive knowledge of
+                                After completing this 11-week IoT course, you&apos;ll have comprehensive knowledge of
                                 Internet of Things technologies and applications. Here are recommended next steps:
                             </p>
                             <ul className="space-y-2 ml-6 list-disc">
@@ -1148,7 +1148,7 @@ export default function InternetOfThingsRoadmapPage() {
 
                     {/* Comments Section */}
                     <div className="mt-12">
-                        <CommentsSection courseId="internet-of-things-roadmap" />
+                        <CommentsSection courseId="internet-of-things" />
                     </div>
                 </div>
             </section>

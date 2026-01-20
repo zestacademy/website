@@ -19,8 +19,8 @@ import { AnimatedCounter } from "@/components/ui/animated-counter"
 import { useToast } from "@/components/ui/toast-provider"
 
 const COURSE_METADATA: Record<string, { title: string, link: string, icon: any }> = {
-    "python-basics": { title: "Python Basics Roadmap", link: "/roadmaps/python-basics", icon: PlayCircle },
-    "internet-of-things": { title: "IoT Roadmap", link: "/roadmaps/internet-of-things", icon: BookOpen }
+    "python-basics": { title: "Python Basics Course", link: "/courses/python-basics", icon: PlayCircle },
+    "internet-of-things": { title: "IoT Course", link: "/courses/internet-of-things", icon: BookOpen }
 }
 
 export default function MyLearningPage() {
@@ -246,7 +246,7 @@ export default function MyLearningPage() {
                                     {enrollments.length > 0 ? (
                                         <div className="flex flex-col gap-4">
                                             {enrollments.map((enrollment, i) => {
-                                                const meta = COURSE_METADATA[enrollment.roadmapId] || { title: enrollment.roadmapId, link: "#", icon: BookOpen }
+                                                const meta = COURSE_METADATA[enrollment.courseId] || { title: enrollment.courseId, link: "#", icon: BookOpen }
                                                 const percentage = Math.round((enrollment.completedDays.length / enrollment.totalDays) * 100)
 
                                                 return (
@@ -296,7 +296,7 @@ export default function MyLearningPage() {
                                                 </div>
                                                 <h3 className="font-medium">No courses in progress</h3>
                                                 <p className="text-sm text-muted-foreground">Browse our catalog to start learning.</p>
-                                                <Button variant="outline" size="sm" onClick={() => router.push('/roadmaps')}>Browse Courses</Button>
+                                                <Button variant="outline" size="sm" onClick={() => router.push('/courses')}>Browse Courses</Button>
                                             </div>
                                         </div>
                                     )}
@@ -308,7 +308,7 @@ export default function MyLearningPage() {
                                             Recommended for You
                                         </h2>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <Card className="hover:border-primary/50 cursor-pointer transition-colors" onClick={() => router.push('/roadmaps')}>
+                                            <Card className="hover:border-primary/50 cursor-pointer transition-colors" onClick={() => router.push('/courses')}>
                                                 <CardHeader className="pb-2">
                                                     <div className="flex justify-between">
                                                         <Badge>Suggested</Badge>
