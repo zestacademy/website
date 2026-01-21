@@ -36,7 +36,7 @@ export function Navbar() {
         { href: "/", label: "Home" },
         { href: "/courses", label: "Courses" },
         { href: "/explore", label: "Skills" },
-        { href: "/compilers", label: "Compilers" },
+        { href: "https://zestacademycompilers.vercel.app", label: "Compilers" },
         { href: "/community", label: "Community" },
         { href: "/my-learning", label: "My Learning" },
     ]
@@ -66,9 +66,10 @@ export function Navbar() {
 
                 <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
                     {navLinks.map((link) => {
+                        const isExternal = link.href.startsWith("http");
                         const isActive = link.href === "/"
                             ? pathname === "/"
-                            : pathname.startsWith(link.href);
+                            : pathname.startsWith(link.href) && !isExternal;
 
                         return (
                             <Link
