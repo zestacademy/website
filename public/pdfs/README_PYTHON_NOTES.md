@@ -4,11 +4,13 @@
 The Python handwritten notes PDF from LinkedIn could not be automatically downloaded due to network restrictions in the build environment.
 
 ## Required Action
-Please manually download the PDF from the following URL and save it as `python-handwritten-notes.pdf` in this directory:
+Please manually download the PDF from the following sources and save it as `python-handwritten-notes.pdf` in this directory:
 
-**PDF URL:** https://media.licdn.com/dms/document/media/v2/D4D1FAQGjccq0qB1lBA/feedshare-document-pdf-analyzed/B4DZvUMPGBJgAY-/0/1768791546070?e=1770249600&v=beta&t=zPmatuiB9t2pftbJnhcsD2Iexmd33K4U8bruY7upYTQ
+**LinkedIn Post (Primary Source):** https://www.linkedin.com/posts/dheerendra-singh45_python-handwritten-notes-ugcPost-7418849846515810304-_5Ay
 
-**LinkedIn Post:** https://www.linkedin.com/posts/dheerendra-singh45_python-handwritten-notes-ugcPost-7418849846515810304-_5Ay
+**Direct PDF URL (May Expire):** https://media.licdn.com/dms/document/media/v2/D4D1FAQGjccq0qB1lBA/feedshare-document-pdf-analyzed/B4DZvUMPGBJgAY-/0/1768791546070?e=1770249600&v=beta&t=zPmatuiB9t2pftbJnhcsD2Iexmd33K4U8bruY7upYTQ
+
+*Note: The direct PDF URL contains timestamp-based parameters and may expire. If expired, please download the PDF directly from the LinkedIn post.*
 
 ## Steps to Add the PDF
 1. Visit the LinkedIn post URL above
