@@ -1,7 +1,6 @@
 "use client"
 
-import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog"
-import PythonCompiler from "@/components/PythonCompiler"
+
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -500,25 +499,16 @@ export default function PythonBasicsCoursePage() {
                 </div>
             </section>
 
-            {/* Floating Compiler Button with Dialog */}
+            {/* Floating Compiler Button */}
             <div className="fixed bottom-8 right-8 z-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button
-                            size="lg"
-                            className="gap-2 shadow-2xl rounded-full px-6 bg-blue-600 hover:bg-blue-700 hover:scale-105 transition-all text-white border-2 border-white/20"
-                        >
-                            <Terminal className="h-5 w-5" />
-                            <span className="hidden sm:inline">Python Compiler</span>
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-[95vw] w-full h-[95vh] p-0 gap-0 bg-background border-none shadow-2xl">
-                        <DialogTitle className="sr-only">Python Online Compiler</DialogTitle>
-                        <div className="h-full w-full overflow-hidden p-4">
-                            <PythonCompiler />
-                        </div>
-                    </DialogContent>
-                </Dialog>
+                <Button
+                    size="lg"
+                    onClick={() => window.open("https://zestcompilers.vercel.app/compilers/python", "_blank")}
+                    className="gap-2 shadow-2xl rounded-full px-6 bg-blue-600 hover:bg-blue-700 hover:scale-105 transition-all text-white border-2 border-white/20"
+                >
+                    <Terminal className="h-5 w-5" />
+                    <span className="hidden sm:inline">Python Compiler</span>
+                </Button>
             </div>
         </div>
     )
