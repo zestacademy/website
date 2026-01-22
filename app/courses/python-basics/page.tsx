@@ -6,11 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { CommentsSection } from "@/components/comments-section"
-import { Clock, Calendar, Target, CheckCircle2, Loader2, PlayCircle, Trophy, Terminal } from "lucide-react"
+import { Clock, Calendar, Target, CheckCircle2, Loader2, PlayCircle, Trophy, Terminal, FileText, ExternalLink } from "lucide-react"
 import { useCourseProgress } from "@/lib/hooks/useCourseProgress"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export default function PythonBasicsCoursePage() {
     const router = useRouter()
@@ -490,6 +491,47 @@ export default function PythonBasicsCoursePage() {
                                 <li>Practice algorithmic problems on coding platforms</li>
                                 <li>Join Python communities and attend meetups</li>
                             </ul>
+                        </CardContent>
+                    </Card>
+
+                    {/* Python Resources Section */}
+                    <Card className="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border-blue-200 dark:border-blue-800">
+                        <CardHeader>
+                            <CardTitle className="text-2xl flex items-center gap-2">
+                                <FileText className="h-6 w-6 text-blue-500" />
+                                Python Handwritten Notes
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <p className="text-muted-foreground">
+                                Comprehensive handwritten notes covering Python fundamentals and advanced concepts.
+                                Perfect companion to this course for revision and quick reference.
+                            </p>
+                            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                                <Link href="/pdfs/python-handwritten-notes.pdf" target="_blank" rel="noopener noreferrer">
+                                    <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                        <FileText className="h-4 w-4" />
+                                        Download Python Notes (PDF)
+                                    </Button>
+                                </Link>
+                            </div>
+                            <Separator />
+                            <div className="bg-white/50 dark:bg-gray-900/50 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                                <p className="text-sm font-semibold text-foreground mb-2">Credits:</p>
+                                <p className="text-sm text-muted-foreground">
+                                    These notes were created and shared by{" "}
+                                    <Link
+                                        href="https://www.linkedin.com/in/dheerendra-singh45/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium inline-flex items-center gap-1"
+                                    >
+                                        Dheerendra Singh
+                                        <ExternalLink className="h-3 w-3" />
+                                    </Link>
+                                    . Special thanks for making this resource available to the community.
+                                </p>
+                            </div>
                         </CardContent>
                     </Card>
 
