@@ -1,14 +1,10 @@
-"use client"
-
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Github, Twitter, Linkedin, Globe, Mail, Instagram, ArrowRight } from 'lucide-react';
+import { Github, Twitter, Linkedin, Globe, Mail, Instagram } from 'lucide-react';
 
 const developers = [
     {
-        id: "srinivasa-manikanta",
         name: "Srinivasa Manikanta",
         role: "EEE Student & Embedded Systems Enthusiast",
         bio: "Passionate about bridging classical electrical systems with modern computational intelligence. Interests span Green Tech, Autonomous Grids, Smart Energy Systems, and Embedded Design.",
@@ -23,7 +19,6 @@ const developers = [
         skills: ["Embedded C", "IoT", "Python", "Green Tech", "Smart Energy"]
     },
     {
-        id: "narlapati-ramu",
         name: "Narlapati Ramu",
         role: "Electrical & Electronics Engineer",
         bio: "Thrives on building solutions that bridge technology and innovation. Learning AI for Embedded Systems and exploring Smart Energy & Green Tech.",
@@ -40,7 +35,6 @@ const developers = [
 ];
 
 export default function Developers() {
-    const router = useRouter();
     return (
         <div className="min-h-screen bg-background text-foreground py-16 px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto space-y-16">
@@ -55,11 +49,7 @@ export default function Developers() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 justify-center items-start">
                     {developers.map((dev, idx) => (
-                        <div
-                            key={idx}
-                            className="group relative bg-card rounded-3xl overflow-hidden border shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
-                            onClick={() => router.push(`/developers/${dev.id}`)}
-                        >
+                        <div key={idx} className="group relative bg-card rounded-3xl overflow-hidden border shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
                             <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                             <div className="p-8 flex flex-col items-center text-center">
@@ -72,10 +62,7 @@ export default function Developers() {
                                     />
                                 </div>
 
-                                <div className="flex items-center gap-2 mb-2">
-                                    <h2 className="text-2xl font-bold">{dev.name}</h2>
-                                    <ArrowRight className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
-                                </div>
+                                <h2 className="text-2xl font-bold mb-2">{dev.name}</h2>
                                 <p className="text-primary font-medium mb-4">{dev.role}</p>
                                 <p className="text-muted-foreground mb-6 leading-relaxed">
                                     {dev.bio}
@@ -89,7 +76,7 @@ export default function Developers() {
                                     ))}
                                 </div>
 
-                                <div className="flex gap-4" onClick={(e) => e.stopPropagation()}>
+                                <div className="flex gap-4">
                                     {dev.links.github && (
                                         <Link href={dev.links.github} target="_blank" className="p-2 rounded-full bg-muted hover:bg-foreground hover:text-background transition-colors">
                                             <Github className="h-5 w-5" />
