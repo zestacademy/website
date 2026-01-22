@@ -21,7 +21,7 @@ const CONFETTI_COLORS = ['#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899']
 
 function generateConfettiPieces(count: number): ConfettiPiece[] {
   const pieces: ConfettiPiece[] = []
-  
+
   for (let i = 0; i < count; i++) {
     pieces.push({
       id: i,
@@ -30,29 +30,25 @@ function generateConfettiPieces(count: number): ConfettiPiece[] {
       delay: Math.random() * 0.5
     })
   }
-  
+
   return pieces
 }
 
-export function CelebrationEffect({ 
-  show, 
-  message = "Amazing!", 
+export function CelebrationEffect({
+  show,
+  message = "Amazing!",
   onComplete,
-  confettiCount = 50 
+  confettiCount = 50
 }: CelebrationEffectProps) {
   const [confetti, setConfetti] = useState<ConfettiPiece[]>([])
   const [isShowing, setIsShowing] = useState(false)
 
   useEffect(() => {
     if (show && !isShowing) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsShowing(true)
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setConfetti(generateConfettiPieces(confettiCount))
     } else if (!show && isShowing) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsShowing(false)
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setConfetti([])
     }
   }, [show, isShowing, confettiCount])
@@ -65,7 +61,7 @@ export function CelebrationEffect({
       setIsShowing(false)
       onComplete?.()
     }, 3000)
-    
+
     return () => clearTimeout(timer)
   }, [isShowing, onComplete])
 
@@ -84,7 +80,7 @@ export function CelebrationEffect({
           }}
         />
       ))}
-      
+
       {message && (
         <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <div className="flex items-center gap-2 bg-background/90 backdrop-blur-sm border-2 border-accent px-6 py-3 rounded-full shadow-lg animate-scaleIn">

@@ -1,8 +1,19 @@
-import { ArrowRight, Code2, Layers, Network, Database, Trophy, Calendar, Target } from "lucide-react"
+import { ArrowRight, Code2, Trophy, Calendar, Target } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
-const paths: any[] = []
+interface Path {
+    title: string;
+    description: string;
+    weeks: string;
+    topics: string;
+    level: string;
+    outcome: string;
+    color: string;
+    icon: any;
+}
+
+const paths: Path[] = []
 
 export function CourseSection() {
     return (

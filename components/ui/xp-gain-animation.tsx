@@ -14,10 +14,8 @@ export function XPGainAnimation({ amount, show, onComplete }: XPGainAnimationPro
 
   useEffect(() => {
     if (show && !isVisible) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsVisible(true)
     } else if (!show && isVisible) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsVisible(false)
     }
   }, [show, isVisible])
@@ -29,7 +27,7 @@ export function XPGainAnimation({ amount, show, onComplete }: XPGainAnimationPro
       setIsVisible(false)
       onComplete?.()
     }, 2000)
-    
+
     return () => clearTimeout(timer)
   }, [isVisible, onComplete])
 

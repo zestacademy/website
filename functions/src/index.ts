@@ -44,12 +44,22 @@ export const onNewUserSignup = functions.auth.user().onCreate(async (user) => {
             email: email,
             sendx_id: response.data?.id,
         });
-    } catch (error: any) {
+    } catch (error) {
+        let errorMessage = "Unknown error";
+        let responseData = undefined;
+
+        if (axios.isAxiosError(error)) {
+            errorMessage = error.message;
+            responseData = error.response?.data;
+        } else if (error instanceof Error) {
+            errorMessage = error.message;
+        }
+
         functions.logger.error("Error sending welcome email via SendX", {
             uid: user.uid,
             email: email,
-            error: error.message,
-            response: error.response?.data,
+            error: errorMessage,
+            response: responseData,
         });
     }
 });

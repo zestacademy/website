@@ -29,8 +29,10 @@ const db = initializeFirestore(app, {
 
 const database = getDatabase(app, "https://zest-academy-default-rtdb.firebaseio.com/");
 
+import type { Analytics } from "firebase/analytics";
+
 // Analytics (only on client side and if supported)
-let analytics: any;
+let analytics: Analytics | undefined;
 
 if (typeof window !== "undefined") {
     import("firebase/analytics").then((analyticsModule) => {

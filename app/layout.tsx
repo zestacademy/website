@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
@@ -20,12 +20,23 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Zest Academy - Master Engineering Fundamentals & Ace Interviews",
   description: "Structured learning paths for engineering students. Master Data Structures, System Design, and interview preparation with expert-crafted courses.",
+  manifest: "/manifest.json",
   icons: {
     icon: "/logo.png",
+    apple: "/logo.png",
   },
   verification: {
     google: "XoGJcqQCUC6FagE9BnC-Rij2ju25_hn4ZrVu2fegn1I",
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Zest Academy",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
 };
 
 
@@ -40,6 +51,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        suppressHydrationWarning
       >
         <ThemeProvider
           attribute="class"
