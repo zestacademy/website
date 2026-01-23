@@ -5,6 +5,8 @@ import { MessageSquare, Code, Briefcase, Coffee, ArrowRight, Rocket, Terminal } 
 import { useRouter } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Leaderboard } from "@/components/Leaderboard"
+import { NewsSection } from "@/components/community/NewsSection"
+import { JobsSection } from "@/components/community/JobsSection"
 
 const FORUMS = [
     {
@@ -65,6 +67,14 @@ export default function CommunityPage() {
                             </CardHeader>
                         </Card>
                     ))}
+                </div>
+
+                <div className="mt-16">
+                    <NewsSection />
+                </div>
+
+                <div className="mt-16">
+                    <JobsSection />
                 </div>
 
                 <div className="mt-16 border-t pt-12">
