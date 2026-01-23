@@ -1,9 +1,19 @@
-"use client"
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { CommentsSection } from "@/components/comments-section"
 import { ArticleHeader, ArticleFooter } from "@/components/articles"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: "Comprehensive Guide to Artificial Intelligence | Zest Academy",
+    description: "Explore the complete journey of AI—from basic concepts and neural networks to cutting-edge applications and generative AI trends.",
+    openGraph: {
+        title: "Comprehensive Guide to Artificial Intelligence",
+        description: "From fundamentals to modern applications: A complete guide to AI, Machine Learning, and Deep Learning.",
+        type: "article",
+        url: "https://zestacademyonline.vercel.app/articles/comprehensive-guide-to-ai",
+    },
+}
 
 export default function ComprehensiveAIGuidePage() {
     const articleTitle = "Comprehensive Guide to Artificial Intelligence: From Fundamentals to Modern Applications"
@@ -13,7 +23,7 @@ export default function ComprehensiveAIGuidePage() {
     return (
         <div className="flex flex-col min-h-screen">
             {/* Article Header with Share and Download */}
-            <ArticleHeader 
+            <ArticleHeader
                 title={articleTitle}
                 description={articleDescription}
                 url={articleUrl}

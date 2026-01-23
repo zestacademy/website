@@ -9,12 +9,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
         '/categories',
         '/courses',
         '/courses/python-basics',
+        '/courses/internet-of-things',
         '/articles/ai-tools-guide',
         '/articles/comprehensive-guide-to-ai',
         '/articles/placement-interview-questions',
         '/articles/what-is-api',
         '/articles/resistor-guide',
         '/articles/digital-electronics-interview-questions',
+        '/articles/electronics-to-embedded-mastery',
     ]
 
     return routes.map((route) => ({

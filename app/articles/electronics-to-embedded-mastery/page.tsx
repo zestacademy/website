@@ -1,10 +1,20 @@
-"use client"
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { CommentsSection } from "@/components/comments-section"
 import { ArticleHeader, ArticleFooter } from "@/components/articles"
 import { Cpu, Zap, Radio, Shield, Code, Layers } from "lucide-react"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: "From Electronics to Embedded Mastery | Zest Academy",
+    description: "Discover the comprehensive roadmap from electronics fundamentals to embedded systems mastery. Explore essential skills, tools, and protocols.",
+    openGraph: {
+        title: "From Electronics to Embedded Mastery",
+        description: "How foundational theory and practical systems knowledge combine to shape elite embedded systems professionals.",
+        type: "article",
+        url: "https://zestacademyonline.vercel.app/articles/electronics-to-embedded-mastery",
+    },
+}
 
 export default function ElectronicsToEmbeddedMasteryPage() {
     const articleTitle = "From Electronics to Embedded Mastery: A Comprehensive Skill Stack for Modern Engineers"
@@ -14,7 +24,7 @@ export default function ElectronicsToEmbeddedMasteryPage() {
     return (
         <div className="flex flex-col min-h-screen">
             {/* Article Header with Share and Download */}
-            <ArticleHeader 
+            <ArticleHeader
                 title={articleTitle}
                 description={articleDescription}
                 url={articleUrl}
@@ -67,7 +77,7 @@ export default function ElectronicsToEmbeddedMasteryPage() {
                                 <p>
                                     Every embedded systems engineer must have a solid grounding in electronics fundamentals. These core principles form the foundation upon which all higher-level firmware and software decisions are built.
                                 </p>
-                                
+
                                 <div className="mt-6">
                                     <h3 className="text-xl font-semibold text-foreground mb-3">Essential Electronics Knowledge</h3>
                                     <ul className="list-disc list-inside space-y-2 ml-4">
@@ -103,7 +113,7 @@ export default function ElectronicsToEmbeddedMasteryPage() {
 
                                 <div className="mt-6">
                                     <h3 className="text-xl font-semibold text-foreground mb-3">Key Low-Level Programming Domains</h3>
-                                    
+
                                     <div className="space-y-4">
                                         <div>
                                             <h4 className="text-lg font-semibold text-foreground">GPIO, Timers, and Counters</h4>
@@ -231,7 +241,7 @@ export default function ElectronicsToEmbeddedMasteryPage() {
 
                                 <div className="mt-6">
                                     <h3 className="text-xl font-semibold text-foreground mb-3">Programming Languages</h3>
-                                    
+
                                     <div className="space-y-4">
                                         <div>
                                             <h4 className="text-lg font-semibold text-foreground">Assembly</h4>
@@ -267,7 +277,7 @@ export default function ElectronicsToEmbeddedMasteryPage() {
 
                                 <div className="mt-6">
                                     <h3 className="text-xl font-semibold text-foreground mb-3">Operating Systems and Platforms</h3>
-                                    
+
                                     <div className="space-y-4">
                                         <div>
                                             <h4 className="text-lg font-semibold text-foreground">Embedded Linux</h4>
@@ -316,7 +326,7 @@ export default function ElectronicsToEmbeddedMasteryPage() {
 
                                 <div className="mt-6">
                                     <h3 className="text-xl font-semibold text-foreground mb-3">Key Industry Standards</h3>
-                                    
+
                                     <div className="space-y-4">
                                         <div>
                                             <h4 className="text-lg font-semibold text-foreground">ISO 26262 - Automotive</h4>
@@ -418,7 +428,7 @@ export default function ElectronicsToEmbeddedMasteryPage() {
                                     <p className="text-sm mb-3">
                                         &quot;From Electronics and Low-Level Programming to Embedded Systems Mastery&quot;
                                     </p>
-                                    <a 
+                                    <a
                                         href="https://www.linkedin.com/posts/ala-eddine-hammouda_from-electronics-and-low-level-programming-activity-7416171530675781632-Q6ta?utm_source=share&utm_medium=member_desktop"
                                         target="_blank"
                                         rel="noopener noreferrer"
@@ -428,11 +438,11 @@ export default function ElectronicsToEmbeddedMasteryPage() {
                                     </a>
                                 </div>
                                 <div className="mt-4">
-                                    <iframe 
-                                        src="https://www.linkedin.com/embed/feed/update/urn:li:share:7416171530675781632" 
-                                        height="600" 
-                                        width="100%" 
-                                        frameBorder="0" 
+                                    <iframe
+                                        src="https://www.linkedin.com/embed/feed/update/urn:li:share:7416171530675781632"
+                                        height="600"
+                                        width="100%"
+                                        frameBorder="0"
                                         allowFullScreen
                                         title="Embedded post from Ala Eddine Hammouda"
                                         className="rounded-lg border"
