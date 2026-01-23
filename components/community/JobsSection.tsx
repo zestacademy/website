@@ -34,7 +34,7 @@ export function JobsSection() {
         return (
             <section className="py-8 border-t">
                 <div className="h-8 w-48 bg-muted animate-pulse rounded mb-6"></div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-4">
                     {[1, 2, 3, 4].map((i) => (
                         <div key={i} className="h-48 bg-muted animate-pulse rounded-xl"></div>
                     ))}
@@ -57,7 +57,7 @@ export function JobsSection() {
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-4">
                 {jobs.map((job) => (
                     <Card key={job.id} className="group hover:border-primary/50 transition-all duration-300">
                         <CardContent className="p-6">
