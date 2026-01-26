@@ -31,8 +31,8 @@ export function CourseSection() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 {paths.map((path, index) => (
-                    <div key={index} className="flex flex-col gap-6 p-8 rounded-2xl bg-card border-2 border-muted hover:border-primary/40 hover:shadow-xl transition-all group">
-                        <div className="flex items-start gap-6">
+                    <div key={index} className="flex flex-col gap-6 p-6 sm:p-8 rounded-2xl bg-card border-2 border-muted hover:border-primary/40 hover:shadow-xl transition-all group">
+                        <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                             <div className={`p-4 rounded-xl h-fit ${path.color} group-hover:scale-105 transition-transform`}>
                                 <path.icon className="h-8 w-8" />
                             </div>

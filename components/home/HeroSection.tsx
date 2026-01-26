@@ -87,10 +87,10 @@ export function HeroSection() {
                         <span className="text-sm font-medium">For Engineering Learners</span>
                     </div>
 
-                    <div className="h-40 sm:h-32 lg:h-40 flex items-center justify-center">
-                        <h1 className={`text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl leading-tight text-transparent bg-clip-text bg-gradient-to-r ${QUOTE_COLORS[quoteIndex]}`}>
+                    <div className="min-h-[10rem] sm:min-h-[8rem] lg:min-h-[10rem] flex items-center justify-center py-2">
+                        <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r ${QUOTE_COLORS[quoteIndex]}`}>
                             {text}
-                            <span className="animate-pulse ml-1 inline-block bg-white w-2 h-12 md:h-16 align-middle"></span>
+                            <span className="animate-pulse ml-1 inline-block bg-white w-1.5 h-8 md:w-2 md:h-12 lg:h-16 align-middle"></span>
                         </h1>
                     </div>
 
