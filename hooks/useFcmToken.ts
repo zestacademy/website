@@ -24,7 +24,9 @@ const useFcmToken = () => {
                         vapidKey: "BP8s1Xh2-E0gS7d8q... (Example, replace if you have one)"
                     }).catch(async (err) => {
                         console.warn("Retrying getToken without VAPID key", err);
-                        return await getToken(messaging);
+                        // messaging is verified not null in the if condition above, but TS needs a hint in the callback
+                        if (messaging) return await getToken(messaging);
+                        return null;
                     });
 
                     if (currentToken) {
