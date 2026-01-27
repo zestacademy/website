@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState } from 'react';
-import { db, database } from '@/lib/firebase';
+import { db, database, app } from '@/lib/firebase';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import { collection, query, orderBy, onSnapshot, Timestamp, deleteDoc, doc, collectionGroup } from 'firebase/firestore';
 import { ref, onValue } from 'firebase/database';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -9,8 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { Trash2, MessageSquare, Mail, AlertTriangle } from 'lucide-react';
+import { Trash2, MessageSquare, Mail, AlertTriangle, Bell, Send } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ContactMessage {
     id: string;
@@ -33,6 +37,10 @@ interface Comment {
 export default function AdminDashboard() {
     const [messages, setMessages] = useState<ContactMessage[]>([]);
     const [comments, setComments] = useState<Comment[]>([]);
+    const [notifTitle, setNotifTitle] = useState('');
+    const [notifBody, setNotifBody] = useState('');
+    const [notifLink, setNotifLink] = useState('');
+    const [sendingNotif, setSendingNotif] = useState(false);
 
     const [loading, setLoading] = useState(true);
     const [isUnauthorized, setIsUnauthorized] = useState(false);
@@ -151,15 +159,39 @@ export default function AdminDashboard() {
     const handleDeleteComment = async (refPath: string) => {
         if (!confirm("Are you sure you want to delete this comment?")) return;
         try {
-            // refPath is like "articles/articleId/comments/commentId"
-            // We need to create a doc reference from the path
-            // The db instance is the root, so we can pass the path segments or parse it.
-            // Simplest is to just use the path string if the SDK supports it, or split it.
-            // However, doc(db, path) works.
             await deleteDoc(doc(db, refPath));
         } catch (error: any) {
             console.error("Error deleting comment:", error);
             alert(`Failed to delete comment: ${error.message || "Unknown error"}`);
+        }
+    };
+
+    const handleSendNotification = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!notifTitle || !notifBody) {
+            alert("Title and Body are required");
+            return;
+        }
+
+        setSendingNotif(true);
+        try {
+            const functions = getFunctions(app);
+            const sendFn = httpsCallable(functions, 'sendAdminNotification');
+            await sendFn({
+                title: notifTitle,
+                body: notifBody,
+                link: notifLink
+            });
+            alert("Notification sent successfully to all subscribed users!");
+            setNotifTitle('');
+            setNotifBody('');
+            setNotifLink('');
+        } catch (error: any) {
+            console.error("Error sending notification:", error);
+            const msg = error.details?.message || error.message || "Unknown error";
+            alert(`Failed to send notification: ${msg}`);
+        } finally {
+            setSendingNotif(false);
         }
     };
 
@@ -182,6 +214,9 @@ export default function AdminDashboard() {
                         <TabsTrigger value="comments" className="px-6 gap-2">
                             <MessageSquare className="h-4 w-4" /> Discussion Moderation
                             <span className="ml-1 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">{comments.length}</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="notifications" className="px-6 gap-2">
+                            <Bell className="h-4 w-4" /> Push Notifications
                         </TabsTrigger>
 
                     </TabsList>
@@ -303,6 +338,68 @@ export default function AdminDashboard() {
                                         </tbody>
                                     </table>
                                 </div>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+
+                    {/* NOTIFICATIONS TAB */}
+                    <TabsContent value="notifications">
+                        <Card className="border-none shadow-md max-w-2xl mx-auto">
+                            <CardHeader className="bg-muted/30 pb-4">
+                                <CardTitle className="text-xl flex items-center gap-2">
+                                    <Bell className="h-5 w-5 text-primary" />
+                                    Send Global Push Notification
+                                </CardTitle>
+                                <CardDescription>
+                                    Send a notification to all users who have subscribed to daily updates.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="p-6">
+                                <form onSubmit={handleSendNotification} className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="title">Notification Title</Label>
+                                        <Input
+                                            id="title"
+                                            placeholder="e.g., New Course Available: React Mastery"
+                                            value={notifTitle}
+                                            onChange={(e: { target: { value: any; }; }) => setNotifTitle(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="body">Message Body</Label>
+                                        <Textarea
+                                            id="body"
+                                            placeholder="Briefly describe the update..."
+                                            value={notifBody}
+                                            onChange={(e: { target: { value: any; }; }) => setNotifBody(e.target.value)}
+                                            required
+                                            rows={4}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="link">Click Action Link (Optional)</Label>
+                                        <Input
+                                            id="link"
+                                            placeholder="https://zestacademy.com/courses/react-mastery"
+                                            value={notifLink}
+                                            onChange={(e: { target: { value: any; }; }) => setNotifLink(e.target.value)}
+                                        />
+                                        <p className="text-xs text-muted-foreground">URL to open when user clicks the notification.</p>
+                                    </div>
+                                    <div className="pt-4">
+                                        <Button type="submit" className="w-full" disabled={sendingNotif}>
+                                            {sendingNotif ? (
+                                                <>Sending...</>
+                                            ) : (
+                                                <div className="flex items-center gap-2">
+                                                    <Send className="h-4 w-4" />
+                                                    Send to All Users
+                                                </div>
+                                            )}
+                                        </Button>
+                                    </div>
+                                </form>
                             </CardContent>
                         </Card>
                     </TabsContent>

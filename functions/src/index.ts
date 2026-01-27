@@ -63,3 +63,82 @@ export const onNewUserSignup = functions.auth.user().onCreate(async (user) => {
         });
     }
 });
+
+export const subscribeToTopic = functions.https.onCall(async (data, context) => {
+    const token = data.token;
+    const topic = data.topic || 'daily_updates';
+
+    if (!token) {
+        throw new functions.https.HttpsError('invalid-argument', 'FCM Token must be provided');
+    }
+
+    try {
+        await admin.messaging().subscribeToTopic(token, topic);
+        return { success: true, message: `Subscribed to ${topic}` };
+    } catch (error) {
+        console.error("Subscription error:", error);
+        throw new functions.https.HttpsError('internal', 'Failed to subscribe to topic', error);
+    }
+});
+
+export const sendDailyNotifications = functions.pubsub.schedule('every 24 hours').timeZone('Asia/Kolkata').onRun(async (context) => {
+    const topic = 'daily_updates';
+
+    // Different messages for variety could be added here
+    const message = {
+        topic: topic,
+        notification: {
+            title: 'Zest Academy Daily Update',
+            body: 'Check out what is new today! Keep up your learning streak.',
+        },
+        webpush: {
+            fcmOptions: {
+                link: 'https://zestcompilers.vercel.app/courses'
+            }
+        }
+    };
+
+    try {
+        const response = await admin.messaging().send(message);
+        console.log('Successfully sent daily message:', response);
+    } catch (error) {
+        console.error('Error sending daily message:', error);
+    }
+
+    return null;
+});
+
+export const sendAdminNotification = functions.https.onCall(async (data, context) => {
+    // Check if user is admin (simple check, ideally use custom claims or admin list in env)
+    // For now, we rely on the client-side check + maybe a simple email check if context.auth exists
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
+    }
+
+    const { title, body, link } = data;
+
+    if (!title || !body) {
+        throw new functions.https.HttpsError('invalid-argument', 'Title and body are required.');
+    }
+
+    const message = {
+        topic: 'daily_updates',
+        notification: {
+            title: title,
+            body: body,
+        },
+        webpush: {
+            fcmOptions: {
+                link: link || 'https://zestcompilers.vercel.app/'
+            }
+        }
+    };
+
+    try {
+        const response = await admin.messaging().send(message);
+        return { success: true, messageId: response };
+    } catch (error) {
+        console.error("Error sending admin notification:", error);
+        throw new functions.https.HttpsError('internal', 'Failed to send notification', error);
+    }
+});

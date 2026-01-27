@@ -23,6 +23,7 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { UserProfile } from "@/components/layout/UserProfile"
+import { NotificationToggle } from "@/components/layout/NotificationToggle"
 import { cn } from "@/lib/utils"
 
 export function Navbar() {
@@ -101,7 +102,7 @@ export function Navbar() {
                 </nav>
 
                 <div className="flex items-center space-x-2 lg:space-x-4">
-                     <div className="hidden lg:block relative w-64">
+                    <div className="hidden lg:block relative w-64">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground transition-colors" />
                         <Input
                             placeholder="Search topics..."
@@ -110,6 +111,8 @@ export function Navbar() {
                     </div>
 
                     <UserProfile />
+
+                    <NotificationToggle />
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -142,7 +145,7 @@ export function Navbar() {
                         <SheetContent side="left" className="w-[300px] sm:w-[400px]">
                             <SheetHeader>
                                 <SheetTitle className="text-left flex items-center gap-2">
-                                     <div className="relative h-8 w-8">
+                                    <div className="relative h-8 w-8">
                                         <Image
                                             src="/logo.png"
                                             alt="Zest Academy"
@@ -163,11 +166,11 @@ export function Navbar() {
                                 </div>
                                 <nav className="flex flex-col gap-4">
                                     {navLinks.map((link) => {
-                                         const isExternal = link.href.startsWith("http");
-                                         const isActive = link.href === "/"
+                                        const isExternal = link.href.startsWith("http");
+                                        const isActive = link.href === "/"
                                             ? pathname === "/"
                                             : pathname.startsWith(link.href) && !isExternal;
-                                        
+
                                         return (
                                             <Link
                                                 key={link.href}

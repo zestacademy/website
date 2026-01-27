@@ -2,6 +2,7 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
+import { getMessaging, Messaging } from "firebase/messaging";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -29,6 +30,11 @@ const db = initializeFirestore(app, {
 
 const database = getDatabase(app, "https://zest-academy-default-rtdb.firebaseio.com/");
 
+let messaging: Messaging | undefined;
+if (typeof window !== "undefined") {
+    messaging = getMessaging(app);
+}
+
 import type { Analytics } from "firebase/analytics";
 
 // Analytics (only on client side and if supported)
@@ -44,4 +50,4 @@ if (typeof window !== "undefined") {
     }).catch((e) => console.error("Analytics not supported", e));
 }
 
-export { app, auth, db, database, analytics };
+export { app, auth, db, database, analytics, messaging };
