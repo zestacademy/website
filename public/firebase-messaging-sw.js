@@ -1,14 +1,16 @@
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
 
+const params = new URL(location).searchParams;
+
 const firebaseConfig = {
-    apiKey: "AIzaSyA0_6QiV46ti5N5kxQ8CEfwrgH8bTM6FEk",
-    authDomain: "website-39337.firebaseapp.com",
-    projectId: "website-39337",
-    storageBucket: "website-39337.firebasestorage.app",
-    messagingSenderId: "614695113156",
-    appId: "1:614695113156:web:9f43a0c73e29c7e9a11491",
-    measurementId: "G-XLK1VCTKZ8"
+    apiKey: params.get('apiKey'),
+    authDomain: params.get('authDomain'),
+    projectId: params.get('projectId'),
+    storageBucket: params.get('storageBucket'),
+    messagingSenderId: params.get('messagingSenderId'),
+    appId: params.get('appId'),
+    measurementId: params.get('measurementId')
 };
 
 firebase.initializeApp(firebaseConfig);

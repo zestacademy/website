@@ -19,9 +19,15 @@ const useFcmToken = () => {
                 setNotificationPermission(permission);
 
                 if (permission === 'granted') {
+                    // Register service worker with env vars
+                    const swUrl = `/firebase-messaging-sw.js?apiKey=${process.env.NEXT_PUBLIC_FIREBASE_API_KEY}&authDomain=${process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}&projectId=${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}&storageBucket=${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}&messagingSenderId=${process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID}&appId=${process.env.NEXT_PUBLIC_FIREBASE_APP_ID}&measurementId=${process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID}`;
+
+                    const registration = await navigator.serviceWorker.register(swUrl);
+
                     // Attempt to get token
                     const currentToken = await getToken(messaging, {
-                        vapidKey: "BP8s1Xh2-E0gS7d8q... (Example, replace if you have one)"
+                        vapidKey: "BP8s1Xh2-E0gS7d8q... (Example, replace if you have one)",
+                        serviceWorkerRegistration: registration
                     }).catch(async (err) => {
                         console.warn("Retrying getToken without VAPID key", err);
                         // messaging is verified not null in the if condition above, but TS needs a hint in the callback
