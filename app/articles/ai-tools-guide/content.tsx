@@ -23,7 +23,7 @@ const iconMap: Record<string, React.ElementType> = {
 export default function AIToolsGuideContent() {
     const articleTitle = "The Ultimate Guide to AI Tools: Supercharge Your Workflow in 2025"
     const articleDescription = "Discover 84 powerful AI tools across 8 categories to transform your content creation, design, analytics, and productivity"
-    const articleUrl = 'https://zestacademy.in/articles/ai-tools-guide'
+    const articleUrl = 'https://zestacademy.tech/articles/ai-tools-guide'
 
     // Helper to get domain for favicon
     const getFaviconUrl = (url: string) => {

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
         title: "The Ultimate Guide to AI Tools",
         description: "Supercharge your workflow with these 84 AI tools.",
         type: "article",
-        url: "https://zestacademyonline.vercel.app/articles/ai-tools-guide",
+        url: "https://zestacademy.tech/articles/ai-tools-guide",
     },
 }
 

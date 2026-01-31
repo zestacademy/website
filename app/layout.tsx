@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://zestacademyonline.vercel.app"),
+  metadataBase: new URL("https://zestacademy.tech"),
   title: {
     default: "Zest Academy - Master Engineering Fundamentals & Ace Interviews",
     template: "%s | Zest Academy",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Zest Academy - Master Engineering Fundamentals",
     description: "Structured learning paths for engineering students. Master Data Structures, System Design, and interview preparation.",
-    url: "https://zestacademyonline.vercel.app",
+    url: "https://zestacademy.tech",
     siteName: "Zest Academy",
     images: [
       {

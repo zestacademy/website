@@ -12,14 +12,14 @@ export const metadata: Metadata = {
         title: "From Electronics to Embedded Mastery",
         description: "How foundational theory and practical systems knowledge combine to shape elite embedded systems professionals.",
         type: "article",
-        url: "https://zestacademyonline.vercel.app/articles/electronics-to-embedded-mastery",
+        url: "https://zestacademy.tech/articles/electronics-to-embedded-mastery",
     },
 }
 
 export default function ElectronicsToEmbeddedMasteryPage() {
     const articleTitle = "From Electronics to Embedded Mastery: A Comprehensive Skill Stack for Modern Engineers"
     const articleDescription = "How foundational theory and practical systems knowledge combine to shape elite embedded systems professionals"
-    const articleUrl = 'https://zestacademy.in/articles/electronics-to-embedded-mastery'
+    const articleUrl = 'https://zestacademy.tech/articles/electronics-to-embedded-mastery'
 
     return (
         <div className="flex flex-col min-h-screen">

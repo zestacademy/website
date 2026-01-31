@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "20-Day Python Learning Course",
         description: "Master Python from scratch with our structured 20-day learning path. Includes projects, exercises, and notes.",
-        url: "https://zestacademyonline.vercel.app/courses/python-basics",
+        url: "https://zestacademy.tech/courses/python-basics",
         type: "website",
     },
     alternates: {

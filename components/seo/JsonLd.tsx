@@ -3,8 +3,8 @@ export default function JsonLd() {
         "@context": "https://schema.org",
         "@type": "EducationalOrganization",
         "name": "Zest Academy",
-        "url": "https://zestacademyonline.vercel.app",
-        "logo": "https://zestacademyonline.vercel.app/logo.png",
+        "url": "https://zestacademy.tech",
+        "logo": "https://zestacademy.tech/logo.png",
         "sameAs": [
             "https://twitter.com/zestacademy",
             "https://linkedin.com/company/zestacademy"
