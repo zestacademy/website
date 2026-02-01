@@ -22,8 +22,8 @@ export function Footer() {
                 </div>
 
                 <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-                    <a href="mailto:zestacademy@rsmk.co.in" className="hover:text-primary transition-colors">
-                        zestacademy@rsmk.co.in
+                    <a href="mailto:zestacademyonline@gmail.com" className="hover:text-primary transition-colors">
+                        zestacademyonline@gmail.com
                     </a>
                     <Link href="/about-us" className="hover:text-primary transition-colors">
                         About Us
