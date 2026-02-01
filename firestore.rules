@@ -16,7 +16,6 @@ service cloud.firestore {
     // Helper function to check if user is the specific Admin
     function isAdmin() {
       return request.auth != null && (
-        request.auth.token.email == 'zestacademy@rsmk.co.in' || 
         request.auth.token.email == 'zestacademyonline@gmail.com'
       );
     }

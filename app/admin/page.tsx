@@ -47,7 +47,7 @@ export default function AdminDashboard() {
 
     const router = useRouter();
     const auth = getAuth();
-    const ADMIN_EMAILS = ["zestacademyonline@gmail.com", "zestacademy@rsmk.co.in"];
+    const ADMIN_EMAILS = ["zestacademyonline@gmail.com"];
 
     useEffect(() => {
         let unsubscribeMsgs: (() => void) | null = null;

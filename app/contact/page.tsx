@@ -87,7 +87,7 @@ export default function Contact() {
                                         </div>
                                         <div>
                                             <p className="font-medium text-sm text-muted-foreground">Email Us</p>
-                                            <p className="font-semibold text-foreground">zestacademy@rsmk.co.in</p>
+                                            <p className="font-semibold text-foreground">zestacademyonline@gmail.com</p>
                                         </div>
                                     </div>
 
