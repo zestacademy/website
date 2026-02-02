@@ -7,7 +7,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/toast-provider";
 import { ReadingProgressBar } from "@/components/ui/reading-progress-bar";
 import JsonLd from "@/components/seo/JsonLd";
-import { SessionProvider } from "@/components/providers/SessionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -110,14 +109,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SessionProvider>
-            <ToastProvider>
-              <ReadingProgressBar />
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </ToastProvider>
-          </SessionProvider>
+          <ToastProvider>
+            <ReadingProgressBar />
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>
