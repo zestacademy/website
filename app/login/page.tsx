@@ -75,10 +75,11 @@ function LoginContent() {
         setError(null)
 
         try {
+            if (!auth) {
+                throw new Error("Firebase authentication is not initialized")
+            }
             const provider = new GoogleAuthProvider()
-            const result = await signInWithPopup(auth!, provider)
-            const user = result.user
-            console.log("Google sign-in successful:", user)
+            await signInWithPopup(auth, provider)
             // Redirect to home page after successful login
             router.push("/")
         } catch (e) {
@@ -204,7 +205,7 @@ function LoginContent() {
                                 </Button>
                             </div>
                             <p className="mt-4 text-xs text-center text-muted-foreground">
-                                Secure authentication powered by ZestAcademy SSO
+                                Secure authentication powered by ZestAcademy SSO and Google
                             </p>
                         </CardContent>
                         <CardFooter className="flex flex-col space-y-4 p-0 mt-6 text-center text-sm text-muted-foreground">
