@@ -30,7 +30,7 @@ export function Leaderboard({ courseId, title }: LeaderboardProps) {
             setLoading(true)
             try {
                 const q = query(
-                    collection(db, "leaderboards", courseId, "users"),
+                    collection(db!, "leaderboards", courseId, "users"),
                     orderBy("totalScore", "desc"),
                     limit(20)
                 )

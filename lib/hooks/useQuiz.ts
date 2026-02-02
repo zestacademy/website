@@ -17,7 +17,7 @@ export function useQuiz(courseId: string) {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth!, (currentUser) => {
             setUser(currentUser)
             if (!currentUser) {
                 setQuizScores({})
@@ -33,7 +33,7 @@ export function useQuiz(courseId: string) {
         const fetchScores = async () => {
             try {
                 const enrollmentId = `${user.uid}_${courseId}`
-                const quizRef = collection(db, "enrollments", enrollmentId, "quiz_attempts")
+                const quizRef = collection(db!, "enrollments", enrollmentId, "quiz_attempts")
                 const snapshot = await getDocs(quizRef)
 
                 const scores: Record<number, QuizResult> = {}
@@ -63,7 +63,7 @@ export function useQuiz(courseId: string) {
         }
 
         // 1. Save individual quiz result
-        const quizDocRef = doc(db, "enrollments", enrollmentId, "quiz_attempts", weekNumber.toString())
+        const quizDocRef = doc(db!, "enrollments", enrollmentId, "quiz_attempts", weekNumber.toString())
         await setDoc(quizDocRef, result)
 
         // 2. Update local state
@@ -78,7 +78,7 @@ export function useQuiz(courseId: string) {
 
     const updateTotalScore = async (enrollmentId: string, currentUser: User) => {
         // Recalculate total score
-        const quizRef = collection(db, "enrollments", enrollmentId, "quiz_attempts")
+        const quizRef = collection(db!, "enrollments", enrollmentId, "quiz_attempts")
         const snapshot = await getDocs(quizRef)
         let totalScore = 0
         let maxPossibleScore = 0
@@ -90,13 +90,13 @@ export function useQuiz(courseId: string) {
         })
 
         // Update enrollment
-        await updateDoc(doc(db, "enrollments", enrollmentId), {
+        await updateDoc(doc(db!, "enrollments", enrollmentId), {
             totalScore,
             maxPossibleScore
         })
 
         // Update Leaderboard
-        const leaderboardRef = doc(db, "leaderboards", courseId, "users", currentUser.uid)
+        const leaderboardRef = doc(db!, "leaderboards", courseId, "users", currentUser.uid)
         await setDoc(leaderboardRef, {
             userId: currentUser.uid,
             displayName: currentUser.displayName || "Anonymous",

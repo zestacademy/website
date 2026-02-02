@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// Temporarily disable Google Fonts due to network issues in build environment
+// import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -7,16 +8,21 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/toast-provider";
 import { ReadingProgressBar } from "@/components/ui/reading-progress-bar";
 import JsonLd from "@/components/seo/JsonLd";
+import { SSOProvider } from "@/contexts/SSOContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// const geistSans = Geist({
+//   variable: "--font-geist-sans",
+//   subsets: ["latin"],
+//   fallback: ["system-ui", "arial"],
+//   display: "swap",
+// });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+//   fallback: ["ui-monospace", "monospace"],
+//   display: "swap",
+// });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://zestacademy.tech"),
@@ -99,7 +105,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className="antialiased min-h-screen flex flex-col"
         suppressHydrationWarning
       >
         <JsonLd />
@@ -109,12 +115,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ToastProvider>
-            <ReadingProgressBar />
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </ToastProvider>
+          <SSOProvider>
+            <ToastProvider>
+              <ReadingProgressBar />
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </ToastProvider>
+          </SSOProvider>
         </ThemeProvider>
       </body>
     </html>

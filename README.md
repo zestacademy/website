@@ -5,7 +5,14 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 Create a `.env.local` file in the root directory with the following variables:
 
 ```env
-# Firebase Configuration (required for authentication and database)
+# SSO Configuration (ZestAcademy Authentication)
+# Required for user authentication across all ZestAcademy platforms
+NEXT_PUBLIC_AUTH_SERVER_URL=https://auth.zestacademy.tech
+NEXT_PUBLIC_SSO_CLIENT_ID=zestacademy-website
+SSO_CLIENT_SECRET=your_client_secret_here
+NEXT_PUBLIC_SSO_REDIRECT_URI=https://zestacademy.tech/api/auth/callback
+
+# Firebase Configuration (Legacy - used for database only)
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
@@ -20,6 +27,7 @@ NEXT_PUBLIC_JDOODLE_CLIENT_SECRET=your_jdoodle_client_secret
 ```
 
 **Note**: 
+- **SSO Authentication**: This website uses centralized Single Sign-On via `auth.zestacademy.tech`. See [SSO_IMPLEMENTATION.md](./SSO_IMPLEMENTATION.md) for details.
 - The C Compiler requires JDoodle API credentials to function. Sign up at [JDoodle](https://www.jdoodle.com/compiler-api/) to get free API credentials (200 requests/day on the free tier).
 - The Web Playground (HTML/CSS/JS) and SQL Practice Lab work client-side and do not require any API keys.
 
@@ -57,3 +65,25 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Single Sign-On (SSO)
+
+This website uses a centralized Single Sign-On system powered by `auth.zestacademy.tech`. This enables users to authenticate once and access all ZestAcademy platforms with a single account:
+
+- **zestacademy.tech** (Main website)
+- **zestfolio.tech** (Portfolio platform)
+- **zestcompilers.tech** (Compiler platform)
+
+### Features
+
+- 🔐 Secure OAuth 2.0 authentication with PKCE
+- 🍪 HTTP-only cookies (tokens never exposed to JavaScript)
+- 🔄 Seamless login across all platforms
+- 🚪 Global logout support
+- ✨ Google-style redirect & consent flow
+
+### Documentation
+
+For detailed information about the SSO implementation, see:
+- [SSO_IMPLEMENTATION.md](./SSO_IMPLEMENTATION.md) - Technical implementation guide
+- [SSO_INTEGRATION_SUMMARY.md](./SSO_INTEGRATION_SUMMARY.md) - Integration summary and deployment checklist

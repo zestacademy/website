@@ -19,7 +19,7 @@ export function useCourseProgress(courseId: string) {
     const [progress, setProgress] = useState<EnrollmentData | null>(null)
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth!, (currentUser) => {
             setUser(currentUser)
             if (!currentUser) {
                 setLoading(false)
@@ -33,7 +33,7 @@ export function useCourseProgress(courseId: string) {
         if (!user || !courseId) return
 
         const enrollmentId = `${user.uid}_${courseId}`
-        const docRef = doc(db, "enrollments", enrollmentId)
+        const docRef = doc(db!, "enrollments", enrollmentId)
 
         const unsubscribe = onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
@@ -59,7 +59,7 @@ export function useCourseProgress(courseId: string) {
             status: "in-progress",
             lastAccessed: new Date().toISOString()
         }
-        await setDoc(doc(db, "enrollments", enrollmentId), initialData)
+        await setDoc(doc(db!, "enrollments", enrollmentId), initialData)
     }
 
     const toggleDayCompletion = async (day: number) => {
@@ -67,7 +67,7 @@ export function useCourseProgress(courseId: string) {
 
         const enrollmentId = `${user.uid}_${courseId}`
         const isCompleted = progress.completedDays.includes(day)
-        const docRef = doc(db, "enrollments", enrollmentId)
+        const docRef = doc(db!, "enrollments", enrollmentId)
 
         if (isCompleted) {
             await updateDoc(docRef, {

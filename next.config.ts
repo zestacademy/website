@@ -28,6 +28,10 @@ const nextConfig: NextConfig = {
     ],
   },
   reactCompiler: true,
+  turbopack: {}, // Silence turbopack/webpack warning
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
 };
 
 export default pwaConfig(nextConfig);

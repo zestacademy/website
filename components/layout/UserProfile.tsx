@@ -1,10 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { User, onAuthStateChanged, signOut } from "firebase/auth"
-import { auth } from "@/lib/firebase"
+import { useSSO } from "@/contexts/SSOContext"
 import { LogOut, User as UserIcon, Settings } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -21,31 +20,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export function UserProfile() {
     const router = useRouter()
-    const [user, setUser] = useState<User | null>(null)
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser)
-            setLoading(false)
-        })
-        return () => unsubscribe()
-    }, [])
+    const { user, isLoading, isAuthenticated, logout } = useSSO()
 
     const handleSignOut = async () => {
         try {
-            await signOut(auth)
-            router.push("/login")
+            await logout()
         } catch (error) {
             console.error("Error signing out:", error)
         }
     }
 
-    if (loading) {
+    if (isLoading) {
         return <div className="h-9 w-9 bg-muted animate-pulse rounded-full" />
     }
 
-    if (!user) {
+    if (!isAuthenticated || !user) {
         return (
             <div className="flex items-center gap-2">
                 <Link href="/login">
@@ -63,8 +52,8 @@ export function UserProfile() {
     }
 
     // Get initials for avatar fallback
-    const initials = user.displayName
-        ? user.displayName
+    const initials = user.name
+        ? user.name
             .split(" ")
             .map((n) => n[0])
             .join("")
@@ -77,7 +66,7 @@ export function UserProfile() {
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                     <Avatar className="h-9 w-9">
-                        <AvatarImage src={user.photoURL || ""} alt={user.displayName || ""} />
+                        <AvatarImage src={user.picture || ""} alt={user.name || ""} />
                         <AvatarFallback>{initials}</AvatarFallback>
                     </Avatar>
                 </Button>
@@ -85,7 +74,7 @@ export function UserProfile() {
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{user.displayName || "User"}</p>
+                        <p className="text-sm font-medium leading-none">{user.name || "User"}</p>
                         <p className="text-xs leading-none text-muted-foreground">
                             {user.email}
                         </p>

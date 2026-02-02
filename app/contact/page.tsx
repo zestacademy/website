@@ -1,5 +1,8 @@
 "use client"
 
+// Force dynamic rendering to avoid SSR Firebase initialization issues
+export const dynamic = 'force-dynamic'
+
 import React, { useState } from 'react';
 import { Mail, MapPin, Phone, Send, MessageSquare, Clock, Globe } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,7 +34,7 @@ export default function Contact() {
         setIsSubmitting(true);
 
         try {
-            await addDoc(collection(db, "contact_messages"), {
+            await addDoc(collection(db!, "contact_messages"), {
                 ...formData,
                 timestamp: serverTimestamp(),
                 status: 'unread'
