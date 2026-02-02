@@ -1,5 +1,8 @@
 "use client"
 
+// Force dynamic rendering to avoid SSR Firebase initialization issues
+export const dynamic = 'force-dynamic'
+
 import { useEffect, useState } from 'react';
 import { db, database, app } from '@/lib/firebase';
 import { getFunctions, httpsCallable } from 'firebase/functions';
@@ -44,12 +47,15 @@ export default function AdminDashboard() {
 
     const [loading, setLoading] = useState(true);
     const [isUnauthorized, setIsUnauthorized] = useState(false);
+    const [userEmail, setUserEmail] = useState<string>('');
 
     const router = useRouter();
-    const auth = getAuth();
     const ADMIN_EMAILS = ["zestacademyonline@gmail.com", "zestacademy@rsmk.co.in"];
 
     useEffect(() => {
+        // Get auth only on client side
+        const auth = getAuth(app!);
+        
         let unsubscribeMsgs: (() => void) | null = null;
         let unsubscribeComments: (() => void) | null = null;
 
@@ -66,6 +72,7 @@ export default function AdminDashboard() {
             }
 
             if (!user.email || !ADMIN_EMAILS.includes(user.email)) {
+                setUserEmail(user.email || '');
                 setIsUnauthorized(true);
                 setLoading(false);
                 return;
@@ -75,7 +82,7 @@ export default function AdminDashboard() {
             setIsUnauthorized(false);
 
             // 1. Fetch Contact Messages
-            const msgQuery = query(collection(db, "contact_messages"), orderBy("timestamp", "desc"));
+            const msgQuery = query(collection(db!, "contact_messages"), orderBy("timestamp", "desc"));
             unsubscribeMsgs = onSnapshot(msgQuery, (snapshot) => {
                 setMessages(snapshot.docs.map(doc => ({
                     id: doc.id,
@@ -89,7 +96,7 @@ export default function AdminDashboard() {
             });
 
             // 2. Fetch All Comments
-            const commentsQuery = query(collectionGroup(db, "comments"), orderBy("timestamp", "desc"));
+            const commentsQuery = query(collectionGroup(db!, "comments"), orderBy("timestamp", "desc"));
             unsubscribeComments = onSnapshot(commentsQuery, (snapshot) => {
                 setComments(snapshot.docs.map(doc => ({
                     id: doc.id,
@@ -111,7 +118,7 @@ export default function AdminDashboard() {
             if (unsubscribeMsgs) unsubscribeMsgs();
             if (unsubscribeComments) unsubscribeComments();
         }
-    }, [auth, router]);
+    }, [router]);
 
     if (loading) {
         return (
@@ -131,7 +138,7 @@ export default function AdminDashboard() {
                             Access Denied
                         </CardTitle>
                         <CardDescription className="text-center">
-                            You are signed in as <strong>{auth.currentUser?.email}</strong>.
+                            You are signed in as <strong>{userEmail}</strong>.
                             <br />
                             This account does not have administrator privileges.
                         </CardDescription>
@@ -149,7 +156,7 @@ export default function AdminDashboard() {
     const handleDeleteMessage = async (id: string) => {
         if (!confirm("Are you sure you want to delete this message?")) return;
         try {
-            await deleteDoc(doc(db, "contact_messages", id));
+            await deleteDoc(doc(db!, "contact_messages", id));
         } catch (error) {
             console.error("Error deleting message:", error);
             alert("Failed to delete message");
@@ -159,7 +166,7 @@ export default function AdminDashboard() {
     const handleDeleteComment = async (refPath: string) => {
         if (!confirm("Are you sure you want to delete this comment?")) return;
         try {
-            await deleteDoc(doc(db, refPath));
+            await deleteDoc(doc(db!, refPath));
         } catch (error: any) {
             console.error("Error deleting comment:", error);
             alert(`Failed to delete comment: ${error.message || "Unknown error"}`);

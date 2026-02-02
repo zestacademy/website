@@ -10,7 +10,7 @@ export function useUserEnrollments() {
     const [enrollments, setEnrollments] = useState<EnrollmentData[]>([])
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth!, (currentUser) => {
             setUser(currentUser)
             if (!currentUser) {
                 setLoading(false)
@@ -24,7 +24,7 @@ export function useUserEnrollments() {
         if (!user) return
 
         const q = query(
-            collection(db, "enrollments"),
+            collection(db!, "enrollments"),
             where("userId", "==", user.uid)
         )
 

@@ -1,5 +1,8 @@
 "use client"
 
+// Force dynamic rendering to avoid SSR Firebase initialization issues
+export const dynamic = 'force-dynamic'
+
 import { useState } from "react"
 import Link from "next/link"
 import { sendPasswordResetEmail } from "firebase/auth"
@@ -36,7 +39,7 @@ export default function ForgotPasswordPage() {
         }
 
         try {
-            await sendPasswordResetEmail(auth, email)
+            await sendPasswordResetEmail(auth!, email)
             setShowSuccessDialog(true)
         } catch (e: any) {
             console.error(e)

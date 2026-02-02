@@ -49,12 +49,12 @@ export function CommentsSection({ courseId }: { courseId: string }) {
 
     useEffect(() => {
         // Listen for auth state changes
-        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+        const unsubscribeAuth = onAuthStateChanged(auth!, (user) => {
             setCurrentUser(user)
         })
 
         // Set up real-time listener for comments
-        const commentsRef = collection(db, "articles", courseId, "comments")
+        const commentsRef = collection(db!, "articles", courseId, "comments")
         const q = query(commentsRef, orderBy("timestamp", "desc"))
         
         const unsubscribeComments = onSnapshot(q, (snapshot) => {
@@ -90,7 +90,7 @@ export function CommentsSection({ courseId }: { courseId: string }) {
         setError(null)
         
         try {
-            const commentsRef = collection(db, "articles", courseId, "comments")
+            const commentsRef = collection(db!, "articles", courseId, "comments")
             await addDoc(commentsRef, {
                 content: newComment.trim(),
                 author: currentUser?.displayName || currentUser?.email || "Guest User",

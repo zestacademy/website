@@ -1,5 +1,8 @@
 "use client"
 
+// Force dynamic rendering to avoid SSR Firebase initialization issues
+export const dynamic = 'force-dynamic'
+
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { User, onAuthStateChanged, updateProfile } from "firebase/auth"
@@ -37,7 +40,7 @@ export default function MyLearningPage() {
     const [bio, setBio] = useState("")
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth!, async (currentUser) => {
             if (currentUser) {
                 setUser(currentUser)
                 setDisplayName(currentUser.displayName || "")
@@ -45,7 +48,7 @@ export default function MyLearningPage() {
 
                 // Fetch additional user data from Firestore
                 try {
-                    const docRef = doc(db, "users", currentUser.uid)
+                    const docRef = doc(db!, "users", currentUser.uid)
                     const docSnap = await getDoc(docRef)
                     if (docSnap.exists()) {
                         const data = docSnap.data()
@@ -53,7 +56,7 @@ export default function MyLearningPage() {
                     }
 
                     // Fetch Enrollments
-                    const q = query(collection(db, "enrollments"), where("userId", "==", currentUser.uid))
+                    const q = query(collection(db!, "enrollments"), where("userId", "==", currentUser.uid))
                     const querySnapshot = await getDocs(q)
                     const enrollData = querySnapshot.docs.map(doc => doc.data())
                     setEnrollments(enrollData)
@@ -80,7 +83,7 @@ export default function MyLearningPage() {
             })
 
             // Update Firestore Profile
-            await setDoc(doc(db, "users", user.uid), {
+            await setDoc(doc(db!, "users", user.uid), {
                 bio: bio,
                 email: user.email, // Keep email in sync just in case
                 updatedAt: new Date().toISOString()
