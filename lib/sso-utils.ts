@@ -12,9 +12,9 @@ export function generateState(): string {
   if (typeof window !== 'undefined') {
     window.crypto.getRandomValues(array);
   } else {
-    // Server-side
-    const crypto = require('crypto');
-    crypto.randomFillSync(array);
+    // Server-side - use Node.js crypto
+    const { randomFillSync } = require('crypto');
+    randomFillSync(array);
   }
   return base64UrlEncode(array);
 }
@@ -27,9 +27,9 @@ export function generateCodeVerifier(): string {
   if (typeof window !== 'undefined') {
     window.crypto.getRandomValues(array);
   } else {
-    // Server-side
-    const crypto = require('crypto');
-    crypto.randomFillSync(array);
+    // Server-side - use Node.js crypto
+    const { randomFillSync } = require('crypto');
+    randomFillSync(array);
   }
   return base64UrlEncode(array);
 }
@@ -45,9 +45,9 @@ export async function generateCodeChallenge(verifier: string): Promise<string> {
     const hash = await window.crypto.subtle.digest('SHA-256', data);
     return base64UrlEncode(new Uint8Array(hash));
   } else {
-    // Server-side
-    const crypto = require('crypto');
-    const hash = crypto.createHash('sha256').update(verifier).digest();
+    // Server-side - use Node.js crypto
+    const { createHash } = require('crypto');
+    const hash = createHash('sha256').update(verifier).digest();
     return base64UrlEncode(hash);
   }
 }

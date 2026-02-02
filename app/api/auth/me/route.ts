@@ -39,7 +39,11 @@ export async function GET(request: NextRequest) {
         { error: 'Invalid or expired token' },
         { status: 401 }
       );
-      response.cookies.delete(SSO_CONFIG.TOKEN_COOKIE_NAME);
+      // Delete cookie with same options as when it was set
+      response.cookies.set(SSO_CONFIG.TOKEN_COOKIE_NAME, '', {
+        ...SSO_CONFIG.COOKIE_OPTIONS,
+        maxAge: 0,
+      });
       return response;
     }
 

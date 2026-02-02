@@ -56,6 +56,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Exchange authorization code for tokens (backend only)
+    // NOTE: This route runs server-side only (Next.js API route)
+    // The CLIENT_SECRET is never exposed to the browser
     const tokenResponse = await fetch(
       `${SSO_CONFIG.AUTH_SERVER_URL}${SSO_CONFIG.TOKEN_ENDPOINT}`,
       {

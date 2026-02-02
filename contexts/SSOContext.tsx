@@ -75,6 +75,9 @@ export function SSOProvider({ children }: { children: React.ReactNode }) {
       const codeChallenge = await generateCodeChallenge(codeVerifier);
 
       // Store state and code verifier in cookies (will be validated on callback)
+      // NOTE: These are temporary, non-sensitive values used only for OAuth flow
+      // They are not HTTP-only because they need to be sent with the redirect
+      // They expire after 10 minutes and are cleared after use
       document.cookie = `${SSO_CONFIG.STATE_COOKIE_NAME}=${state}; path=/; max-age=600; SameSite=Lax${
         SSO_CONFIG.COOKIE_OPTIONS.secure ? '; Secure' : ''
       }`;
