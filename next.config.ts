@@ -28,10 +28,9 @@ const nextConfig: NextConfig = {
     ],
   },
   reactCompiler: true,
+  turbopack: {}, // Silence turbopack/webpack warning
   experimental: {
-    turbo: {
-      resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
-    },
+    optimizePackageImports: ["lucide-react"],
   },
 };
 

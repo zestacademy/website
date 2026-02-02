@@ -17,6 +17,9 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 
+// Force dynamic rendering since we use useSearchParams
+export const dynamic = 'force-dynamic'
+
 export default function RegisterPage() {
     const router = useRouter()
     const searchParams = useSearchParams()

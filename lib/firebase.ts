@@ -1,8 +1,10 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getDatabase } from "firebase/database";
+import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
+import { getAuth, Auth } from "firebase/auth";
+import { getDatabase, Database } from "firebase/database";
 import { getMessaging, Messaging } from "firebase/messaging";
+import { initializeFirestore, Firestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
+import type { Analytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -15,39 +17,43 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-
-
-import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
-
-// Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
-
-const db = initializeFirestore(app, {
-    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
-    experimentalForceLongPolling: true,
-});
-
-const database = getDatabase(app, "https://zest-academy-default-rtdb.firebaseio.com/");
-
+// Initialize Firebase only on client side
+let app: FirebaseApp | undefined;
+let auth: Auth | undefined;
+let db: Firestore | undefined;
+let database: Database | undefined;
 let messaging: Messaging | undefined;
-if (typeof window !== "undefined") {
-    messaging = getMessaging(app);
-}
-
-import type { Analytics } from "firebase/analytics";
-
-// Analytics (only on client side and if supported)
 let analytics: Analytics | undefined;
 
 if (typeof window !== "undefined") {
+    // Initialize Firebase
+    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    auth = getAuth(app);
+
+    db = initializeFirestore(app, {
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+        experimentalForceLongPolling: true,
+    });
+
+    database = getDatabase(app, "https://zest-academy-default-rtdb.firebaseio.com/");
+
+    messaging = getMessaging(app);
+
+    // Analytics (only on client side and if supported)
     import("firebase/analytics").then((analyticsModule) => {
         analyticsModule.isSupported().then((supported) => {
             if (supported) {
-                analytics = analyticsModule.getAnalytics(app);
+                analytics = analyticsModule.getAnalytics(app!);
             }
         });
     }).catch((e) => console.error("Analytics not supported", e));
 }
 
+// Export with non-null assertion for convenience (these will be undefined during SSR)
+// Pages using these exports should be marked with "use client" directive
 export { app, auth, db, database, analytics, messaging };
+
+// Helper to check if Firebase is initialized (client-side only)
+export function isFirebaseInitialized(): boolean {
+    return typeof window !== "undefined" && app !== undefined;
+}
