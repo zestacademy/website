@@ -104,32 +104,24 @@ import { cookies } from 'next/headers'
 
 const AUTH_SERVER_URL = process.env.AUTH_SERVER_URL || 'https://auth.zestacademy.tech'
 const CLIENT_ID = process.env.OAUTH_CLIENT_ID
-const CLIENT_SECRET = process.env.OAUTH_CLIENT_SECRET // Not needed for PKCE but required by spec
 const REDIRECT_URI = process.env.REDIRECT_URI
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-  const code = searchParams.get('code')
-  const state = searchParams.get('state')
-  const error = searchParams.get('error')
+export async function POST(request: NextRequest) {
+  const body = await request.json()
+  const { code, state, code_verifier: codeVerifier } = body
+  const error = body.error
   
   // Handle error
   if (error) {
-    return NextResponse.redirect(new URL(`/login?error=${error}`, request.url))
+    return NextResponse.json({ error }, { status: 400 })
   }
   
   // Validate required parameters
-  if (!code || !state) {
-    return NextResponse.redirect(new URL('/login?error=missing_params', request.url))
+  if (!code || !state || !codeVerifier) {
+    return NextResponse.json({ error: 'missing_params' }, { status: 400 })
   }
   
   try {
-    // Get code_verifier from session/cookie (you'll need to implement this)
-    const codeVerifier = request.cookies.get('pkce_code_verifier')?.value
-    
-    if (!codeVerifier) {
-      return NextResponse.redirect(new URL('/login?error=missing_verifier', request.url))
-    }
     
     // Exchange authorization code for tokens
     const tokenResponse = await fetch(`${AUTH_SERVER_URL}/api/oauth/token`, {
@@ -149,7 +141,7 @@ export async function GET(request: NextRequest) {
     if (!tokenResponse.ok) {
       const errorData = await tokenResponse.json()
       console.error('Token exchange failed:', errorData)
-      return NextResponse.redirect(new URL('/login?error=token_exchange_failed', request.url))
+      return NextResponse.json({ error: 'token_exchange_failed' }, { status: 401 })
     }
     
     const tokens = await tokenResponse.json()
@@ -162,15 +154,15 @@ export async function GET(request: NextRequest) {
     })
     
     if (!userInfoResponse.ok) {
-      return NextResponse.redirect(new URL('/login?error=userinfo_failed', request.url))
+      return NextResponse.json({ error: 'userinfo_failed' }, { status: 401 })
     }
     
     const user = await userInfoResponse.json()
     
-    // Create session (implementation depends on your session management)
-    const response = NextResponse.redirect(new URL('/dashboard', request.url))
+    // Return success response with tokens
+    const response = NextResponse.json({ success: true, user })
     
-    // Store tokens in httpOnly cookies
+    // Store tokens in httpOnly cookies (set on the response)
     response.cookies.set('access_token', tokens.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -198,7 +190,7 @@ export async function GET(request: NextRequest) {
     return response
   } catch (error) {
     console.error('Callback error:', error)
-    return NextResponse.redirect(new URL('/login?error=server_error', request.url))
+    return NextResponse.json({ error: 'server_error' }, { status: 500 })
   }
 }
 ```
@@ -374,31 +366,57 @@ async function refreshAccessToken(refreshToken: string) {
 
 ### Logout
 
-To log out, revoke the tokens and clear the session:
+To log out, call your logout API endpoint which handles token revocation:
 
 ```typescript
 async function logout() {
-  const refreshToken = getCookie('refresh_token')
-  
-  if (refreshToken) {
-    // Revoke refresh token
-    await fetch(`${AUTH_SERVER_URL}/api/oauth/revoke`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        token: refreshToken,
-        token_type_hint: 'refresh_token',
-      }),
-    })
-  }
-  
-  // Clear cookies
-  document.cookie = 'access_token=; Max-Age=0'
-  document.cookie = 'refresh_token=; Max-Age=0'
-  document.cookie = 'user=; Max-Age=0'
+  // Call the logout API endpoint
+  await fetch('/api/auth/logout', {
+    method: 'POST',
+  })
   
   // Redirect to login
   window.location.href = '/login'
+}
+```
+
+#### Backend Logout Handler (`app/api/auth/logout/route.ts`)
+
+```typescript
+import { NextRequest, NextResponse } from 'next/server'
+
+const AUTH_SERVER_URL = process.env.AUTH_SERVER_URL || 'https://auth.zestacademy.tech'
+const CLIENT_ID = process.env.OAUTH_CLIENT_ID
+
+export async function POST(request: NextRequest) {
+  try {
+    // Get refresh token from cookie
+    const refreshToken = request.cookies.get('refresh_token')?.value
+    
+    if (refreshToken) {
+      // Revoke refresh token on auth server
+      await fetch(`${AUTH_SERVER_URL}/api/oauth/revoke`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: refreshToken,
+          client_id: CLIENT_ID,
+          token_type_hint: 'refresh_token',
+        }),
+      }).catch(err => console.error('Token revocation failed:', err))
+    }
+    
+    // Clear cookies
+    const response = NextResponse.json({ success: true })
+    response.cookies.delete('access_token')
+    response.cookies.delete('refresh_token')
+    response.cookies.delete('user')
+    
+    return response
+  } catch (error) {
+    console.error('Logout error:', error)
+    return NextResponse.json({ error: 'logout_failed' }, { status: 500 })
+  }
 }
 ```
 
