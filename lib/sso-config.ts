@@ -8,28 +8,28 @@
 export const SSO_CONFIG = {
   // Auth server endpoints
   AUTH_SERVER_URL: process.env.NEXT_PUBLIC_AUTH_SERVER_URL || 'https://auth.zestacademy.tech',
-  AUTHORIZE_ENDPOINT: '/authorize',
-  TOKEN_ENDPOINT: '/token',
-  LOGOUT_ENDPOINT: '/logout',
-  USERINFO_ENDPOINT: '/userinfo',
-  
+  AUTHORIZE_ENDPOINT: '/api/oauth/authorize',
+  TOKEN_ENDPOINT: '/api/oauth/token',
+  LOGOUT_ENDPOINT: '/api/auth/logout',
+  USERINFO_ENDPOINT: '/api/oauth/userinfo',
+
   // Client configuration
   CLIENT_ID: process.env.NEXT_PUBLIC_SSO_CLIENT_ID || '',
   CLIENT_SECRET: process.env.SSO_CLIENT_SECRET || '', // Server-side only
-  
+
   // Redirect URIs (must be registered with auth server)
   REDIRECT_URI: process.env.NEXT_PUBLIC_SSO_REDIRECT_URI || '',
-  
+
   // OAuth parameters
   SCOPE: 'openid profile email',
   RESPONSE_TYPE: 'code',
-  
+
   // Token settings
   TOKEN_COOKIE_NAME: 'zest_access_token',
   REFRESH_TOKEN_COOKIE_NAME: 'zest_refresh_token',
   STATE_COOKIE_NAME: 'zest_oauth_state',
   CODE_VERIFIER_COOKIE_NAME: 'zest_code_verifier',
-  
+
   // Cookie settings (secure, HTTP-only)
   COOKIE_OPTIONS: {
     httpOnly: true,

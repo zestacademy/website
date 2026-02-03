@@ -27,11 +27,16 @@ export async function GET(request: NextRequest) {
     }
 
     // Validate JWT token
+    // Validate JWT token
     const isValid = validateJWT(
       accessToken,
       SSO_CONFIG.AUTH_SERVER_URL,
       SSO_CONFIG.CLIENT_ID
     );
+
+    if (!isValid) {
+      console.error("JWT Validation failed for token:", accessToken.substring(0, 10) + "...")
+    }
 
     if (!isValid) {
       // Token is invalid or expired, clear it
@@ -70,7 +75,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('User info error:', error);
     return NextResponse.json(
-      { error: 'Server error' },
+      { error: 'Server error', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
