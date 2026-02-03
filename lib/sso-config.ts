@@ -21,7 +21,7 @@ export const SSO_CONFIG = {
   ISSUER: process.env.NEXT_PUBLIC_SSO_ISSUER || 'https://auth.zestacademy.tech',
 
   // Redirect URIs (must be registered with auth server)
-  REDIRECT_URI: process.env.NEXT_PUBLIC_SSO_REDIRECT_URI || '',
+  REDIRECT_URI: process.env.NEXT_PUBLIC_SSO_REDIRECT_URI || 'http://localhost:3001/auth/callback',
 
   // OAuth parameters
   SCOPE: 'openid profile email',
