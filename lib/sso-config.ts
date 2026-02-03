@@ -14,8 +14,11 @@ export const SSO_CONFIG = {
   USERINFO_ENDPOINT: '/api/oauth/userinfo',
 
   // Client configuration
-  CLIENT_ID: process.env.NEXT_PUBLIC_SSO_CLIENT_ID || '',
+  CLIENT_ID: process.env.NEXT_PUBLIC_SSO_CLIENT_ID || 'zest_academy',
   CLIENT_SECRET: process.env.SSO_CLIENT_SECRET || '', // Server-side only
+
+  // Issuer configuration (must match the "iss" claim in the JWT)
+  ISSUER: process.env.NEXT_PUBLIC_SSO_ISSUER || 'https://auth.zestacademy.tech',
 
   // Redirect URIs (must be registered with auth server)
   REDIRECT_URI: process.env.NEXT_PUBLIC_SSO_REDIRECT_URI || '',

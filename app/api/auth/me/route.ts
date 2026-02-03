@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     // Validate JWT token
     const isValid = validateJWT(
       accessToken,
-      SSO_CONFIG.AUTH_SERVER_URL,
+      SSO_CONFIG.ISSUER,
       SSO_CONFIG.CLIENT_ID
     );
 
