@@ -28,6 +28,18 @@ export function HeroSection() {
     const [text, setText] = useState("")
     const [quoteIndex, setQuoteIndex] = useState(0)
     const [isTyping, setIsTyping] = useState(true)
+    const [user, setUser] = useState<any>(null)
+
+    useEffect(() => {
+        // Dynamic import to avoid SSR issues
+        import("@/lib/firebase").then(({ auth }) => {
+            if (!auth) return
+            const unsubscribe = auth.onAuthStateChanged((u) => {
+                setUser(u)
+            })
+            return () => unsubscribe()
+        })
+    }, [])
 
     useEffect(() => {
         const currentQuote = QUOTES[quoteIndex]
@@ -118,17 +130,27 @@ export function HeroSection() {
 
                     {/* CTAs */}
                     <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-                        <Link href="/register">
-                            <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all">
-                                <TrendingUp className="mr-2 h-5 w-5" />
-                                Sign Up (Pro)
-                            </Button>
-                        </Link>
-                        <Link href="/login">
-                            <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30 font-semibold px-8 backdrop-blur-sm">
-                                Login
-                            </Button>
-                        </Link>
+                        {!user ? (
+                            <>
+                                <Link href="/register">
+                                    <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all">
+                                        <TrendingUp className="mr-2 h-5 w-5" />
+                                        Sign Up (Pro)
+                                    </Button>
+                                </Link>
+                                <Link href="/login">
+                                    <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30 font-semibold px-8 backdrop-blur-sm">
+                                        Login
+                                    </Button>
+                                </Link>
+                            </>
+                        ) : (
+                            <Link href="/my-learning">
+                                <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all">
+                                    Go to Dashboard
+                                </Button>
+                            </Link>
+                        )}
                     </div>
 
                     {/* Stats */}
