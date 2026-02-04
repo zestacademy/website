@@ -36,17 +36,20 @@ export default function RegisterPage() {
     const [showWelcomeDialog, setShowWelcomeDialog] = useState(false)
     const [welcomeData, setWelcomeData] = useState({ name: "", zestId: "" })
 
+    const [isProcessingGoogleLogin, setIsProcessingGoogleLogin] = useState(false)
+
     useEffect(() => {
         router.prefetch("/")
         if (!auth) return
         const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user && !showVerifyDialog && !showWelcomeDialog) {
-                // Only redirect if we are NOT showing the verification or welcome dialog.
+            if (user && !showVerifyDialog && !showWelcomeDialog && !isProcessingGoogleLogin) {
+                // Only redirect if we are NOT showing the verification or welcome dialog,
+                // and NOT currently processing a manual Google login flow.
                 router.push("/")
             }
         })
         return () => unsubscribe()
-    }, [router, showVerifyDialog, showWelcomeDialog])
+    }, [router, showVerifyDialog, showWelcomeDialog, isProcessingGoogleLogin])
 
     async function onSubmit(event: React.SyntheticEvent) {
         event.preventDefault()
@@ -136,6 +139,7 @@ export default function RegisterPage() {
 
     async function handleGoogleLogin() {
         setIsLoading(true)
+        setIsProcessingGoogleLogin(true)
         setError(null)
 
         if (!auth || !db || !database) {
