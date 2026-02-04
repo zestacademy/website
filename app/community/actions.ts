@@ -2,9 +2,10 @@
 
 import axios from "axios"
 
+// Check for keys without blocking the entire module (they might be added later)
 const NEWS_API_KEY = process.env.NEXT_PUBLIC_NEWS_API_KEY
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY
-const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST
+const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST || "jsearch.p.rapidapi.com"
 
 export interface NewsItem {
     id: string
@@ -32,6 +33,11 @@ export interface JobItem {
 }
 
 export async function getNews(): Promise<NewsItem[]> {
+    if (!NEWS_API_KEY) {
+        console.warn("Skipping News API call: NEXT_PUBLIC_NEWS_API_KEY is missing")
+        return []
+    }
+
     try {
         // Fetch Tech News (India)
         const techResponse = await axios.get(`https://newsapi.org/v2/top-headlines`, {
@@ -87,6 +93,11 @@ export async function getNews(): Promise<NewsItem[]> {
 }
 
 export async function getJobs(): Promise<JobItem[]> {
+    if (!RAPIDAPI_KEY) {
+        console.warn("Skipping Jobs API call: RAPIDAPI_KEY is missing")
+        return []
+    }
+
     try {
         const options = {
             method: 'GET',
