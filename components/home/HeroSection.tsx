@@ -118,15 +118,15 @@ export function HeroSection() {
 
                     {/* CTAs */}
                     <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-                        <Link href="/courses">
+                        <Link href="/register">
                             <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all">
                                 <TrendingUp className="mr-2 h-5 w-5" />
-                                Start with a Course
+                                Sign Up (Pro)
                             </Button>
                         </Link>
-                        <Link href="/explore">
+                        <Link href="/login">
                             <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30 font-semibold px-8 backdrop-blur-sm">
-                                Explore Skills
+                                Login
                             </Button>
                         </Link>
                     </div>

@@ -38,6 +38,7 @@ export default function MyLearningPage() {
     const [displayName, setDisplayName] = useState("")
     const [photoURL, setPhotoURL] = useState("")
     const [bio, setBio] = useState("")
+    const [zestId, setZestId] = useState("")
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth!, async (currentUser) => {
@@ -53,6 +54,7 @@ export default function MyLearningPage() {
                     if (docSnap.exists()) {
                         const data = docSnap.data()
                         setBio(data.bio || "")
+                        setZestId(data.zestId || "")
                     }
 
                     // Fetch Enrollments
@@ -131,6 +133,13 @@ export default function MyLearningPage() {
 
                     <div className="flex-1 pb-2 text-center md:text-left space-y-1">
                         <h1 className="text-3xl md:text-4xl font-bold text-foreground drop-shadow-sm">{displayName || "Learning Enthusiast"}</h1>
+                        {zestId && (
+                            <div className="flex justify-center md:justify-start">
+                                <span className="text-xs font-mono text-primary bg-background/80 backdrop-blur-sm border border-primary/20 px-2 py-0.5 rounded shadow-sm">
+                                    ID: {zestId}
+                                </span>
+                            </div>
+                        )}
                         <p className="text-muted-foreground font-medium flex items-center justify-center md:justify-start gap-2">
                             {user.email} <span className="text-muted-foreground/40">•</span> Joined 2024
                         </p>
