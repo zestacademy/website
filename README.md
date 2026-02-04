@@ -72,3 +72,42 @@ To learn more about Next.js, take a look at the following resources:
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
+## 📂 Project Structure
+
+```bash
+c:/website/e-academy/
+├── 📁 .agent               # Agent configuration and workflows
+├── 📁 app                  # Next.js App Router
+│   ├── 📁 admin            # Admin dashboard routes
+│   ├── 📁 api              # API routes (auth, news, compile, etc.)
+│   ├── 📁 articles         # Educational articles pages
+│   ├── 📁 community        # Tech news & forum features
+│   ├── 📁 courses          # Course content pages
+│   ├── 📁 developers       # Developer profiles
+│   ├── 📁 login            # Authentication pages (Login)
+│   ├── 📁 my-learning      # User dashboard & progress tracking
+│   ├── 📁 register         # Authentication pages (Register)
+│   ├── layout.tsx          # Root application layout
+│   └── page.tsx            # Landing page
+├── 📁 components           # Reusable UI Components
+│   ├── 📁 home             # Landing page components (Hero, Features)
+│   ├── 📁 layout           # Navbar, Footer, Sidebar
+│   ├── 📁 ui               # Shadcn/UI primitives (Buttons, Cards, Dialogs)
+│   ├── 📁 courses          # Course-specific components
+│   └── comments-section.tsx # Reusable discussion component
+├── 📁 hooks                # Custom React Hooks
+│   ├── useFcmToken.ts      # Firebase Cloud Messaging logic
+│   └── useScrollProgress.ts # Scroll tracking
+├── 📁 lib                  # Utilities & Configuration
+│   ├── firebase.ts         # Firebase Client Initialization
+│   ├── firebase-admin.ts   # Firebase Admin SDK (Server-side)
+│   ├── animations.ts       # Framer Motion variants
+│   └── utils.ts            # CN/Tailwind helpers
+├── 📁 public               # Static Assets
+│   ├── auth-hero-desktop-hq.jpg # Login hero image
+│   └── logo.png            # Brand logo
+├── .env.local              # Environment variables
+├── next.config.ts          # Next.js configuration
+└── package.json            # Dependencies
+```
+
