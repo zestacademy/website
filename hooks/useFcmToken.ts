@@ -26,13 +26,8 @@ const useFcmToken = () => {
 
                     // Attempt to get token
                     const currentToken = await getToken(messaging, {
-                        vapidKey: "BP8s1Xh2-E0gS7d8q... (Example, replace if you have one)",
-                        serviceWorkerRegistration: registration
-                    }).catch(async (err) => {
-                        console.warn("Retrying getToken without VAPID key", err);
-                        // messaging is verified not null in the if condition above, but TS needs a hint in the callback
-                        if (messaging) return await getToken(messaging);
-                        return null;
+                        serviceWorkerRegistration: registration,
+                        // vapidKey: "" // Add your VAPID key here if you have generated one in Firebase Console -> Cloud Messaging -> Web Configuration
                     });
 
                     if (currentToken) {
