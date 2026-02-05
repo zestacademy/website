@@ -78,9 +78,9 @@ export const iotCourse: Course = {
                     type: "text",
                     content: {
                         type: "pdf",
-                        markdown: "Introduction to Internet of Things, Architecture, and Use Cases."
-                    },
-                    resources: [{ title: "Lecture PDF", url: "/pdfs/lec1.pdf", type: "pdf" }]
+                        markdown: "Introduction to Internet of Things, Architecture, and Use Cases.",
+                        resources: [{ title: "Lecture PDF", url: "/pdfs/lec1.pdf", type: "pdf" }]
+                    }
                 },
                 {
                     id: "w1-lec2",
