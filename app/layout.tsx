@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 // Temporarily disable Google Fonts due to network issues in build environment
 // import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -122,6 +123,12 @@ export default function RootLayout({
             <Footer />
           </ToastProvider>
         </ThemeProvider>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7321397293529448"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
