@@ -569,7 +569,7 @@ export default function HowToBecomeAnEntrepreneurPage() {
 
                     {/* Comments Section */}
                     <div className="mt-12">
-                        <CommentsSection />
+                        <CommentsSection courseId="how-to-become-an-entrepreneur" />
                     </div>
                 </div>
             </section>
