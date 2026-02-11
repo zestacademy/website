@@ -70,20 +70,20 @@ export default function WhatIsQuantumComputingPage() {
                             </CardHeader>
                             <CardContent className="space-y-4 text-muted-foreground">
                                 <p>
-                                    The genesis of quantum information science is rooted in the early 20th-century "Quantum Awakening," a period marked by the dismantling of Newtonian certainty in favor of quantized energy and probabilistic wave mechanics.
+                                    The genesis of quantum information science is rooted in the early 20th-century &quot;Quantum Awakening,&quot; a period marked by the dismantling of Newtonian certainty in favor of quantized energy and probabilistic wave mechanics.
                                 </p>
 
                                 <div className="mt-6">
                                     <h3 className="text-xl font-semibold text-foreground mb-3">Historical Milestones</h3>
                                     <ul className="list-disc list-inside space-y-3 ml-4">
                                         <li>
-                                            <strong className="text-foreground">1900 - Max Planck:</strong> Discovered that energy is emitted and absorbed in discrete packets, or "quanta," solving the blackbody radiation problem
+                                            <strong className="text-foreground">1900 - Max Planck:</strong> Discovered that energy is emitted and absorbed in discrete packets, or &quot;quanta,&quot; solving the blackbody radiation problem
                                         </li>
                                         <li>
                                             <strong className="text-foreground">1905 - Albert Einstein:</strong> Explained the photoelectric effect through quantized light
                                         </li>
                                         <li>
-                                            <strong className="text-foreground">1935 - EPR Paradox:</strong> Einstein, Podolsky, and Rosen suggested quantum mechanics was incomplete due to "spooky action at a distance"
+                                            <strong className="text-foreground">1935 - EPR Paradox:</strong> Einstein, Podolsky, and Rosen suggested quantum mechanics was incomplete due to &quot;spooky action at a distance&quot;
                                         </li>
                                         <li>
                                             <strong className="text-foreground">1964 - John Bell&apos;s Theorem:</strong> Demonstrated the reality of quantum non-locality
@@ -179,7 +179,7 @@ export default function WhatIsQuantumComputingPage() {
                             </CardHeader>
                             <CardContent className="space-y-4 text-muted-foreground">
                                 <p>
-                                    Quantum algorithms are executed via circuits composed of quantum logic gates. Unlike many classical gates (such as the AND gate), which are irreversible, <strong>quantum gates are unitary and therefore reversible</strong>. This means the information is conserved and the operation can be "undone" by applying its inverse.
+                                    Quantum algorithms are executed via circuits composed of quantum logic gates. Unlike many classical gates (such as the AND gate), which are irreversible, <strong>quantum gates are unitary and therefore reversible</strong>. This means the information is conserved and the operation can be &quot;undone&quot; by applying its inverse.
                                 </p>
 
                                 <div className="mt-6">
@@ -203,7 +203,7 @@ export default function WhatIsQuantumComputingPage() {
                                 <div className="mt-6">
                                     <h3 className="text-xl font-semibold text-foreground mb-3">Multi-Qubit Gates</h3>
                                     <p>
-                                        Multi-qubit gates enable interaction and entanglement between qubits. The <strong>Controlled-NOT (CNOT) gate</strong> is the most widely utilized two-qubit operation. It flips the target qubit if and only if the control qubit is in the |1⟩ state. Together with single-qubit rotations, the CNOT gate forms a "universal set," meaning any possible quantum computation can be decomposed into a sequence of these basic operations.
+                                        Multi-qubit gates enable interaction and entanglement between qubits. The <strong>Controlled-NOT (CNOT) gate</strong> is the most widely utilized two-qubit operation. It flips the target qubit if and only if the control qubit is in the |1⟩ state. Together with single-qubit rotations, the CNOT gate forms a &quot;universal set,&quot; meaning any possible quantum computation can be decomposed into a sequence of these basic operations.
                                     </p>
                                 </div>
                             </CardContent>
