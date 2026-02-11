@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CommentsSection } from "@/components/comments-section"
 import { Lightbulb, Target, TrendingUp, Users, BookOpen, Rocket, CheckCircle2, AlertCircle, Briefcase, DollarSign, Network, Brain } from "lucide-react"
-import Image from "next/image"
 import { ArticleHeader, ArticleFooter } from "@/components/articles"
 import { Metadata } from "next"
 
