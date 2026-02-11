@@ -1,10 +1,20 @@
-"use client"
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CommentsSection } from "@/components/comments-section"
 import { Lightbulb, Target, TrendingUp, Users, BookOpen, Rocket, CheckCircle2, AlertCircle, Briefcase, DollarSign, Network, Brain } from "lucide-react"
 import Image from "next/image"
 import { ArticleHeader, ArticleFooter } from "@/components/articles"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: "How to Become an Entrepreneur: A Complete Guide | Zest Academy",
+    description: "Master the essential steps, skills, and mindset needed to launch and grow a successful business. Learn the 10 key steps to entrepreneurship.",
+    openGraph: {
+        title: "How to Become an Entrepreneur: A Complete Guide to Starting Your Journey",
+        description: "Master the essential steps, skills, and mindset needed to launch and grow a successful business",
+        type: "article",
+        url: "https://zestacademy.in/articles/how-to-become-an-entrepreneur",
+    },
+}
 
 export default function HowToBecomeAnEntrepreneurPage() {
     const articleTitle = "How to Become an Entrepreneur: A Complete Guide to Starting Your Journey"
