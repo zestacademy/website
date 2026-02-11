@@ -42,3 +42,8 @@ next-env.d.ts
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# PWA service worker files
+/public/sw.js
+/public/swe-worker-*.js
+/public/workbox-*.js
