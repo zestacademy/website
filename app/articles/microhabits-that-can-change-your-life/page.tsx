@@ -1,10 +1,19 @@
-"use client"
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CommentsSection } from "@/components/comments-section"
 import { ArticleHeader, ArticleFooter } from "@/components/articles"
 import { Brain, Target, Zap, TrendingUp, Clock, Users, Shield, Heart, Lightbulb } from "lucide-react"
 import { Metadata } from "next"
+
+export const metadata: Metadata = {
+    title: "Microhabits That Can Change Your Life | Zest Academy",
+    description: "Discover how tiny, strategic actions can transform your brain, finances, health, and relationships through the power of behavioral engineering",
+    openGraph: {
+        title: "Microhabits That Can Change Your Life",
+        description: "Discover how tiny, strategic actions can transform your brain, finances, health, and relationships through the power of behavioral engineering",
+        type: "article",
+        url: "https://zestacademy.in/articles/microhabits-that-can-change-your-life",
+    },
+}
 
 export default function MicrohabitsPage() {
     const articleTitle = "Microhabits That Can Change Your Life"
@@ -560,7 +569,7 @@ export default function MicrohabitsPage() {
             </section>
 
             {/* Comments Section */}
-            <CommentsSection articleId="microhabits-that-can-change-your-life" />
+            <CommentsSection courseId="microhabits-that-can-change-your-life" />
 
             {/* Article Footer */}
             <ArticleFooter />
