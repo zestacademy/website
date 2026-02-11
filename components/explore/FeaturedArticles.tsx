@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, BookOpen, Brain, CircuitBoard, Network, Zap, Cpu, Layers } from "lucide-react"
+import { ArrowRight, BookOpen, Brain, CircuitBoard, Network, Zap, Cpu, Layers, Rocket, Target, Atom } from "lucide-react"
 
 export function FeaturedArticles() {
     return (
@@ -193,8 +193,87 @@ export function FeaturedArticles() {
                             </CardContent>
                         </Card>
                     </Link>
+                    <Link href="/articles/how-to-become-an-entrepreneur" className="group">
+                        <Card className="h-full transition-all hover:shadow-lg hover:border-green-500/50 cursor-pointer">
+                            <div className="h-48 w-full bg-green-100 dark:bg-green-950/20 rounded-t-xl flex items-center justify-center">
+                                <Rocket className="h-16 w-16 text-green-500 opacity-50" />
+                            </div>
+                            <CardHeader>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                        Entrepreneurship
+                                    </span>
+                                    <span className="text-xs text-muted-foreground">30 min read</span>
+                                </div>
+                                <CardTitle className="group-hover:text-green-600 transition-colors">
+                                    How to Become an Entrepreneur
+                                </CardTitle>
+                                <CardDescription>
+                                    Master the essential steps, skills, and mindset needed to launch and grow a successful business.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center text-sm font-medium text-green-600 dark:text-green-400">
+                                    Read Article <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                    <Link href="/articles/microhabits-that-can-change-your-life" className="group">
+                        <Card className="h-full transition-all hover:shadow-lg hover:border-pink-500/50 cursor-pointer">
+                            <div className="h-48 w-full bg-pink-100 dark:bg-pink-950/20 rounded-t-xl flex items-center justify-center">
+                                <Target className="h-16 w-16 text-pink-500 opacity-50" />
+                            </div>
+                            <CardHeader>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300">
+                                        Self Improvement
+                                    </span>
+                                    <span className="text-xs text-muted-foreground">20 min read</span>
+                                </div>
+                                <CardTitle className="group-hover:text-pink-600 transition-colors">
+                                    Microhabits That Can Change Your Life
+                                </CardTitle>
+                                <CardDescription>
+                                    Discover how tiny, strategic actions can transform your brain, finances, health, and relationships.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center text-sm font-medium text-pink-600 dark:text-pink-400">
+                                    Read Article <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                    <Link href="/articles/what-is-quantum-computing" className="group">
+                        <Card className="h-full transition-all hover:shadow-lg hover:border-teal-500/50 cursor-pointer">
+                            <div className="h-48 w-full bg-teal-100 dark:bg-teal-950/20 rounded-t-xl flex items-center justify-center">
+                                <Atom className="h-16 w-16 text-teal-500 opacity-50" />
+                            </div>
+                            <CardHeader>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300">
+                                        Quantum Computing
+                                    </span>
+                                    <span className="text-xs text-muted-foreground">25 min read</span>
+                                </div>
+                                <CardTitle className="group-hover:text-teal-600 transition-colors">
+                                    What Is Quantum Computing?
+                                </CardTitle>
+                                <CardDescription>
+                                    Explore the revolutionary world of quantum computing, from fundamental mechanics to real-world applications.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center text-sm font-medium text-teal-600 dark:text-teal-400">
+                                    Read Article <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </Link>
                 </div>
             </div>
         </section>
     )
 }
+
