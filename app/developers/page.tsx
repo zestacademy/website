@@ -4,9 +4,8 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Github, Twitter, Linkedin, Globe, Instagram } from 'lucide-react';
+import { Github, Twitter, Linkedin, Globe, Instagram, ArrowRight } from 'lucide-react';
 import { developers } from '@/lib/developers-data';
-import JoinForm from '@/components/developers/JoinForm';
 
 function DeveloperCard({ dev }: { dev: typeof developers[0] }) {
     const router = useRouter();
@@ -30,9 +29,7 @@ function DeveloperCard({ dev }: { dev: typeof developers[0] }) {
 
                 <h2 className="text-2xl font-bold mb-2">{dev.name}</h2>
                 <p className="text-primary font-medium mb-4">{dev.role}</p>
-                <p className="text-muted-foreground mb-6 leading-relaxed">
-                    {dev.bio}
-                </p>
+                <p className="text-muted-foreground mb-6 leading-relaxed">{dev.bio}</p>
 
                 <div className="flex flex-wrap gap-2 justify-center mb-8">
                     {dev.skills.map((skill) => (
@@ -76,64 +73,52 @@ function DeveloperCard({ dev }: { dev: typeof developers[0] }) {
 
 export default function Developers() {
     return (
-        <div className="min-h-screen bg-background text-foreground">
+        <div className="min-h-screen bg-background text-foreground py-16 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto space-y-16">
 
-            {/* ── Meet the Team Section ── */}
-            <section className="py-16 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-6xl mx-auto space-y-16">
-                    <div className="text-center space-y-6">
-                        <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-600">
-                            Meet the Developers
-                        </h1>
-                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                            The minds behind Zest Academy, dedicated to building the future of engineering education.
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 justify-center items-start">
-                        {developers.map((dev, idx) => (
-                            <DeveloperCard key={idx} dev={dev} />
-                        ))}
-
-                        {/* Call to Action Card */}
-                        <div className="flex flex-col items-center justify-center p-8 text-center space-y-4 rounded-3xl border border-dashed border-primary/30 bg-gradient-to-br from-cyan-500/5 to-blue-600/5 h-full min-h-[400px]">
-                            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-2 shadow-lg shadow-blue-500/25">
-                                <Github className="h-8 w-8 text-white" />
-                            </div>
-                            <h3 className="text-2xl font-bold">Could be you!</h3>
-                            <p className="text-muted-foreground max-w-xs text-base">
-                                We&apos;re always looking for passionate contributors. Apply below to join the Zest Academy team.
-                            </p>
-                            <Link
-                                href="#join-form"
-                                className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity shadow-md hover:shadow-lg"
-                            >
-                                Apply Now ↓
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── Visual Divider ── */}
-            <div className="relative py-6 px-4 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-600/10 to-purple-600/10" />
-                <div className="max-w-6xl mx-auto relative z-10 flex items-center gap-6">
-                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-                    <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest whitespace-nowrap">
-                        🚀 Want to join us?
+                {/* ── Header ── */}
+                <div className="text-center space-y-6">
+                    <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-600">
+                        Meet the Developers
+                    </h1>
+                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                        The minds behind Zest Academy, dedicated to building the future of engineering education.
                     </p>
-                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 </div>
+
+                {/* ── Team Grid + CTA Card ── */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 justify-center items-start">
+                    {developers.map((dev, idx) => (
+                        <DeveloperCard key={idx} dev={dev} />
+                    ))}
+
+                    {/* "Join Us" CTA card */}
+                    <div className="relative flex flex-col items-center justify-center p-10 text-center space-y-5 rounded-3xl overflow-hidden border border-dashed border-primary/30 bg-gradient-to-br from-cyan-500/5 to-blue-600/5 h-full min-h-[400px] group">
+                        {/* Animated glow on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
+
+                        <div className="relative h-20 w-20 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/30 group-hover:scale-110 transition-transform duration-300">
+                            <Github className="h-10 w-10 text-white" />
+                        </div>
+
+                        <div className="relative space-y-2">
+                            <h3 className="text-2xl font-bold">Could be you!</h3>
+                            <p className="text-muted-foreground max-w-xs text-base leading-relaxed">
+                                We&apos;re always looking for passionate contributors — developers, writers, designers, and more.
+                            </p>
+                        </div>
+
+                        <Link
+                            href="/developers/workwithus"
+                            className="relative inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-full text-sm font-semibold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/30 group/btn"
+                        >
+                            Apply Now
+                            <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                        </Link>
+                    </div>
+                </div>
+
             </div>
-
-            {/* ── Application Form Section ── */}
-            <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/10">
-                <div className="max-w-4xl mx-auto">
-                    <JoinForm />
-                </div>
-            </section>
-
         </div>
     );
 }
