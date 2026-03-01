@@ -262,7 +262,7 @@ export default function AdminDashboard() {
                 <Tabs defaultValue="applications" className="w-full">
                     <TabsList className="mb-4 flex-wrap h-auto gap-1">
                         <TabsTrigger value="applications" className="px-6 gap-2">
-                            <UserCheck className="h-4 w-4" /> Applications
+                            <UserCheck className="h-4 w-4" /> Collaboration Applications
                             <span className="ml-1 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">{applications.length}</span>
                         </TabsTrigger>
                         <TabsTrigger value="messages" className="px-6 gap-2">
@@ -284,9 +284,9 @@ export default function AdminDashboard() {
                             <CardHeader className="bg-muted/30 pb-4">
                                 <CardTitle className="text-xl flex items-center gap-2">
                                     <UserCheck className="h-5 w-5 text-primary" />
-                                    Developer Applications
+                                    Collaboration Applications
                                 </CardTitle>
-                                <CardDescription>Team join requests submitted via the Developers page.</CardDescription>
+                                <CardDescription>Collaboration requests submitted via the Let&apos;s Collaborate page.</CardDescription>
                             </CardHeader>
                             <CardContent className="p-0">
                                 {applications.length === 0 ? (
@@ -305,8 +305,8 @@ export default function AdminDashboard() {
                                                             <div className="flex items-center gap-3 flex-wrap">
                                                                 <span className="font-semibold text-foreground">{app.fullName}</span>
                                                                 <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${app.status === 'pending'
-                                                                        ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                                                                        : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                                                    ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                                                                    : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                                                                     }`}>
                                                                     {app.status}
                                                                 </span>
