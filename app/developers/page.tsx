@@ -4,8 +4,9 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Github, Twitter, Linkedin, Globe, Mail, Instagram } from 'lucide-react';
+import { Github, Twitter, Linkedin, Globe, Instagram } from 'lucide-react';
 import { developers } from '@/lib/developers-data';
+import JoinForm from '@/components/developers/JoinForm';
 
 function DeveloperCard({ dev }: { dev: typeof developers[0] }) {
     const router = useRouter();
@@ -75,37 +76,64 @@ function DeveloperCard({ dev }: { dev: typeof developers[0] }) {
 
 export default function Developers() {
     return (
-        <div className="min-h-screen bg-background text-foreground py-16 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-6xl mx-auto space-y-16">
-                <div className="text-center space-y-6">
-                    <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-600">
-                        Meet the Developers
-                    </h1>
-                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                        The minds behind Zest Academy, dedicated to building the future of engineering education.
-                    </p>
-                </div>
+        <div className="min-h-screen bg-background text-foreground">
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 justify-center items-start">
-                    {developers.map((dev, idx) => (
-                        <DeveloperCard key={idx} dev={dev} />
-                    ))}
-
-                    {/* Call to Action for Contributors */}
-                    <div className="flex flex-col items-center justify-center p-8 text-center space-y-4 rounded-3xl border border-dashed border-muted-foreground/30 bg-muted/10 h-full min-h-[400px]">
-                        <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-2">
-                            <Github className="h-8 w-8 text-muted-foreground" />
-                        </div>
-                        <h3 className="text-xl font-bold">You?</h3>
-                        <p className="text-muted-foreground max-w-xs">
-                            We are open source! Contribute to Zest Academy and see your name here.
+            {/* ── Meet the Team Section ── */}
+            <section className="py-16 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-6xl mx-auto space-y-16">
+                    <div className="text-center space-y-6">
+                        <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-600">
+                            Meet the Developers
+                        </h1>
+                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                            The minds behind Zest Academy, dedicated to building the future of engineering education.
                         </p>
-                        <Link href="#" className="px-6 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:opacity-90 transition-opacity">
-                            Join the Team
-                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 justify-center items-start">
+                        {developers.map((dev, idx) => (
+                            <DeveloperCard key={idx} dev={dev} />
+                        ))}
+
+                        {/* Call to Action Card */}
+                        <div className="flex flex-col items-center justify-center p-8 text-center space-y-4 rounded-3xl border border-dashed border-primary/30 bg-gradient-to-br from-cyan-500/5 to-blue-600/5 h-full min-h-[400px]">
+                            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-2 shadow-lg shadow-blue-500/25">
+                                <Github className="h-8 w-8 text-white" />
+                            </div>
+                            <h3 className="text-2xl font-bold">Could be you!</h3>
+                            <p className="text-muted-foreground max-w-xs text-base">
+                                We&apos;re always looking for passionate contributors. Apply below to join the Zest Academy team.
+                            </p>
+                            <Link
+                                href="#join-form"
+                                className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity shadow-md hover:shadow-lg"
+                            >
+                                Apply Now ↓
+                            </Link>
+                        </div>
                     </div>
                 </div>
+            </section>
+
+            {/* ── Visual Divider ── */}
+            <div className="relative py-6 px-4 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-600/10 to-purple-600/10" />
+                <div className="max-w-6xl mx-auto relative z-10 flex items-center gap-6">
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+                    <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest whitespace-nowrap">
+                        🚀 Want to join us?
+                    </p>
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+                </div>
             </div>
+
+            {/* ── Application Form Section ── */}
+            <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/10">
+                <div className="max-w-4xl mx-auto">
+                    <JoinForm />
+                </div>
+            </section>
+
         </div>
     );
 }

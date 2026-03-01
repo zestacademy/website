@@ -81,6 +81,12 @@ service cloud.firestore {
       allow create: if true;
       allow read, delete: if isAdmin();
     }
+
+    // --- Developer Applications ---
+    match /developer_applications/{applicationId} {
+      allow create: if true;  // anyone can submit the join form
+      allow read, delete: if isAdmin();
+    }
     
     // --- Existing Comments (Keep for backward compatibility if needed) ---
     match /articles/{articleId}/comments/{commentId} {

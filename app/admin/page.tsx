@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { Trash2, MessageSquare, Mail, AlertTriangle, Bell, Send } from 'lucide-react';
+import { Trash2, MessageSquare, Mail, AlertTriangle, Bell, Send, UserCheck, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -37,9 +37,33 @@ interface Comment {
     refPath: string;
 }
 
+interface Application {
+    id: string;
+    fullName: string;
+    email: string;
+    phone?: string;
+    college?: string;
+    educationLevel: string;
+    currentDesignation?: string;
+    linkedinUrl?: string;
+    githubUrl?: string;
+    portfolioUrl?: string;
+    roles: string[];
+    skills: string[];
+    interests: string[];
+    whyJoin: string;
+    experience?: string;
+    availability?: string;
+    hearAboutUs?: string;
+    status: string;
+    timestamp: Timestamp;
+}
+
 export default function AdminDashboard() {
     const [messages, setMessages] = useState<ContactMessage[]>([]);
     const [comments, setComments] = useState<Comment[]>([]);
+    const [applications, setApplications] = useState<Application[]>([]);
+    const [expandedApp, setExpandedApp] = useState<string | null>(null);
     const [notifTitle, setNotifTitle] = useState('');
     const [notifBody, setNotifBody] = useState('');
     const [notifLink, setNotifLink] = useState('');
@@ -55,15 +79,17 @@ export default function AdminDashboard() {
     useEffect(() => {
         // Get auth only on client side
         const auth = getAuth(app!);
-        
+
         let unsubscribeMsgs: (() => void) | null = null;
         let unsubscribeComments: (() => void) | null = null;
+        let unsubscribeApps: (() => void) | null = null;
 
 
         const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
             // Cleanup existing listeners on auth change
             if (unsubscribeMsgs) unsubscribeMsgs();
             if (unsubscribeComments) unsubscribeComments();
+            if (unsubscribeApps) unsubscribeApps();
 
 
             if (!user) {
@@ -109,6 +135,16 @@ export default function AdminDashboard() {
                 }
             });
 
+            // 3. Fetch Developer Applications
+            const appsQuery = query(collection(db!, 'developer_applications'), orderBy('timestamp', 'desc'));
+            unsubscribeApps = onSnapshot(appsQuery, (snapshot) => {
+                setApplications(snapshot.docs.map(d => ({ id: d.id, ...d.data() })) as Application[]);
+            }, (error) => {
+                if (error.code !== 'permission-denied') {
+                    console.error('Error fetching applications:', error);
+                }
+            });
+
             // Set loading to false after setting up all listeners for admin
             setLoading(false);
         });
@@ -117,6 +153,7 @@ export default function AdminDashboard() {
             unsubscribeAuth();
             if (unsubscribeMsgs) unsubscribeMsgs();
             if (unsubscribeComments) unsubscribeComments();
+            if (unsubscribeApps) unsubscribeApps();
         }
     }, [router]);
 
@@ -173,6 +210,16 @@ export default function AdminDashboard() {
         }
     };
 
+    const handleDeleteApplication = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this application?')) return;
+        try {
+            await deleteDoc(doc(db!, 'developer_applications', id));
+        } catch (error) {
+            console.error('Error deleting application:', error);
+            alert('Failed to delete application');
+        }
+    };
+
     const handleSendNotification = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!notifTitle || !notifBody) {
@@ -212,8 +259,12 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                <Tabs defaultValue="messages" className="w-full">
-                    <TabsList className="mb-4">
+                <Tabs defaultValue="applications" className="w-full">
+                    <TabsList className="mb-4 flex-wrap h-auto gap-1">
+                        <TabsTrigger value="applications" className="px-6 gap-2">
+                            <UserCheck className="h-4 w-4" /> Applications
+                            <span className="ml-1 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">{applications.length}</span>
+                        </TabsTrigger>
                         <TabsTrigger value="messages" className="px-6 gap-2">
                             <Mail className="h-4 w-4" /> Messages
                             <span className="ml-1 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">{messages.length}</span>
@@ -225,8 +276,172 @@ export default function AdminDashboard() {
                         <TabsTrigger value="notifications" className="px-6 gap-2">
                             <Bell className="h-4 w-4" /> Push Notifications
                         </TabsTrigger>
-
                     </TabsList>
+
+                    {/* APPLICATIONS TAB */}
+                    <TabsContent value="applications">
+                        <Card className="border-none shadow-md">
+                            <CardHeader className="bg-muted/30 pb-4">
+                                <CardTitle className="text-xl flex items-center gap-2">
+                                    <UserCheck className="h-5 w-5 text-primary" />
+                                    Developer Applications
+                                </CardTitle>
+                                <CardDescription>Team join requests submitted via the Developers page.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                {applications.length === 0 ? (
+                                    <div className="py-16 text-center text-muted-foreground">
+                                        No applications received yet.
+                                    </div>
+                                ) : (
+                                    <div className="divide-y divide-border">
+                                        {applications.map((app) => {
+                                            const isExpanded = expandedApp === app.id;
+                                            return (
+                                                <div key={app.id} className="bg-card hover:bg-muted/20 transition-colors">
+                                                    {/* Row Summary */}
+                                                    <div className="flex items-center gap-4 px-6 py-4">
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="flex items-center gap-3 flex-wrap">
+                                                                <span className="font-semibold text-foreground">{app.fullName}</span>
+                                                                <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${app.status === 'pending'
+                                                                        ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                                                                        : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                                                    }`}>
+                                                                    {app.status}
+                                                                </span>
+                                                            </div>
+                                                            <div className="text-sm text-muted-foreground mt-0.5">{app.email}</div>
+                                                            <div className="flex flex-wrap gap-1.5 mt-2">
+                                                                {app.roles.map(r => (
+                                                                    <span key={r} className="px-2 py-0.5 text-xs rounded-full bg-primary/10 text-primary font-medium">
+                                                                        {r.replace(/_/g, ' ')}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-xs text-muted-foreground whitespace-nowrap hidden sm:block">
+                                                            {app.timestamp?.toDate().toLocaleDateString(undefined, { dateStyle: 'medium' })}
+                                                        </div>
+                                                        <div className="flex items-center gap-1">
+                                                            <button
+                                                                onClick={() => setExpandedApp(isExpanded ? null : app.id)}
+                                                                className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground"
+                                                                aria-label="Toggle details"
+                                                            >
+                                                                {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                                                            </button>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                                onClick={() => handleDeleteApplication(app.id)}
+                                                            >
+                                                                <Trash2 className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Expanded Details */}
+                                                    {isExpanded && (
+                                                        <div className="px-6 pb-6 pt-2 bg-muted/10 border-t border-border space-y-5">
+                                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                                                                <div>
+                                                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Education Level</p>
+                                                                    <p className="text-foreground">{app.educationLevel || '—'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">College / University</p>
+                                                                    <p className="text-foreground">{app.college || '—'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Current Role / Title</p>
+                                                                    <p className="text-foreground">{app.currentDesignation || '—'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Phone</p>
+                                                                    <p className="text-foreground">{app.phone || '—'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Availability</p>
+                                                                    <p className="text-foreground">{app.availability || '—'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Heard About Us</p>
+                                                                    <p className="text-foreground">{app.hearAboutUs || '—'}</p>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Links */}
+                                                            {(app.linkedinUrl || app.githubUrl || app.portfolioUrl) && (
+                                                                <div>
+                                                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-2">Profile Links</p>
+                                                                    <div className="flex flex-wrap gap-3">
+                                                                        {app.linkedinUrl && (
+                                                                            <a href={app.linkedinUrl.startsWith('http') ? app.linkedinUrl : `https://${app.linkedinUrl}`} target="_blank" rel="noopener noreferrer"
+                                                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-background text-sm hover:bg-muted transition-colors text-blue-600">
+                                                                                <ExternalLink className="h-3.5 w-3.5" /> LinkedIn
+                                                                            </a>
+                                                                        )}
+                                                                        {app.githubUrl && (
+                                                                            <a href={app.githubUrl.startsWith('http') ? app.githubUrl : `https://${app.githubUrl}`} target="_blank" rel="noopener noreferrer"
+                                                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-background text-sm hover:bg-muted transition-colors">
+                                                                                <ExternalLink className="h-3.5 w-3.5" /> GitHub
+                                                                            </a>
+                                                                        )}
+                                                                        {app.portfolioUrl && (
+                                                                            <a href={app.portfolioUrl.startsWith('http') ? app.portfolioUrl : `https://${app.portfolioUrl}`} target="_blank" rel="noopener noreferrer"
+                                                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-background text-sm hover:bg-muted transition-colors text-emerald-600">
+                                                                                <ExternalLink className="h-3.5 w-3.5" /> Portfolio
+                                                                            </a>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
+                                                            {/* Skills & Interests */}
+                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                                <div>
+                                                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-2">Skills</p>
+                                                                    <div className="flex flex-wrap gap-1.5">
+                                                                        {app.skills.length > 0 ? app.skills.map(s => (
+                                                                            <span key={s} className="px-2 py-0.5 text-xs rounded-full bg-secondary text-secondary-foreground">{s}</span>
+                                                                        )) : <span className="text-muted-foreground text-sm">—</span>}
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-2">Interests</p>
+                                                                    <div className="flex flex-wrap gap-1.5">
+                                                                        {app.interests.length > 0 ? app.interests.map(i => (
+                                                                            <span key={i} className="px-2 py-0.5 text-xs rounded-full bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400">{i}</span>
+                                                                        )) : <span className="text-muted-foreground text-sm">—</span>}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Why Join */}
+                                                            <div>
+                                                                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-2">Why they want to join</p>
+                                                                <p className="text-sm text-foreground whitespace-pre-wrap bg-background rounded-lg p-3 border border-border">{app.whyJoin}</p>
+                                                            </div>
+
+                                                            {/* Experience */}
+                                                            {app.experience && (
+                                                                <div>
+                                                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-2">Experience / Projects</p>
+                                                                    <p className="text-sm text-foreground whitespace-pre-wrap bg-background rounded-lg p-3 border border-border">{app.experience}</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
 
                     {/* MESSAGES TAB */}
                     <TabsContent value="messages">
