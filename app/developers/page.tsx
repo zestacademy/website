@@ -112,7 +112,7 @@ export default function Developers() {
                             href="/developers/workwithus"
                             className="relative inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-full text-sm font-semibold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/30 group/btn"
                         >
-                            Apply Now
+                            Let&apos;s Collaborate
                             <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                         </Link>
                     </div>

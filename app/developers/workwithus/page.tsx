@@ -56,14 +56,14 @@ export default function WorkWithUs() {
                     </div>
 
                     <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight drop-shadow-lg">
-                        Work With{' '}
+                        Let&apos;s{' '}
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-amber-300">
-                            Zest Academy
+                            Collaborate
                         </span>
                     </h1>
 
                     <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
-                        Passionate about education and technology? Join our growing team and help shape the future of engineering learning in India.
+                        Passionate about education and technology? Collaborate with us and help shape the future of engineering learning in India.
                     </p>
 
                     {/* Perks */}

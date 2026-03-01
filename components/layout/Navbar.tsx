@@ -50,6 +50,9 @@ export function Navbar() {
         { href: "/my-learning", label: "My Learning" },
     ]
 
+    const workWithUsHref = "/developers/workwithus"
+    const isWorkWithUsActive = pathname.startsWith(workWithUsHref)
+
     return (
         <header className={cn(
             "sticky top-0 z-50 w-full border-b transition-all duration-300",
@@ -99,6 +102,19 @@ export function Navbar() {
                             </Link>
                         )
                     })}
+
+                    {/* Work With Us – pill button */}
+                    <Link
+                        href={workWithUsHref}
+                        className={cn(
+                            "inline-flex items-center px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 shadow-sm",
+                            isWorkWithUsActive
+                                ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-blue-500/30 shadow-md"
+                                : "bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-700 hover:shadow-md hover:shadow-blue-500/30 hover:scale-105"
+                        )}
+                    >
+                        Let&apos;s Collaborate
+                    </Link>
                 </nav>
 
                 <div className="flex items-center space-x-2 lg:space-x-4">
@@ -185,6 +201,15 @@ export function Navbar() {
                                             </Link>
                                         )
                                     })}
+
+                                    {/* Work With Us – pill button in mobile menu */}
+                                    <Link
+                                        href={workWithUsHref}
+                                        onClick={() => setIsOpen(false)}
+                                        className="mt-2 inline-flex items-center justify-center px-6 py-3 rounded-full text-base font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-700 transition-all duration-200 shadow-md"
+                                    >
+                                        Let&apos;s Collaborate
+                                    </Link>
                                 </nav>
                             </div>
                         </SheetContent>

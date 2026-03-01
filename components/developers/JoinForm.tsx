@@ -278,16 +278,16 @@ export default function JoinForm() {
             <div className="text-center space-y-4 mb-12">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold mb-2">
                     <Sparkles className="h-4 w-4" />
-                    Join Our Team
+                    Open Positions
                 </div>
                 <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-                    Work With{' '}
+                    Let&apos;s{' '}
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-600">
-                        Zest Academy
+                        Collaborate
                     </span>
                 </h2>
                 <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                    Passionate about education and technology? Fill out the form below and become part of our growing team.
+                    Passionate about education and technology? Fill out the form below and start collaborating with us.
                 </p>
             </div>
 
@@ -550,7 +550,7 @@ export default function JoinForm() {
                                     id="whyJoin"
                                     value={form.whyJoin}
                                     onChange={e => set('whyJoin', e.target.value)}
-                                    placeholder="Share your motivation, what you hope to contribute, and what you'll gain from this experience…"
+                                    placeholder="Share your motivation, what you hope to contribute, and what excites you about collaborating with us…"
                                     className={`min-h-[140px] bg-muted/30 resize-y ${errors.whyJoin ? 'border-destructive' : ''}`}
                                 />
                                 <div className="flex justify-between items-center">
@@ -637,7 +637,7 @@ export default function JoinForm() {
                                 </span>
                             ) : (
                                 <span className="flex items-center gap-2">
-                                    Submit Application <Send className="h-4 w-4" />
+                                    Start Collaborating <Send className="h-4 w-4" />
                                 </span>
                             )}
                         </Button>
