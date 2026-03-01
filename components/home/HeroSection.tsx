@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input"
 import { Search, TrendingUp, Code2 } from "lucide-react"
 import Link from "next/link"
 import { InstantSearch } from "@/components/ui/instant-search"
-import { AnimatedCounter } from "@/components/ui/animated-counter"
 
 const QUOTES = [
     "Precision in Learning. Power in Execution",
@@ -153,25 +152,7 @@ export function HeroSection() {
                         )}
                     </div>
 
-                    {/* Stats */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-white/10 mt-10">
-                        <div className="text-center">
-                            <p className="text-3xl font-bold"><AnimatedCounter value={5000} />+</p>
-                            <p className="text-sm text-blue-200">Learners</p>
-                        </div>
-                        <div className="text-center">
-                            <p className="text-3xl font-bold"><AnimatedCounter value={42} /></p>
-                            <p className="text-sm text-blue-200">Courses</p>
-                        </div>
-                        <div className="text-center">
-                            <p className="text-3xl font-bold"><AnimatedCounter value={150} />+</p>
-                            <p className="text-sm text-blue-200">Projects</p>
-                        </div>
-                        <div className="text-center">
-                            <p className="text-3xl font-bold"><AnimatedCounter value={98} />%</p>
-                            <p className="text-sm text-blue-200">Success Rate</p>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </section>
