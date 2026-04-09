@@ -79,7 +79,7 @@ export function ResumeLearning() {
                                     <div className="flex gap-4 pt-2">
                                         <Button
                                             className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700"
-                                            onClick={() => router.push(course.link)}
+                                            onClick={() => router.push(`/courses/${course.slug}/learn`)}
                                         >
                                             Continue <ArrowRight className="ml-2 h-4 w-4" />
                                         </Button>

@@ -2,12 +2,12 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
     // Helper function to check if user is authenticated
     function isSignedIn() {
       return request.auth != null;
     }
-    
+
     // Helper function to check if user owns the document
     function isOwner(userId) {
       return request.auth != null && request.auth.uid == userId;
@@ -20,16 +20,16 @@ service cloud.firestore {
         request.auth.token.email == 'zestacademy@rsmk.co.in'
       );
     }
-    
+
     // Allow collection group queries for comments for admins
     match /{path=**}/comments/{commentId} {
       allow read: if isAdmin();
     }
-    
+
     // Helper function to validate comment content
     function isValidComment() {
-      return request.resource.data.content is string 
-        && request.resource.data.content.size() > 0 
+      return request.resource.data.content is string
+        && request.resource.data.content.size() > 0
         && request.resource.data.content.size() <= 2000
         && request.resource.data.author is string
         && request.resource.data.timestamp != null;
@@ -43,13 +43,11 @@ service cloud.firestore {
 
     // --- LMS: Enrollments & Progress ---
     // Structure: enrollments/{enrollmentId} where ID is usually userId_courseId
-    // --- LMS: Enrollments & Progress ---
-    // Structure: enrollments/{enrollmentId} where ID is usually userId_courseId
     match /enrollments/{enrollmentId} {
-      allow read: if (isSignedIn() && enrollmentId.matches(request.auth.uid + "_.*")) || isAdmin(); 
+      allow read: if (isSignedIn() && enrollmentId.matches(request.auth.uid + "_.*")) || isAdmin();
       allow create: if (isSignedIn() && request.resource.data.userId == request.auth.uid) || isAdmin();
       allow update, delete: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
-      
+
       match /quiz_attempts/{attemptId} {
       	allow read, write: if isSignedIn() && enrollmentId.matches(request.auth.uid + "_.*");
       }
@@ -61,7 +59,6 @@ service cloud.firestore {
       allow write: if isOwner(userId) || isAdmin();
     }
 
-    // --- Community: Discussions ---
     // --- Community: Discussions ---
     match /discussions/{discussionId} {
       allow read: if true;
@@ -75,7 +72,7 @@ service cloud.firestore {
         allow update, delete: if (isSignedIn() && resource.data.authorId == request.auth.uid) || isAdmin();
       }
     }
-    
+
     // --- Contact Messages (Admin Only) ---
     match /contact_messages/{messageId} {
       allow create: if true;
@@ -87,17 +84,73 @@ service cloud.firestore {
       allow create: if true;  // anyone can submit the join form
       allow read, delete: if isAdmin();
     }
-    
+
+    // --- Course Management ---
+    match /courses/{courseSlug} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      match /enrollments/{uid} {
+        allow read, write: if isOwner(uid) || isAdmin();
+      }
+
+      match /liveClasses/{classId} {
+        allow read: if isSignedIn();
+        allow write: if isAdmin();
+
+        match /feedback/{feedbackId} {
+          allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+          allow read, update, delete: if isAdmin();
+        }
+      }
+    }
+
+    match /courseConfigs/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /notificationSubscriptions/{uid} {
+      allow read, write: if isOwner(uid) || isAdmin();
+    }
+
+    match /notifications/{notifId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // --- Newsletter Management ---
+    match /newsletterSubscribers/{subscriberId} {
+      allow create, update: if request.resource.data.email is string;
+      allow read, delete: if isAdmin();
+    }
+
+    // --- Lead Management ---
+    match /leads/{leadId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
     // --- Existing Comments (Keep for backward compatibility if needed) ---
     match /articles/{articleId}/comments/{commentId} {
       allow read: if true;
       allow create: if isValidComment() && request.resource.data.timestamp == request.time;
       allow update: if isOwner(resource.data.authorId) && isValidComment() && request.resource.data.authorId == resource.data.authorId;
-      allow delete: if isAdmin() || isOwner(resource.data.authorId); 
+      allow delete: if isAdmin() || isOwner(resource.data.authorId);
     }
-    
+
     // Prevent direct access to articles collection
     match /articles/{articleId} {
+      allow read: if false;
+      allow write: if false;
+    }
+
+    // Default deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
       allow read: if false;
       allow write: if false;
     }

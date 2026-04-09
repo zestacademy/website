@@ -27,13 +27,24 @@ export function AllCourses() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {courses.map((course, idx) => {
+                        const gradientClass =
+                            course.difficulty === 'Beginner'
+                                ? 'from-emerald-500 to-emerald-700'
+                                : course.difficulty === 'Intermediate'
+                                ? 'from-yellow-500 to-orange-500'
+                                : 'from-red-500 to-pink-500'
+
+                        const difficultyLabel = course.difficulty || 'All Levels'
+
+                        const detailLabel = course.duration
+
                         const Content = (
                             <>
                                 <div className="h-40 relative overflow-hidden">
-                                    <div className={`absolute inset-0 bg-gradient-to-br ${course.color} opacity-60 z-10 transition-opacity group-hover:opacity-80`} />
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-60 z-10 transition-opacity group-hover:opacity-80`} />
                                     <img src={course.image} alt={course.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                                    <Badge className={`absolute top-4 left-4 z-20 text-white border-0 ${course.level === 'Beginner' ? 'bg-green-500' : course.level === 'Intermediate' ? 'bg-yellow-500' : 'bg-red-500'}`}>
-                                        {course.level}
+                                    <Badge className={`absolute top-4 left-4 z-20 text-white border-0 ${course.difficulty === 'Beginner' ? 'bg-green-500' : course.difficulty === 'Intermediate' ? 'bg-yellow-500' : 'bg-red-500'}`}>
+                                        {difficultyLabel}
                                     </Badge>
                                 </div>
 
@@ -58,25 +69,19 @@ export function AllCourses() {
                                         </div>
                                         <div className="flex items-center gap-1">
                                             <BookOpen className="h-3.5 w-3.5" />
-                                            <span>{course.courses} {course.duration.includes("Days") ? "Days" : course.duration.includes("Weeks") ? "Lectures" : "Courses"}</span>
+                                            <span>{detailLabel}</span>
                                         </div>
                                     </div>
                                 </div>
                             </>
                         );
 
-                        return course.link ? (
-                            <Link key={idx} href={course.link} className="block h-full">
+                        return (
+                            <Link key={idx} href={`/courses/${course.slug}`} className="block h-full">
                                 <Card interactive className="h-full overflow-hidden border-border group hover:border-blue-500/50 p-0">
                                     {Content}
                                 </Card>
                             </Link>
-                        ) : (
-                            <div key={idx} className="block h-full">
-                                <Card interactive className="h-full overflow-hidden border-border group hover:border-blue-500/50 p-0">
-                                    {Content}
-                                </Card>
-                            </div>
                         );
                     })}
                 </div>
