@@ -1,5 +1,27 @@
 
-export type ContentType = 'video' | 'text' | 'pdf' | 'quiz' | 'project';
+export type ContentType = 'video' | 'text' | 'pdf' | 'quiz' | 'project' | 'live' | 'recorded';
+
+export type UserRole = 'student' | 'instructor' | 'admin';
+
+export type CourseStatus = 'draft' | 'published' | 'archived';
+
+export type EnrollmentStatus = 'pending' | 'confirmed' | 'cancelled';
+
+export type SessionType = 'live' | 'recorded';
+
+export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
+
+export interface User {
+    uid: string;
+    email: string;
+    displayName: string;
+    role: UserRole;
+    zestId?: string;
+    profilePicture?: string;
+    bio?: string;
+    createdAt: string;
+    updatedAt: string;
+}
 
 export interface LessonContent {
     type: ContentType;
@@ -11,6 +33,11 @@ export interface LessonContent {
     // For quiz
     quizId?: string;
     questions?: QuizQuestion[];
+    // For live/recorded sessions
+    sessionId?: string;
+    meetingLink?: string;
+    recordedVideoUrl?: string;
+    scheduledAt?: string;
     // Common
     resources?: Resource[];
 }
@@ -56,8 +83,55 @@ export interface Course {
     duration: string; // e.g., "20 Hours" or "20 Days"
     modules: Module[];
     tags: string[];
-    price?: number; // 0 for free
-    certificateAvailable?: boolean;
+    price: number; // 0 for free
+    certificateAvailable: boolean;
+    instructorId: string;
+    instructorName: string;
+    status: CourseStatus;
+    createdAt: string;
+    updatedAt: string;
+    totalEnrollments: number;
+    rating?: number;
+}
+
+export interface LiveSession {
+    id: string;
+    courseId: string;
+    title: string;
+    description: string;
+    scheduledAt: string;
+    duration: number; // in minutes
+    meetingLink: string;
+    instructorId: string;
+    status: 'scheduled' | 'ongoing' | 'completed' | 'cancelled';
+    recordedVideoUrl?: string;
+    createdAt: string;
+    attendees: string[]; // user IDs who attended
+}
+
+export interface AttendanceRecord {
+    id: string;
+    userId: string;
+    courseId: string;
+    sessionId: string;
+    joinedAt: string;
+    leftAt?: string;
+    duration: number; // in minutes
+    status: 'present' | 'partial' | 'absent';
+}
+
+export interface Enrollment {
+    id: string;
+    userId: string;
+    courseId: string;
+    enrolledAt: string;
+    status: EnrollmentStatus;
+    paymentId?: string;
+    paymentStatus: PaymentStatus;
+    amount: number;
+    progress: UserCourseProgress;
+    certificateIssued?: boolean;
+    certificateId?: string;
 }
 
 export interface UserCourseProgress {
@@ -69,4 +143,30 @@ export interface UserCourseProgress {
     quizScores: Record<string, number>; // quizId -> score (0-100)
     status: 'active' | 'completed';
     lastAccessedAt: string;
+    attendancePercentage: number;
+    totalAttendanceTime: number; // in minutes
+}
+
+export interface Certificate {
+    id: string;
+    userId: string;
+    courseId: string;
+    courseTitle: string;
+    userName: string;
+    issuedAt: string;
+    certificateUrl: string;
+    verificationId: string;
+}
+
+export interface Payment {
+    id: string;
+    userId: string;
+    courseId: string;
+    amount: number;
+    currency: string;
+    status: PaymentStatus;
+    paymentMethod: string;
+    transactionId?: string;
+    createdAt: string;
+    updatedAt: string;
 }

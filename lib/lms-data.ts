@@ -10,7 +10,15 @@ export const pythonCourse: Course = {
     level: "Beginner",
     duration: "20 Days",
     tags: ["Python", "Programming", "Data Science"],
+    price: 2999, // ₹2999
     certificateAvailable: true,
+    instructorId: "instructor-1", // Mock instructor ID
+    instructorName: "Dr. Sarah Johnson",
+    status: "published",
+    createdAt: "2024-01-15T00:00:00Z",
+    updatedAt: "2024-01-15T00:00:00Z",
+    totalEnrollments: 1250,
+    rating: 4.8,
     modules: Array.from({ length: 20 }, (_, i) => {
         const day = i + 1;
         // content mapping based on the previous file read

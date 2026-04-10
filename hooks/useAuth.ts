@@ -29,7 +29,9 @@ export function useAuth() {
                             const userDocRef = doc(db, "users", currentUser.uid)
                             const userDoc = await getDoc(userDocRef)
                             if (userDoc.exists()) {
-                                setUser({ ...currentUser, ...userDoc.data() })
+                                const data = userDoc.data()
+                                const normalizedRole = data?.role ? String(data.role).toLowerCase() : undefined
+                                setUser({ ...currentUser, ...data, role: normalizedRole })
                             } else {
                                 setUser(currentUser)
                             }
