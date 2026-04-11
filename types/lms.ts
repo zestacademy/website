@@ -19,6 +19,8 @@ export interface User {
     zestId?: string;
     profilePicture?: string;
     bio?: string;
+    notificationsEnabled?: boolean;
+    suspended?: boolean;
     createdAt: string;
     updatedAt: string;
 }
@@ -75,16 +77,21 @@ export interface Module {
 
 export interface Course {
     id: string;
+    slug?: string;
     title: string;
     subtitle?: string;
     description: string;
     thumbnail: string;
+    category?: string;
     level: 'Beginner' | 'Intermediate' | 'Advanced';
     duration: string; // e.g., "20 Hours" or "20 Days"
     modules: Module[];
     tags: string[];
     price: number; // 0 for free
     certificateAvailable: boolean;
+    certificateName?: string;
+    startDate?: string;
+    endDate?: string;
     instructorId: string;
     instructorName: string;
     status: CourseStatus;
@@ -154,6 +161,8 @@ export interface Certificate {
     courseTitle: string;
     userName: string;
     issuedAt: string;
+    courseStartDate?: string;
+    courseEndDate?: string;
     certificateUrl: string;
     verificationId: string;
 }

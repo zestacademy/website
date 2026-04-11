@@ -20,6 +20,7 @@ import {
     getDoc,
     getDocs,
     addDoc,
+    deleteDoc,
     updateDoc,
     query,
     where,
@@ -328,23 +329,33 @@ export const LMSService = {
     },
 
     // Certificate Management
-    async issueCertificate(enrollmentId: string, certificateData: Omit<Certificate, 'id' | 'issuedAt'>): Promise<string | null> {
+    async issueCertificate(enrollmentId: string, certificateData: Omit<Certificate, 'id' | 'issuedAt' | 'certificateUrl' | 'verificationId'>): Promise<string | null> {
         try {
-            const docRef = await addDoc(collection(db, "certificates"), {
+            const verificationId = `ZEST-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+            const certificatePayload = {
                 ...certificateData,
-                issuedAt: Timestamp.now()
-            });
+                issuedAt: new Date().toISOString(),
+                verificationId,
+                certificateUrl: "",
+            } as Omit<Certificate, 'id'>
+
+            const docRef = await addDoc(collection(db, "certificates"), certificatePayload)
+            const certificateUrl = `/certificates/${docRef.id}`
+
+            await updateDoc(doc(db, "certificates", docRef.id), {
+                certificateUrl
+            })
 
             // Update enrollment
             await updateDoc(doc(db, "enrollments", enrollmentId), {
                 certificateIssued: true,
                 certificateId: docRef.id
-            });
+            })
 
-            return docRef.id;
+            return docRef.id
         } catch (error) {
-            console.error("Error issuing certificate:", error);
-            return null;
+            console.error("Error issuing certificate:", error)
+            return null
         }
     },
 
@@ -359,6 +370,79 @@ export const LMSService = {
         } catch (error) {
             console.error("Error fetching certificates:", error);
             return [];
+        }
+    },
+
+    async getCertificateById(certificateId: string): Promise<Certificate | null> {
+        try {
+            const certDoc = await getDoc(doc(db, "certificates", certificateId));
+            if (!certDoc.exists()) return null;
+            return { id: certDoc.id, ...certDoc.data() } as Certificate;
+        } catch (error) {
+            console.error("Error fetching certificate by ID:", error);
+            return null;
+        }
+    },
+
+    async getCertificateByVerificationId(verificationId: string): Promise<Certificate | null> {
+        try {
+            const q = query(collection(db, "certificates"), where("verificationId", "==", verificationId));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) return null;
+            const certDoc = querySnapshot.docs[0];
+            return { id: certDoc.id, ...certDoc.data() } as Certificate;
+        } catch (error) {
+            console.error("Error fetching certificate by verification ID:", error);
+            return null;
+        }
+    },
+
+    async getAllCertificates(): Promise<Certificate[]> {
+        try {
+            const querySnapshot = await getDocs(collection(db, "certificates"));
+            return querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            } as Certificate));
+        } catch (error) {
+            console.error("Error fetching all certificates:", error);
+            return [];
+        }
+    },
+
+    async getAllUsers(): Promise<User[]> {
+        try {
+            const querySnapshot = await getDocs(collection(db, "users"));
+            return querySnapshot.docs.map(doc => ({
+                uid: doc.id,
+                ...doc.data()
+            } as User));
+        } catch (error) {
+            console.error("Error fetching all users:", error);
+            return [];
+        }
+    },
+
+    async suspendUser(userId: string, suspend: boolean): Promise<boolean> {
+        try {
+            await updateDoc(doc(db, "users", userId), {
+                suspended: suspend,
+                updatedAt: Timestamp.now()
+            });
+            return true;
+        } catch (error) {
+            console.error("Error suspending user:", error);
+            return false;
+        }
+    },
+
+    async deleteCourse(courseId: string): Promise<boolean> {
+        try {
+            await deleteDoc(doc(db, "courses", courseId));
+            return true;
+        } catch (error) {
+            console.error("Error deleting course:", error);
+            return false;
         }
     },
 

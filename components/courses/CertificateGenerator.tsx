@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Download, Award, CheckCircle } from "lucide-react"
 import { LMSService } from "@/services/lms-service"
 import { Enrollment, Certificate, Course } from "@/types/lms"
@@ -19,6 +18,7 @@ export default function CertificateGenerator({ enrollment, course }: Certificate
     const [certificate, setCertificate] = useState<Certificate | null>(null)
     const [loading, setLoading] = useState(false)
     const [generating, setGenerating] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         if (enrollment.certificateId) {
@@ -29,22 +29,17 @@ export default function CertificateGenerator({ enrollment, course }: Certificate
     const loadCertificate = async () => {
         if (!enrollment.certificateId) return
 
+        setLoading(true)
+        setError(null)
+
         try {
-            // In a real app, you'd fetch the certificate by ID
-            // For now, we'll create a mock certificate object
-            const mockCertificate: Certificate = {
-                id: enrollment.certificateId,
-                userId: enrollment.userId,
-                courseId: enrollment.courseId,
-                courseTitle: course.title,
-                userName: user?.displayName || user?.email || "Student",
-                issuedAt: enrollment.progress.status === 'completed' ? new Date().toISOString() : "",
-                certificateUrl: `/certificates/${enrollment.certificateId}`,
-                verificationId: `ZEST-${enrollment.certificateId.slice(0, 8).toUpperCase()}`
-            }
-            setCertificate(mockCertificate)
+            const certificateData = await LMSService.getCertificateById(enrollment.certificateId)
+            setCertificate(certificateData)
         } catch (error) {
             console.error("Error loading certificate:", error)
+            setError("Unable to load certificate details.")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -60,23 +55,24 @@ export default function CertificateGenerator({ enrollment, course }: Certificate
         if (!canGenerateCertificate() || !user) return
 
         setGenerating(true)
+        setError(null)
         try {
             const certificateData = {
                 userId: enrollment.userId,
                 courseId: enrollment.courseId,
                 courseTitle: course.title,
-                userName: user.displayName || user.email || "Student"
+                userName: user.displayName || user.email || "Student",
+                courseStartDate: course.startDate || "",
+                courseEndDate: course.endDate || ""
             }
 
             const certificateId = await LMSService.issueCertificate(enrollment.id, certificateData)
-
             if (certificateId) {
-                // Reload enrollment data
-                window.location.reload() // In a real app, you'd update state instead
+                await loadCertificate()
             }
         } catch (error) {
             console.error("Error generating certificate:", error)
-            alert("Failed to generate certificate. Please try again.")
+            setError("Failed to generate certificate. Please try again.")
         } finally {
             setGenerating(false)
         }
@@ -148,6 +144,12 @@ export default function CertificateGenerator({ enrollment, course }: Certificate
                         </div>
                     </div>
                 </div>
+
+                {error && (
+                    <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                        {error}
+                    </div>
+                )}
 
                 {/* Certificate Actions */}
                 {certificate ? (

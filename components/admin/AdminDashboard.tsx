@@ -18,7 +18,7 @@ import { auth, db } from "@/lib/firebase"
 import { doc, setDoc, Timestamp } from "firebase/firestore"
 
 export default function AdminDashboard() {
-    const { user } = useAuth()
+    const { user, loading: authLoading } = useAuth()
     const normalizedRole = String(user?.role || '').toLowerCase()
     const [users, setUsers] = useState<User[]>([])
     const [courses, setCourses] = useState<Course[]>([])
@@ -29,6 +29,7 @@ export default function AdminDashboard() {
         totalEnrollments: 0,
         totalRevenue: 0
     })
+    const [suspendingUserId, setSuspendingUserId] = useState<string | null>(null)
 
     // Instructor creation state
     const [showCreateInstructor, setShowCreateInstructor] = useState(false)
@@ -40,7 +41,27 @@ export default function AdminDashboard() {
         sendInvitation: true
     })
 
-    // Check if user is admin
+    useEffect(() => {
+        if (normalizedRole === 'admin') {
+            loadDashboardData()
+        }
+    }, [normalizedRole])
+
+    if (authLoading) {
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <div className="animate-pulse space-y-6">
+                    <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        {[...Array(4)].map((_, i) => (
+                            <div key={i} className="h-24 bg-gray-200 rounded"></div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     if (!user || normalizedRole !== 'admin') {
         return (
             <div className="container mx-auto px-4 py-8">
@@ -55,12 +76,6 @@ export default function AdminDashboard() {
             </div>
         )
     }
-
-    useEffect(() => {
-        if (normalizedRole === 'admin') {
-            loadDashboardData()
-        }
-    }, [normalizedRole])
 
     const loadDashboardData = async () => {
         setLoading(true)
@@ -195,6 +210,25 @@ export default function AdminDashboard() {
         }
     }
 
+    const toggleUserSuspension = async (userId: string, shouldSuspend: boolean) => {
+        if (!confirm(`${shouldSuspend ? 'Suspend' : 'Reinstate'} this user account?`)) return
+        setSuspendingUserId(userId)
+        try {
+            const success = await LMSService.suspendUser(userId, shouldSuspend)
+            if (success) {
+                await loadDashboardData()
+                alert(`User has been ${shouldSuspend ? 'suspended' : 'reinstated'} successfully.`)
+            } else {
+                alert('Unable to update user suspension state.')
+            }
+        } catch (error) {
+            console.error('Error toggling user suspension:', error)
+            alert('Failed to update suspension state. Please try again.')
+        } finally {
+            setSuspendingUserId(null)
+        }
+    }
+
     if (!user || normalizedRole !== 'admin') {
         return (
             <div className="container mx-auto px-4 py-8">
@@ -206,21 +240,6 @@ export default function AdminDashboard() {
                         </CardDescription>
                     </CardHeader>
                 </Card>
-            </div>
-        )
-    }
-
-    if (!user || normalizedRole !== 'admin') {
-        return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="animate-pulse space-y-6">
-                    <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        {[...Array(4)].map((_, i) => (
-                            <div key={i} className="h-24 bg-gray-200 rounded"></div>
-                        ))}
-                    </div>
-                </div>
             </div>
         )
     }
@@ -427,6 +446,7 @@ export default function AdminDashboard() {
                                 <TableHead>Name</TableHead>
                                 <TableHead>Email</TableHead>
                                 <TableHead>Role</TableHead>
+                                <TableHead>Status</TableHead>
                                 <TableHead>Zest ID</TableHead>
                                 <TableHead>Joined</TableHead>
                                 <TableHead>Actions</TableHead>
@@ -442,10 +462,15 @@ export default function AdminDashboard() {
                                             {user.role}
                                         </Badge>
                                     </TableCell>
+                                    <TableCell>
+                                        <Badge variant={user.suspended ? 'destructive' : 'outline'}>
+                                            {user.suspended ? 'Suspended' : 'Active'}
+                                        </Badge>
+                                    </TableCell>
                                     <TableCell className="font-mono text-sm">{user.zestId || 'N/A'}</TableCell>
                                     <TableCell>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</TableCell>
                                     <TableCell>
-                                        <div className="flex gap-2">
+                                        <div className="flex flex-wrap gap-2">
                                             <Select
                                                 value={user.role}
                                                 onValueChange={(newRole: UserRole) => updateUserRole(user.uid, newRole)}
@@ -468,6 +493,14 @@ export default function AdminDashboard() {
                                                     Reset Password
                                                 </Button>
                                             )}
+                                            <Button
+                                                variant={user.suspended ? 'secondary' : 'destructive'}
+                                                size="sm"
+                                                onClick={() => toggleUserSuspension(user.uid, !user.suspended)}
+                                                disabled={suspendingUserId === user.uid}
+                                            >
+                                                {user.suspended ? 'Reinstate' : 'Suspend'}
+                                            </Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>
