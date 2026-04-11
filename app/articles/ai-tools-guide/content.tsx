@@ -3,9 +3,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { CommentsSection } from "@/components/comments-section"
-import { Lightbulb, Palette, BarChart3, Image, Hash, LineChart, Calendar, Zap, ExternalLink } from "lucide-react"
+import { Lightbulb, Palette, BarChart3, Image as ImageIcon, Hash, LineChart, Calendar, Zap, ExternalLink } from "lucide-react"
 import { toolsData } from "./toolsData"
 import Link from "next/link"
+import Image from "next/image"
 import React from "react"
 import { ArticleHeader, ArticleFooter } from "@/components/articles"
 
@@ -13,7 +14,7 @@ const iconMap: Record<string, React.ElementType> = {
     Lightbulb,
     Palette,
     BarChart3,
-    Image,
+    Image: ImageIcon,
     Hash,
     LineChart,
     Calendar,
@@ -99,15 +100,13 @@ export default function AIToolsGuideContent() {
                                                     {/* Logo Section */}
                                                     <div className="flex-shrink-0">
                                                         <div className="w-16 h-16 rounded-xl bg-background border flex items-center justify-center overflow-hidden shadow-sm">
-                                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                            <img
+                                                            <Image
                                                                 src={getFaviconUrl(tool.url)}
                                                                 alt={`${tool.name} logo`}
-                                                                className="w-10 h-10 object-contain"
-                                                                style={{ width: '60%', height: '60%', objectFit: "contain" }}
-                                                                onError={(e) => {
-                                                                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tool.name)}&background=random`;
-                                                                }}
+                                                                width={40}
+                                                                height={40}
+                                                                className="object-contain"
+                                                                unoptimized
                                                             />
                                                         </div>
                                                     </div>

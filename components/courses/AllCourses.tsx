@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { Clock, BookOpen, Loader2 } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { useState, useEffect } from "react"
 import { collection, onSnapshot, query, where, limit } from "firebase/firestore"
 import { db } from "@/lib/firebase"
@@ -67,7 +68,12 @@ export function AllCourses() {
                             <>
                                 <div className="h-40 relative overflow-hidden">
                                     <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-60 z-10 transition-opacity group-hover:opacity-80`} />
-                                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                    <Image 
+                                        src={course.thumbnail} 
+                                        alt={course.title} 
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                                    />
                                     <Badge className={`absolute top-4 left-4 z-20 text-white border-0 ${course.level === 'Beginner' ? 'bg-green-500' : course.level === 'Intermediate' ? 'bg-yellow-500' : 'bg-red-500'}`}>
                                         {difficultyLabel}
                                     </Badge>

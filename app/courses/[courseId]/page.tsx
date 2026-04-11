@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../hooks/useAuth'
 import { LMSService } from '../../../services/lms-service'
 import { Course, Enrollment } from '../../../types/lms'
+import CourseJsonLd from "@/components/seo/CourseJsonLd"
 
 interface PageProps {
     params: Promise<{
@@ -123,6 +124,7 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
 
   return (
     <div className="space-y-10 pb-10 sm:space-y-14">
+      <CourseJsonLd course={course} />
       <section className="section-shell">
         <div className="hero-panel grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
