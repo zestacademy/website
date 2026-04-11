@@ -51,7 +51,11 @@ if (typeof window !== "undefined") {
 
 // Export with non-null assertion for convenience (these will be undefined during SSR)
 // Pages using these exports should be marked with "use client" directive
-export { app, auth, db, database, analytics, messaging };
+const typedAuth = auth as Auth;
+const typedDb = db as Firestore;
+const typedDatabase = database as Database;
+const typedMessaging = messaging as Messaging;
+export { app, typedAuth as auth, typedDb as db, typedDatabase as database, analytics, typedMessaging as messaging };
 
 // Helper to check if Firebase is initialized (client-side only)
 export function isFirebaseInitialized(): boolean {

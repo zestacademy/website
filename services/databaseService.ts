@@ -16,6 +16,7 @@ import {
   type CollectionReference,
 } from 'firebase/firestore'
 import { db, isFirebaseInitialized } from '../lib/firebase'
+import { sendEnrollmentEmail, sendCertificateEmail } from './emailService'
 
 function ensureDatabaseReady() {
   if (!isFirebaseInitialized || !db) {
@@ -135,24 +136,25 @@ export async function enrollUserInCourse(user: any, course: any) {
     throw new Error('You need to sign in before enrolling in a course.')
   }
 
-  if (!course?.slug) {
+  const activeSlug = course?.slug || course?.id
+  if (!activeSlug) {
     throw new Error('Invalid course details. Please refresh and try again.')
   }
 
   ensureDatabaseReady()
 
-  const userEnrollmentRef = doc(db!, 'users', user.uid, 'enrolledCourses', course.slug)
-  const courseEnrollmentRef = doc(db!, 'courses', course.slug, 'enrollments', user.uid)
-  const progressRef = doc(db!, 'users', user.uid, 'courseProgress', course.slug)
+  const userEnrollmentRef = doc(db!, 'users', user.uid, 'enrolledCourses', activeSlug)
+  const courseEnrollmentRef = doc(db!, 'courses', activeSlug, 'enrollments', user.uid)
+  const progressRef = doc(db!, 'users', user.uid, 'courseProgress', activeSlug)
 
   const totalLessons = course.modules?.reduce((acc: number, module: any) => acc + (module.lessons?.length || 0), 0) || 0
 
   const enrollmentData = {
     userId: user.uid,
-    courseSlug: course.slug,
-    courseTitle: course.title,
-    courseCategory: course.category,
-    instructor: course.instructor,
+    courseSlug: activeSlug,
+    courseTitle: course.title || "Untitled Course",
+    courseCategory: course.category || "Uncategorized",
+    instructor: course.instructorName || course.instructor || "Unknown Instructor",
     enrolledAt: serverTimestamp(),
     status: 'enrolled',
   }
@@ -166,7 +168,7 @@ export async function enrollUserInCourse(user: any, course: any) {
     enrolledAt: serverTimestamp(),
   }, { merge: true })
   batch.set(progressRef, {
-    courseSlug: course.slug,
+    courseSlug: activeSlug,
     totalLessons,
     completedLessonIds: [],
     completedLessonsCount: 0,
@@ -176,6 +178,14 @@ export async function enrollUserInCourse(user: any, course: any) {
     updatedAt: serverTimestamp(),
   }, { merge: true })
   await batch.commit()
+
+  // Send an Enrollment Email!
+  try {
+    const courseUrl = `${window.location.origin}/courses/${course.slug || course.id}/learn`
+    await sendEnrollmentEmail(user.email ?? '', course.title, courseUrl)
+  } catch (error) {
+    console.error("Failed to send enrollment email:", error)
+  }
 }
 
 export async function getUserCourseLearningState(uid: string, course: any) {
@@ -185,12 +195,13 @@ export async function getUserCourseLearningState(uid: string, course: any) {
     throw new Error('Missing user id while fetching learning state.')
   }
 
-  if (!course?.slug) {
+  const activeSlug = course?.slug || course?.id
+  if (!activeSlug) {
     throw new Error('Invalid course selected.')
   }
 
-  const enrollmentRef = doc(db!, 'users', uid, 'enrolledCourses', course.slug)
-  const progressRef = doc(db!, 'users', uid, 'courseProgress', course.slug)
+  const enrollmentRef = doc(db!, 'users', uid, 'enrolledCourses', activeSlug)
+  const progressRef = doc(db!, 'users', uid, 'courseProgress', activeSlug)
 
   const [enrollmentSnapshot, progressSnapshot] = await Promise.all([
     getDoc(enrollmentRef),
@@ -202,7 +213,7 @@ export async function getUserCourseLearningState(uid: string, course: any) {
   const progress = progressSnapshot.exists()
     ? mapDocWithDate(progressSnapshot, ['startedAt', 'updatedAt', 'completedAt'])
     : {
-      courseSlug: course.slug,
+      courseSlug: activeSlug,
       totalLessons,
       completedLessonIds: [],
       completedLessonsCount: 0,
@@ -227,13 +238,14 @@ export async function setCourseLessonCompletion(user: any, course: any, lessonId
     throw new Error('Sign in to update course progress.')
   }
 
-  if (!course?.slug || !lessonId) {
+  const activeSlug = course?.slug || course?.id
+  if (!activeSlug || !lessonId) {
     throw new Error('Invalid course lesson update request.')
   }
 
-  const progressRef = doc(db!, 'users', user.uid, 'courseProgress', course.slug)
-  const completedCourseRef = doc(db!, 'users', user.uid, 'completedCourses', course.slug)
-  const certificateRef = doc(db!, 'users', user.uid, 'certificates', course.slug)
+  const progressRef = doc(db!, 'users', user.uid, 'courseProgress', activeSlug)
+  const completedCourseRef = doc(db!, 'users', user.uid, 'completedCourses', activeSlug)
+  const certificateRef = doc(db!, 'users', user.uid, 'certificates', activeSlug)
   const summaryRef = doc(db!, 'users', user.uid, 'profile', 'summary')
 
   const totalLessons = course.modules?.reduce((acc: number, module: any) => acc + (module.lessons?.length || 0), 0) || 0
@@ -257,7 +269,7 @@ export async function setCourseLessonCompletion(user: any, course: any, lessonId
 
   const batch = writeBatch(db!)
   batch.set(progressRef, {
-    courseSlug: course.slug,
+    courseSlug: activeSlug,
     totalLessons,
     completedLessonIds,
     completedLessonsCount,
@@ -270,17 +282,20 @@ export async function setCourseLessonCompletion(user: any, course: any, lessonId
   if (nowCompleted) {
     batch.set(completedCourseRef, {
       title: course.title,
-      slug: course.slug,
+      slug: activeSlug,
       score: 100,
       completedAt: serverTimestamp(),
     }, { merge: true })
 
-    batch.set(certificateRef, {
+    const certificateData = {
       title: course.certificateName,
-      credentialId: `${course.slug.toUpperCase()}-${user.uid.slice(0, 8)}`,
+      credentialId: `${activeSlug.toUpperCase()}-${user.uid.slice(0, 8)}`,
       issuedAt: serverTimestamp(),
-      courseSlug: course.slug,
-    }, { merge: true })
+      courseSlug: activeSlug,
+      verificationId: `${activeSlug.toUpperCase()}-${user.uid.slice(0, 8)}`
+    }
+
+    batch.set(certificateRef, certificateData, { merge: true })
 
     if (!previouslyCompleted) {
       batch.set(summaryRef, {
@@ -293,6 +308,17 @@ export async function setCourseLessonCompletion(user: any, course: any, lessonId
   }
 
   await batch.commit()
+
+  // After the commit correctly updates all state, fire the email request 
+  if (nowCompleted && !previouslyCompleted) {
+      try {
+         const certId = `${activeSlug.toUpperCase()}-${user.uid.slice(0, 8)}`
+         const certUrl = `${window.location.origin}/certificates/${certId}`
+         await sendCertificateEmail(user.email ?? '', course.title, certId, certUrl)
+      } catch (error) {
+         console.error("Failed to send certificate email:", error)
+      }
+  }
 
   return {
     completedLessonIds,

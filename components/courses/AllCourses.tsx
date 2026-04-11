@@ -1,12 +1,29 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
-import { Clock, BookOpen } from "lucide-react"
+import { Clock, BookOpen, Loader2 } from "lucide-react"
 import Link from "next/link"
-
-import { courses } from "@/lib/courses"
+import { useState, useEffect } from "react"
+import { collection, onSnapshot, query, where, limit } from "firebase/firestore"
+import { db } from "@/lib/firebase"
+import { Course } from "@/types/lms"
 
 export function AllCourses() {
+    const [courses, setCourses] = useState<Course[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const q = query(collection(db, "courses"), where("status", "==", "published"), limit(6))
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course))
+            setCourses(data)
+            setLoading(false)
+        })
+        return () => unsubscribe()
+    }, [])
+
     return (
         <section className="py-12 bg-background">
             <div className="container mx-auto px-4">
@@ -26,15 +43,23 @@ export function AllCourses() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {courses.map((course, idx) => {
+                    {loading ? (
+                        <div className="col-span-full flex justify-center py-10 text-muted-foreground">
+                             <Loader2 className="animate-spin h-6 w-6 mr-2" /> Loading latest courses...
+                        </div>
+                    ) : courses.length === 0 ? (
+                        <div className="col-span-full flex justify-center py-10 text-muted-foreground">
+                            No courses available right now. Let's create some!
+                        </div>
+                    ) : courses.map((course, idx) => {
                         const gradientClass =
-                            course.difficulty === 'Beginner'
+                            course.level === 'Beginner'
                                 ? 'from-emerald-500 to-emerald-700'
-                                : course.difficulty === 'Intermediate'
+                                : course.level === 'Intermediate'
                                 ? 'from-yellow-500 to-orange-500'
                                 : 'from-red-500 to-pink-500'
 
-                        const difficultyLabel = course.difficulty || 'All Levels'
+                        const difficultyLabel = course.level || 'All Levels'
 
                         const detailLabel = course.duration
 
@@ -42,8 +67,8 @@ export function AllCourses() {
                             <>
                                 <div className="h-40 relative overflow-hidden">
                                     <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-60 z-10 transition-opacity group-hover:opacity-80`} />
-                                    <img src={course.image} alt={course.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                                    <Badge className={`absolute top-4 left-4 z-20 text-white border-0 ${course.difficulty === 'Beginner' ? 'bg-green-500' : course.difficulty === 'Intermediate' ? 'bg-yellow-500' : 'bg-red-500'}`}>
+                                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                    <Badge className={`absolute top-4 left-4 z-20 text-white border-0 ${course.level === 'Beginner' ? 'bg-green-500' : course.level === 'Intermediate' ? 'bg-yellow-500' : 'bg-red-500'}`}>
                                         {difficultyLabel}
                                     </Badge>
                                 </div>
@@ -77,7 +102,7 @@ export function AllCourses() {
                         );
 
                         return (
-                            <Link key={idx} href={`/courses/${course.slug}`} className="block h-full">
+                            <Link key={course.id || idx} href={`/courses/${course.slug || course.id}`} className="block h-full">
                                 <Card interactive className="h-full overflow-hidden border-border group hover:border-blue-500/50 p-0">
                                     {Content}
                                 </Card>

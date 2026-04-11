@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { LogOut, User as UserIcon, Settings } from "lucide-react"
+import { LogOut, User as UserIcon, Settings, GraduationCap, ShieldCheck } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -141,6 +141,22 @@ export function UserProfile() {
                             <span>Settings</span>
                         </DropdownMenuItem>
                     </Link>
+                    {(user.role === 'instructor' || user.role === 'admin') && (
+                        <Link href="/instructor">
+                            <DropdownMenuItem>
+                                <GraduationCap className="mr-2 h-4 w-4 text-blue-500" />
+                                <span>Instructor Dashboard</span>
+                            </DropdownMenuItem>
+                        </Link>
+                    )}
+                    {user.role === 'admin' && (
+                        <Link href="/admin">
+                            <DropdownMenuItem>
+                                <ShieldCheck className="mr-2 h-4 w-4 text-purple-500" />
+                                <span>Admin Dashboard</span>
+                            </DropdownMenuItem>
+                        </Link>
+                    )}
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-red-500 focus:text-red-500">

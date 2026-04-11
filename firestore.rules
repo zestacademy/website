@@ -13,12 +13,21 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == userId;
     }
 
-    // Helper function to check if user is the specific Admin
+    // Helper function to check if user is an Admin
     function isAdmin() {
       return request.auth != null && (
         request.auth.token.email == 'zestacademyonline@gmail.com' ||
-        request.auth.token.email == 'zestacademy@rsmk.co.in'
+        request.auth.token.email == 'zestacademy@rsmk.co.in' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
       );
+    }
+
+    // Helper function to check if user is an Instructor
+    function isInstructor() {
+      return request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'instructor';
     }
 
     // Allow collection group queries for comments for admins
@@ -35,21 +44,26 @@ service cloud.firestore {
         && request.resource.data.timestamp != null;
     }
 
-    // --- Users Collection ---
+    // --- Users Collection & Subcollections ---
     match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
+      allow read: if isOwner(userId) || isAdmin() || isInstructor();
       allow create, update, delete: if isOwner(userId) || isAdmin();
+      
+      // Allow access to all subcollections of user (e.g. enrolledCourses, courseProgress, etc)
+      match /{document=**} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
     }
 
     // --- LMS: Enrollments & Progress ---
-    // Structure: enrollments/{enrollmentId} where ID is usually userId_courseId
+    // Root level enrollments (lms-service.ts)
     match /enrollments/{enrollmentId} {
-      allow read: if (isSignedIn() && enrollmentId.matches(request.auth.uid + "_.*")) || isAdmin();
+      allow read: if (isSignedIn() && (resource == null || resource.data.userId == request.auth.uid || enrollmentId.matches(request.auth.uid + "_.*"))) || isAdmin();
       allow create: if (isSignedIn() && request.resource.data.userId == request.auth.uid) || isAdmin();
       allow update, delete: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
 
       match /quiz_attempts/{attemptId} {
-      	allow read, write: if isSignedIn() && enrollmentId.matches(request.auth.uid + "_.*");
+      	allow read, write: if isSignedIn() && get(/databases/$(database)/documents/enrollments/$(enrollmentId)).data.userId == request.auth.uid;
       }
     }
 
@@ -65,7 +79,6 @@ service cloud.firestore {
       allow create: if isSignedIn();
       allow update, delete: if (isSignedIn() && resource.data.authorId == request.auth.uid) || isAdmin();
 
-      // Replies subcollection
       match /replies/{replyId} {
         allow read: if true;
         allow create: if isSignedIn();
@@ -73,7 +86,7 @@ service cloud.firestore {
       }
     }
 
-    // --- Contact Messages (Admin Only) ---
+    // --- Contact Messages ---
     match /contact_messages/{messageId} {
       allow create: if true;
       allow read, delete: if isAdmin();
@@ -81,33 +94,63 @@ service cloud.firestore {
 
     // --- Developer Applications ---
     match /developer_applications/{applicationId} {
-      allow create: if true;  // anyone can submit the join form
+      allow create: if true;
       allow read, delete: if isAdmin();
     }
 
     // --- Course Management ---
-    match /courses/{courseSlug} {
+    match /courses/{courseId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create: if isAdmin() || isInstructor();
+      allow update, delete: if isAdmin() || (isInstructor() && resource.data.instructorId == request.auth.uid);
 
+      // databaseService.ts uses standard subcollections
       match /enrollments/{uid} {
         allow read, write: if isOwner(uid) || isAdmin();
       }
 
       match /liveClasses/{classId} {
         allow read: if isSignedIn();
-        allow write: if isAdmin();
+        allow write: if isAdmin() || isInstructor();
 
         match /feedback/{feedbackId} {
           allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-          allow read, update, delete: if isAdmin();
+          allow read, update, delete: if isAdmin() || isInstructor();
         }
       }
     }
 
+    // --- Live Sessions (lms-service.ts) ---
+    match /liveSessions/{sessionId} {
+      allow read: if true;
+      allow create: if isAdmin() || isInstructor();
+      allow update, delete: if isAdmin() || (isInstructor() && resource.data.instructorId == request.auth.uid);
+    }
+
+    // --- Attendance (lms-service.ts) ---
+    match /attendance/{attendanceId} {
+      allow read: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin() || isInstructor();
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin() || isInstructor();
+    }
+
+    // --- Certificates (lms-service.ts) ---
+    match /certificates/{certId} {
+      allow read: if true; // Publicly verifiable
+      allow write: if isAdmin() || isInstructor();
+    }
+
+    // --- Payments (lms-service.ts) ---
+    match /payments/{paymentId} {
+      allow read: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // --- Notifications & Configs ---
     match /courseConfigs/{configId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAdmin() || isInstructor();
     }
 
     match /notificationSubscriptions/{uid} {
@@ -116,22 +159,21 @@ service cloud.firestore {
 
     match /notifications/{notifId} {
       allow read: if isSignedIn();
-      allow write: if isAdmin();
+      allow write: if isAdmin() || isInstructor();
     }
 
-    // --- Newsletter Management ---
+    // --- Newsletter & Leads ---
     match /newsletterSubscribers/{subscriberId} {
       allow create, update: if request.resource.data.email is string;
       allow read, delete: if isAdmin();
     }
 
-    // --- Lead Management ---
     match /leads/{leadId} {
       allow create: if true;
       allow read, update, delete: if isAdmin();
     }
 
-    // --- Existing Comments (Keep for backward compatibility if needed) ---
+    // --- Articles & Existing Comments ---
     match /articles/{articleId}/comments/{commentId} {
       allow read: if true;
       allow create: if isValidComment() && request.resource.data.timestamp == request.time;
@@ -139,22 +181,10 @@ service cloud.firestore {
       allow delete: if isAdmin() || isOwner(resource.data.authorId);
     }
 
-    // Prevent direct access to articles collection
     match /articles/{articleId} {
       allow read: if false;
       allow write: if false;
     }
-
-    // Default deny all other access
-    match /{document=**} {
-      allow read, write: if false;
-    }
-  }
-}
-      allow read: if false;
-      allow write: if false;
-    }
-    
 
     // Default deny all other access
     match /{document=**} {

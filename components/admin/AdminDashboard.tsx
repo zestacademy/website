@@ -9,19 +9,20 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Users, BookOpen, TrendingUp, Settings, Plus, UserPlus } from "lucide-react"
+import { Users, BookOpen, TrendingUp, Settings, Plus, UserPlus, Trash2, Pencil } from "lucide-react"
 import { LMSService } from "@/services/lms-service"
 import { User, Course, UserRole } from "@/types/lms"
 import { useAuth } from "@/hooks/useAuth"
 import { createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth"
 import { auth, db } from "@/lib/firebase"
-import { doc, setDoc, Timestamp } from "firebase/firestore"
+import { doc, setDoc, Timestamp, collection, onSnapshot } from "firebase/firestore"
 
 export default function AdminDashboard() {
     const { user, loading: authLoading } = useAuth()
     const normalizedRole = String(user?.role || '').toLowerCase()
     const [users, setUsers] = useState<User[]>([])
     const [courses, setCourses] = useState<Course[]>([])
+    const [deletingCourseId, setDeletingCourseId] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
     const [stats, setStats] = useState({
         totalUsers: 0,
@@ -42,8 +43,45 @@ export default function AdminDashboard() {
     })
 
     useEffect(() => {
-        if (normalizedRole === 'admin') {
-            loadDashboardData()
+        if (normalizedRole !== 'admin') return
+
+        setLoading(true)
+
+        // Subscribe to users
+        const usersUnsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
+            const allUsers = snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() } as User))
+            const filteredUsers = allUsers.filter(u => u.role === 'student' || u.role === 'instructor')
+            setUsers(filteredUsers)
+            
+            setStats(prev => ({
+                ...prev,
+                totalUsers: filteredUsers.length
+            }))
+        }, (error) => console.error("Error listening to users:", error))
+
+        // Subscribe to courses
+        const coursesUnsubscribe = onSnapshot(collection(db, "courses"), (snapshot) => {
+            const allCourses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course))
+            setCourses(allCourses)
+            
+            const totalEnrollments = allCourses.reduce((sum, course) => sum + (course.totalEnrollments || 0), 0)
+            const totalRevenue = allCourses.reduce((sum, course) => sum + ((course.price || 0) * (course.totalEnrollments || 0)), 0)
+
+            setStats(prev => ({
+                ...prev,
+                totalCourses: allCourses.length,
+                totalEnrollments,
+                totalRevenue
+            }))
+            setLoading(false)
+        }, (error) => {
+            console.error("Error listening to courses:", error)
+            setLoading(false)
+        })
+
+        return () => {
+            usersUnsubscribe()
+            coursesUnsubscribe()
         }
     }, [normalizedRole])
 
@@ -77,34 +115,22 @@ export default function AdminDashboard() {
         )
     }
 
-    const loadDashboardData = async () => {
-        setLoading(true)
+    const deleteCourse = async (courseId: string, courseTitle: string) => {
+        if (!confirm(`Are you sure you want to delete "${courseTitle}"? This action cannot be undone.`)) return
+        setDeletingCourseId(courseId)
         try {
-            // Load users
-            const [students, instructors] = await Promise.all([
-                LMSService.getUsersByRole('student'),
-                LMSService.getUsersByRole('instructor')
-            ])
-            setUsers([...students, ...instructors])
-
-            // Load courses
-            const allCourses = await LMSService.getAllCourses()
-            setCourses(allCourses)
-
-            // Calculate stats
-            const totalEnrollments = allCourses.reduce((sum, course) => sum + course.totalEnrollments, 0)
-            const totalRevenue = allCourses.reduce((sum, course) => sum + (course.price * course.totalEnrollments), 0)
-
-            setStats({
-                totalUsers: students.length + instructors.length,
-                totalCourses: allCourses.length,
-                totalEnrollments,
-                totalRevenue
-            })
+            const success = await LMSService.deleteCourse(courseId)
+            if (success) {
+                // state is auto-updated by onSnapshot
+                alert('Course deleted successfully.')
+            } else {
+                alert('Failed to delete course. Please try again.')
+            }
         } catch (error) {
-            console.error("Error loading dashboard data:", error)
+            console.error('Error deleting course:', error)
+            alert('An error occurred while deleting the course.')
         } finally {
-            setLoading(false)
+            setDeletingCourseId(null)
         }
     }
 
@@ -164,7 +190,7 @@ export default function AdminDashboard() {
                 sendInvitation: true
             })
             setShowCreateInstructor(false)
-            await loadDashboardData()
+            // state is auto-updated by onSnapshot
 
         } catch (error: any) {
             console.error("Error creating instructor:", error)
@@ -198,8 +224,6 @@ export default function AdminDashboard() {
         try {
             const success = await LMSService.updateUserRole(userId, newRole)
             if (success) {
-                // Reload users
-                await loadDashboardData()
                 alert("User role updated successfully!")
             } else {
                 alert("Failed to update user role.")
@@ -216,7 +240,6 @@ export default function AdminDashboard() {
         try {
             const success = await LMSService.suspendUser(userId, shouldSuspend)
             if (success) {
-                await loadDashboardData()
                 alert(`User has been ${shouldSuspend ? 'suspended' : 'reinstated'} successfully.`)
             } else {
                 alert('Unable to update user suspension state.')
@@ -513,10 +536,18 @@ export default function AdminDashboard() {
             {/* Courses Overview */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Courses Overview</CardTitle>
-                    <CardDescription>
-                        Monitor course performance and enrollment
-                    </CardDescription>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle>Courses Overview</CardTitle>
+                            <CardDescription>
+                                Monitor course performance and enrollment
+                            </CardDescription>
+                        </div>
+                        <Button onClick={() => window.location.href = '/create-course'} variant="outline">
+                            <Plus className="h-4 w-4 mr-2" />
+                            New Course
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <Table>
@@ -527,6 +558,7 @@ export default function AdminDashboard() {
                                 <TableHead>Enrollments</TableHead>
                                 <TableHead>Price</TableHead>
                                 <TableHead>Status</TableHead>
+                                <TableHead>Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -541,8 +573,34 @@ export default function AdminDashboard() {
                                             {course.status}
                                         </Badge>
                                     </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => window.location.href = `/courses/${course.id}/edit`}
+                                            >
+                                                <Pencil className="h-3 w-3 mr-1" /> Edit
+                                            </Button>
+                                            <Button
+                                                variant="destructive"
+                                                size="sm"
+                                                onClick={() => deleteCourse(course.id, course.title)}
+                                                disabled={deletingCourseId === course.id}
+                                            >
+                                                {deletingCourseId === course.id ? 'Deleting...' : <><Trash2 className="h-3 w-3 mr-1" /> Delete</>}
+                                            </Button>
+                                        </div>
+                                    </TableCell>
                                 </TableRow>
                             ))}
+                            {courses.length === 0 && (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                                        No courses found. Create your first course above.
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </CardContent>

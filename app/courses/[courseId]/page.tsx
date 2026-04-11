@@ -5,8 +5,9 @@ import React, { useEffect, useState } from 'react'
 import { Award, Bell, BookOpenCheck, Calendar, Clock3, ExternalLink, Loader2, Star, UserRound } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../hooks/useAuth'
-import { getCourseBySlug } from '../../../lib/courses'
 import { enrollUserInCourse, isUserEnrolledInCourse, subscribeToCourseConfigs, subscribeToNotifications } from '../../../services/databaseService'
+import { LMSService } from '../../../services/lms-service'
+import { Course } from '../../../types/lms'
 
 interface PageProps {
     params: Promise<{
@@ -17,9 +18,11 @@ interface PageProps {
 function CourseDetails({ params }: { params: { courseId: string } }) {
   const router = useRouter()
   const { user } = useAuth()
-  const course = getCourseBySlug(params.courseId)
+  const [course, setCourse] = useState<Course | null>(null)
+  const [courseLoading, setCourseLoading] = useState(true)
   const [isEnrolling, setIsEnrolling] = useState(false)
   const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false)
+  const [checkoutStep, setCheckoutStep] = useState<'idle' | 'confirm_purchase'>('idle')
   const [enrollmentMessage, setEnrollmentMessage] = useState('')
   const [courseConfig, setCourseConfig] = useState<Record<string, any> | null>(null)
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false)
@@ -35,16 +38,22 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
         if (isMounted) setCourseConfig(configs[params.courseId] || null)
       })
 
-      if (!user?.uid || !course?.slug) {
-        if (isMounted) setIsAlreadyEnrolled(false)
-        return
-      }
-
       try {
-        const enrolled = await isUserEnrolledInCourse(user.uid, course.slug)
+        const fetchedCourse = await LMSService.getCourseById(params.courseId)
+        if (isMounted) setCourse(fetchedCourse)
+
+        if (!user?.uid || !fetchedCourse || !fetchedCourse.id) {
+          if (isMounted) setIsAlreadyEnrolled(false)
+          return
+        }
+
+        const enrolled = await isUserEnrolledInCourse(user.uid, fetchedCourse.slug || fetchedCourse.id)
         if (isMounted) setIsAlreadyEnrolled(enrolled)
-      } catch {
+      } catch (err) {
+        console.error(err)
         if (isMounted) setIsAlreadyEnrolled(false)
+      } finally {
+        if (isMounted) setCourseLoading(false)
       }
     }
 
@@ -59,8 +68,8 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
   const handleEnroll = async () => {
     if (!user || !course) {
       if (!user) {
-        const courseSlug = course?.slug ?? ''
-        router.push(`/login?redirect=${encodeURIComponent(`/courses/${courseSlug}`)}`)
+        const cId = course?.slug || course?.id || ''
+        router.push(`/login?redirect=${encodeURIComponent(`/courses/${cId}`)}`)
       }
       return
     }
@@ -70,15 +79,28 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
       return
     }
 
+    if (course.price > 0 && checkoutStep === 'idle') {
+      setCheckoutStep('confirm_purchase')
+      return
+    }
+
     setIsEnrolling(true)
     setEnrollmentMessage('')
 
     try {
+      if (course.price > 0) {
+        setEnrollmentMessage(`Redirecting to secure checkout for $${course.price}...`)
+        await new Promise(r => setTimeout(r, 1000))
+        setEnrollmentMessage('Simulating payment processing...')
+        await new Promise(r => setTimeout(r, 1500))
+        setEnrollmentMessage('Payment successful! Finalizing enrollment...')
+        await new Promise(r => setTimeout(r, 800))
+      }
+
       await enrollUserInCourse(user, course)
       setIsAlreadyEnrolled(true)
       setEnrollmentMessage('Enrollment successful! Please enable notifications below for class updates.')
 
-      // Show notification prompt after short delay
       setTimeout(() => setShowNotificationPrompt(true), 800)
     } catch (error: any) {
       setEnrollmentMessage(error?.message ?? 'Unable to complete enrollment. Please try again.')
@@ -107,6 +129,15 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
     }
   }
 
+  if (courseLoading) {
+    return (
+      <div className="section-shell py-20 text-center mx-auto flex items-center justify-center min-h-[40vh]">
+        <Loader2 className="animate-spin mr-2 h-6 w-6 text-primary" /> 
+        <span className="text-xl">Loading course information...</span>
+      </div>
+    )
+  }
+
   if (!course) {
     return (
       <div className="section-shell py-20 text-center mx-auto max-w-xl">
@@ -128,7 +159,7 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
 
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               <p className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm text-ink/75 dark:border-gray-700 dark:text-gray-300">
-                <UserRound size={16} /> Instructor: {course.instructor}
+                <UserRound size={16} /> Instructor: {course.instructorName}
               </p>
               <p className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm text-ink/75 dark:border-gray-700 dark:text-gray-300">
                 <Clock3 size={16} /> Duration: {course.duration}
@@ -136,15 +167,17 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
               <p className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm text-ink/75 dark:border-gray-700 dark:text-gray-300">
                 <Calendar size={16} /> Status: {courseConfig?.startDate ? `Starts ${courseConfig.startDate}` : 'Check dashboard for dates'}
               </p>
-              <p className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm text-ink/75 dark:border-gray-700 dark:text-gray-300">
-                <Award size={16} /> {course.certificateName}
-              </p>
+              {course.certificateAvailable && (
+                <p className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm text-ink/75 dark:border-gray-700 dark:text-gray-300">
+                  <Award size={16} /> {course.certificateName || "Certificate Available"}
+                </p>
+              )}
             </div>
 
             <div className="mt-7 flex flex-wrap items-center gap-3">
               {isAlreadyEnrolled ? (
                 <>
-                  <a href={`/courses/${course.slug}/learn`} className="btn-primary gap-2">
+                  <a href={`/courses/${course.slug || course.id}/learn`} className="btn-primary gap-2">
                     Enter Class Dashboard <ExternalLink size={16} />
                   </a>
                 </>
@@ -155,7 +188,13 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
                   onClick={handleEnroll}
                   disabled={isEnrolling}
                 >
-                  {isEnrolling ? 'Enrolling...' : 'Enroll Now'}
+                  {isEnrolling 
+                    ? 'Processing...' 
+                    : course.price && course.price > 0 
+                        ? checkoutStep === 'confirm_purchase' 
+                            ? `Confirm Purchase ($${course.price})` 
+                            : 'Enroll Now'
+                        : 'Enroll for Free'}
                 </button>
               )}
               <a href="/courses" className="btn-secondary">Back to Courses</a>
@@ -169,23 +208,25 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
           </div>
 
           <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-gray-700">
-            <img src={course.image} alt={course.title} className="h-full w-full object-cover" />
+            <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" />
           </div>
         </div>
       </section>
 
       <section className="section-shell">
-        <article className="surface-card">
-          <h2 className="text-2xl font-semibold dark:text-gray-100">Learning Outcomes</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {course.learningOutcomes.map((item) => (
-              <div key={item} className="inline-flex items-start gap-4 rounded-xl border border-slate-100 p-4 text-ink/80 dark:border-gray-700/50 dark:text-gray-300">
-                <BookOpenCheck size={20} className="mt-0.5 shrink-0 text-primary dark:text-sky-400" />
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
-        </article>
+        {course.modules && course.modules.length > 0 && (
+          <article className="surface-card">
+            <h2 className="text-2xl font-semibold dark:text-gray-100">Course Curriculum</h2>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              {course.modules.map((item) => (
+                <div key={item.id} className="inline-flex items-start gap-4 rounded-xl border border-slate-100 p-4 text-ink/80 dark:border-gray-700/50 dark:text-gray-300">
+                  <BookOpenCheck size={20} className="mt-0.5 shrink-0 text-primary dark:text-sky-400" />
+                  <span>{item.title}</span>
+                </div>
+              ))}
+            </div>
+          </article>
+        )}
       </section>
 
       {/* Notification Request Modal */}
