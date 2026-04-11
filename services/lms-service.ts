@@ -10,16 +10,15 @@ import {
     AttendanceRecord,
     Certificate,
     Payment,
-    PaymentStatus,
     UserCourseProgress
 } from "@/types/lms";
+import { ALL_COURSES_DATA } from "@/lib/lms-data";
 import { db } from "@/lib/firebase";
 import {
     collection,
     doc,
     getDoc,
     getDocs,
-    setDoc,
     addDoc,
     deleteDoc,
     updateDoc,
@@ -84,21 +83,8 @@ export const LMSService = {
             } as Course));
         } catch (error) {
             console.error("Error fetching courses:", error);
-            return [];
-        }
-    },
-
-    // Admin: fetch ALL courses regardless of status (draft, published, archived)
-    async getAllCoursesAdmin(): Promise<Course[]> {
-        try {
-            const querySnapshot = await getDocs(collection(db, "courses"));
-            return querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            } as Course));
-        } catch (error) {
-            console.error("Error fetching all courses for admin:", error);
-            return [];
+            // Fallback to static data
+            return ALL_COURSES_DATA;
         }
     },
 
@@ -108,27 +94,23 @@ export const LMSService = {
             if (courseDoc.exists()) {
                 return { id: courseDoc.id, ...courseDoc.data() } as Course;
             }
-            return null;
+            // Fallback to static data
+            return ALL_COURSES_DATA.find(c => c.id === courseId) || null;
         } catch (error) {
             console.error("Error fetching course:", error);
-            return null;
+            return ALL_COURSES_DATA.find(c => c.id === courseId) || null;
         }
     },
 
     async createCourse(courseData: Omit<Course, 'id' | 'createdAt' | 'updatedAt' | 'totalEnrollments'>): Promise<string | null> {
         try {
-            const baseSlug = courseData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-            const randomSuffix = Math.random().toString(36).substring(2, 8);
-            const courseId = `${baseSlug}-${randomSuffix}`;
-
-            await setDoc(doc(db, "courses", courseId), {
+            const docRef = await addDoc(collection(db, "courses"), {
                 ...courseData,
-                slug: courseId,
                 createdAt: Timestamp.now(),
                 updatedAt: Timestamp.now(),
                 totalEnrollments: 0
             });
-            return courseId;
+            return docRef.id;
         } catch (error) {
             console.error("Error creating course:", error);
             return null;

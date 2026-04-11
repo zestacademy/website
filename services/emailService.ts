@@ -13,10 +13,7 @@ const USER_ID = process.env.NEXT_PUBLIC_EMAILJS_USER_ID
 
 async function sendEmail({ templateId, templateParams }: SendEmailOptions) {
     if (!SERVICE_ID || !USER_ID) {
-        console.group(`📧 [MOCK EMAIL DISPATCH] -> Template: ${templateId}`)
-        console.log("Status: Simulating success (EmailJS disabled in development)")
-        console.table(templateParams)
-        console.groupEnd()
+        console.warn("EmailJS is not configured. Skipping email send.")
         return
     }
 
