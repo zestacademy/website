@@ -1,6 +1,7 @@
 import { Award, CheckCircle, Download, ExternalLink, ShieldCheck } from "lucide-react"
 
-export default function MockCertificatePage({ params }: { params: { certificateId: string } }) {
+export default async function MockCertificatePage({ params }: { params: Promise<{ certificateId: string }> }) {
+    const { certificateId } = await params;
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-black py-16 px-4">
             <div className="max-w-4xl mx-auto space-y-8">
@@ -39,7 +40,7 @@ export default function MockCertificatePage({ params }: { params: { certificateI
                             </div>
                             <div className="space-y-1">
                                 <p className="text-ink/40 dark:text-slate-500">Verification ID</p>
-                                <p className="font-mono font-semibold dark:text-slate-200 truncate">{params.certificateId}</p>
+                                <p className="font-mono font-semibold dark:text-slate-200 truncate">{certificateId}</p>
                             </div>
                         </div>
                     </div>
