@@ -5,9 +5,8 @@ import React, { useEffect, useState } from 'react'
 import { Award, Bell, BookOpenCheck, Calendar, Clock3, ExternalLink, Loader2, Star, UserRound } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../hooks/useAuth'
-import { enrollUserInCourse, isUserEnrolledInCourse, subscribeToCourseConfigs, subscribeToNotifications } from '../../../services/databaseService'
 import { LMSService } from '../../../services/lms-service'
-import { Course } from '../../../types/lms'
+import { Course, Enrollment } from '../../../types/lms'
 
 interface PageProps {
     params: Promise<{
@@ -21,37 +20,28 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
   const [course, setCourse] = useState<Course | null>(null)
   const [courseLoading, setCourseLoading] = useState(true)
   const [isEnrolling, setIsEnrolling] = useState(false)
-  const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false)
+  const [enrollment, setEnrollment] = useState<Enrollment | null>(null)
   const [checkoutStep, setCheckoutStep] = useState<'idle' | 'confirm_purchase'>('idle')
   const [enrollmentMessage, setEnrollmentMessage] = useState('')
-  const [courseConfig, setCourseConfig] = useState<Record<string, any> | null>(null)
-  const [showNotificationPrompt, setShowNotificationPrompt] = useState(false)
-  const [isEnablingNotifications, setIsEnablingNotifications] = useState(false)
 
   useEffect(() => {
     let isMounted = true
-    let unsubscribe: (() => void) | null = null
 
     const initializeData = async () => {
-      // 1. Subscription to admin configs (start date, links)
-      unsubscribe = subscribeToCourseConfigs((configs) => {
-        if (isMounted) setCourseConfig(configs[params.courseId] || null)
-      })
-
       try {
         const fetchedCourse = await LMSService.getCourseById(params.courseId)
         if (isMounted) setCourse(fetchedCourse)
 
-        if (!user?.uid || !fetchedCourse || !fetchedCourse.id) {
-          if (isMounted) setIsAlreadyEnrolled(false)
+        if (!user?.uid || !fetchedCourse) {
+          if (isMounted) setEnrollment(null)
           return
         }
 
-        const enrolled = await isUserEnrolledInCourse(user.uid, fetchedCourse.slug || fetchedCourse.id)
-        if (isMounted) setIsAlreadyEnrolled(enrolled)
+        const userEnrollment = await LMSService.getEnrollment(user.uid, fetchedCourse.id)
+        if (isMounted) setEnrollment(userEnrollment)
       } catch (err) {
         console.error(err)
-        if (isMounted) setIsAlreadyEnrolled(false)
+        if (isMounted) setEnrollment(null)
       } finally {
         if (isMounted) setCourseLoading(false)
       }
@@ -61,20 +51,18 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
 
     return () => {
       isMounted = false
-      if (unsubscribe) unsubscribe()
     }
-  }, [user?.uid, course?.slug, params.courseId])
+  }, [user?.uid, params.courseId])
 
   const handleEnroll = async () => {
     if (!user || !course) {
       if (!user) {
-        const cId = course?.slug || course?.id || ''
-        router.push(`/login?redirect=${encodeURIComponent(`/courses/${cId}`)}`)
+        router.push(`/login?redirect=${encodeURIComponent(`/courses/${params.courseId}`)}`)
       }
       return
     }
 
-    if (isAlreadyEnrolled) {
+    if (enrollment) {
       setEnrollmentMessage('You are already enrolled in this course.')
       return
     }
@@ -89,7 +77,7 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
 
     try {
       if (course.price > 0) {
-        setEnrollmentMessage(`Redirecting to secure checkout for $${course.price}...`)
+        setEnrollmentMessage(`Redirecting to secure checkout for ₹${course.price}...`)
         await new Promise(r => setTimeout(r, 1000))
         setEnrollmentMessage('Simulating payment processing...')
         await new Promise(r => setTimeout(r, 1500))
@@ -97,11 +85,14 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
         await new Promise(r => setTimeout(r, 800))
       }
 
-      await enrollUserInCourse(user, course)
-      setIsAlreadyEnrolled(true)
-      setEnrollmentMessage('Enrollment successful! Please enable notifications below for class updates.')
-
-      setTimeout(() => setShowNotificationPrompt(true), 800)
+      const enrollmentId = await LMSService.enrollInCourse(user.uid, course.id)
+      if (enrollmentId) {
+        const newEnrollment = await LMSService.getEnrollment(user.uid, course.id)
+        setEnrollment(newEnrollment)
+        setEnrollmentMessage('Enrollment successful! You can now start learning.')
+      } else {
+        throw new Error("Failed to enroll")
+      }
     } catch (error: any) {
       setEnrollmentMessage(error?.message ?? 'Unable to complete enrollment. Please try again.')
     } finally {
@@ -109,25 +100,7 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
     }
   }
 
-  const handleEnableNotifications = async () => {
-    setIsEnablingNotifications(true)
-    try {
-      const permission = await Notification.requestPermission()
-      if (permission === 'granted') {
-        const dummySub = { endpoint: 'browser-native', timestamp: Date.now() }
-        await subscribeToNotifications(user.uid, dummySub)
-        setShowNotificationPrompt(false)
-        setEnrollmentMessage('Success! You will receive live class updates here.')
-      } else {
-        setShowNotificationPrompt(false)
-      }
-    } catch (err) {
-      console.error('Notification error:', err)
-      setShowNotificationPrompt(false)
-    } finally {
-      setIsEnablingNotifications(false)
-    }
-  }
+  const isAlreadyEnrolled = !!enrollment;
 
   if (courseLoading) {
     return (
@@ -165,7 +138,7 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
                 <Clock3 size={16} /> Duration: {course.duration}
               </p>
               <p className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm text-ink/75 dark:border-gray-700 dark:text-gray-300">
-                <Calendar size={16} /> Status: {courseConfig?.startDate ? `Starts ${courseConfig.startDate}` : 'Check dashboard for dates'}
+                <Calendar size={16} /> Status: {course.startDate ? `Starts ${course.startDate}` : 'Check dashboard for dates'}
               </p>
               {course.certificateAvailable && (
                 <p className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-sm text-ink/75 dark:border-gray-700 dark:text-gray-300">

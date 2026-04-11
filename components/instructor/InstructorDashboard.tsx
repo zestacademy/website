@@ -109,6 +109,33 @@ export default function InstructorDashboard() {
     })
 
     const [saving, setSaving] = useState(false)
+    const [courseEnrollments, setCourseEnrollments] = useState<Record<string, number>>({})
+
+    // Subscribe to course enrollments
+    useEffect(() => {
+        if (!courses.length) return
+
+        const unsubscribes: (() => void)[] = []
+
+        courses.forEach(c => {
+            const unsubscribe = LMSService.subscribeToCourseEnrollments(c.id, (enrollments) => {
+                setCourseEnrollments(prev => ({
+                    ...prev,
+                    [c.id]: enrollments.length
+                }))
+            })
+            unsubscribes.push(unsubscribe)
+        })
+
+        return () => {
+            unsubscribes.forEach(unsub => unsub())
+        }
+    }, [courses.length])
+
+    // Get enrollment count for a course
+    const getEnrollmentCount = (courseId: string) => {
+        return courseEnrollments[courseId] ?? 0
+    }
 
     // ── Subscribe to instructor's courses ──────────────────────────────────────
     useEffect(() => {
@@ -324,7 +351,7 @@ export default function InstructorDashboard() {
         total: courses.length,
         published: courses.filter(c => c.status === "published").length,
         draft: courses.filter(c => c.status === "draft").length,
-        totalEnrollments: courses.reduce((s, c) => s + (c.totalEnrollments ?? 0), 0),
+        totalEnrollments: courses.reduce((s, c) => s + getEnrollmentCount(c.id), 0),
     }
 
     return (
@@ -395,7 +422,7 @@ export default function InstructorDashboard() {
                                 </div>
                                 <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
                                     <span className="flex items-center gap-1"><Layers size={11} /> {course.modules?.length ?? 0} modules</span>
-                                    <span className="flex items-center gap-1"><Users size={11} /> {course.totalEnrollments ?? 0}</span>
+                                    <span className="flex items-center gap-1"><Users size={11} /> {getEnrollmentCount(course.id)}</span>
                                 </div>
                             </button>
                         ))}
@@ -447,7 +474,7 @@ export default function InstructorDashboard() {
                                     <span className={`text-[10px] uppercase font-black px-2 py-0.5 rounded-full ${STATUS_COLORS[activeCourse.status]}`}>{activeCourse.status}</span>
                                     <span>{activeCourse.level}</span>
                                     <span>₹{activeCourse.price === 0 ? "Free" : activeCourse.price}</span>
-                                    <span>{activeCourse.totalEnrollments} enrolled</span>
+                                    <span>{activeCourse ? getEnrollmentCount(activeCourse.id) : 0} enrolled</span>
                                 </div>
                             </CardHeader>
                         </Card>

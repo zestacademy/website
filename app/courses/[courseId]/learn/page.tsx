@@ -1,17 +1,16 @@
 
 "use client"
 
-import React, { useEffect, useState } from 'react'
-import { Calendar, CheckCircle, ExternalLink, Loader2, MessageSquare, PlayCircle, Star, Video, X, Check } from 'lucide-react'
+import React, { useEffect, useState, use } from 'react'
+import { Calendar, CheckCircle, ExternalLink, Loader2, MessageSquare, PlayCircle, Star, Video, X, Check, BookOpen, Layers, Trophy } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../../hooks/useAuth'
-import {
-  getUserCourseLearningState,
-  subscribeToLiveClasses,
-  submitClassFeedback
-} from '../../../../services/databaseService'
 import { LMSService } from '../../../../services/lms-service'
-import { Course } from '../../../../types/lms'
+import { Course, Enrollment } from '../../../../types/lms'
+import { Progress } from "@/components/ui/progress"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import Link from 'next/link'
 
 interface PageProps {
   params: Promise<{
@@ -23,20 +22,12 @@ function LearnCourse({ params }: { params: { courseId: string } }) {
   const router = useRouter()
   const { user } = useAuth()
   const [course, setCourse] = useState<Course | null>(null)
-
+  const [enrollment, setEnrollment] = useState<Enrollment | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [learningState, setLearningState] = useState({ isEnrolled: false })
   const [liveSessions, setLiveSessions] = useState<any[]>([])
-
-  // Feedback state
-  const [feedbackTarget, setFeedbackTarget] = useState<any>(null)
-  const [feedbackForm, setFeedbackForm] = useState({ rating: 5, comment: '' })
-  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false)
 
   useEffect(() => {
     let isMounted = true
-    let unsubscribeClasses: (() => void) | null = null
 
     const initializeDashboard = async () => {
       if (!user?.uid) return
@@ -45,24 +36,20 @@ function LearnCourse({ params }: { params: { courseId: string } }) {
         const fetchedCourse = await LMSService.getCourseById(params.courseId)
         if (isMounted) setCourse(fetchedCourse)
 
-        if (!fetchedCourse || !fetchedCourse.id) {
+        if (!fetchedCourse) {
           setIsLoading(false)
           return
         }
 
-        const prog = await getUserCourseLearningState(user.uid, fetchedCourse)
-        if (isMounted) setLearningState(prog)
+        const userEnrollment = await LMSService.getEnrollment(user.uid, params.courseId)
+        if (isMounted) setEnrollment(userEnrollment)
 
-        // Start live class subscription
-        unsubscribeClasses = subscribeToLiveClasses(fetchedCourse.slug || fetchedCourse.id, (sessions) => {
-          if (isMounted) setLiveSessions(sessions)
-          setIsLoading(false) // Ready once sessions load
-        })
+        const sessions = await LMSService.getLiveSessionsByCourse(params.courseId)
+        if (isMounted) setLiveSessions(sessions)
       } catch (err: any) {
-        if (isMounted) {
-          setError(err?.message ?? 'Failed to load course state.')
-          setIsLoading(false)
-        }
+        console.error("Failed to load course state:", err)
+      } finally {
+        if (isMounted) setIsLoading(false)
       }
     }
 
@@ -70,32 +57,8 @@ function LearnCourse({ params }: { params: { courseId: string } }) {
 
     return () => {
       isMounted = false
-      if (unsubscribeClasses) unsubscribeClasses()
     }
   }, [user?.uid, params.courseId])
-
-  const handleFeedbackSubmit = async (e: any) => {
-    e.preventDefault()
-    if (!feedbackTarget || !user || !course) return
-    setIsSubmittingFeedback(true)
-    try {
-      await submitClassFeedback({
-        userId: user.uid,
-        userName: user.displayName || 'Anonymous Student',
-        courseSlug: course.slug || course.id,
-        classId: feedbackTarget.id,
-        rating: feedbackForm.rating,
-        comment: feedbackForm.comment
-      })
-      alert('Thank you for your feedback!')
-      setFeedbackTarget(null)
-      setFeedbackForm({ rating: 5, comment: '' })
-    } catch (err: any) {
-      alert('Error submitting feedback: ' + err.message)
-    } finally {
-      setIsSubmittingFeedback(false)
-    }
-  }
 
   if (isLoading) {
     return (
@@ -113,138 +76,185 @@ function LearnCourse({ params }: { params: { courseId: string } }) {
     </div>
   )
 
-  if (!learningState.isEnrolled) {
+  if (!enrollment) {
     return (
       <div className="section-shell py-20 text-center mx-auto max-w-xl">
         <h1 className="text-3xl font-bold dark:text-white">Access Denied</h1>
-        <p className="mt-4 text-ink/60 mb-8 dark:text-gray-400">Enroll in this course to join live sessions.</p>
-        <a href={`/courses/${course.slug || course.id}`} className="btn-primary">Return to Course Page</a>
+        <p className="mt-4 text-ink/60 mb-8 dark:text-gray-400">Enroll in this course to access the dashboard.</p>
+        <Link href={`/courses/${course.id}`} className="btn-primary">Return to Course Page</Link>
       </div>
     )
   }
 
+  const handleClaimCertificate = async () => {
+    if (!user || !course || !enrollment || progress < 75) return
+    setIsLoading(true)
+    try {
+      const certificateId = await LMSService.issueCertificate(enrollment.id, {
+        userId: user.uid,
+        userName: user.displayName || user.email || 'Student',
+        courseId: course.id,
+        courseTitle: course.title,
+        courseStartDate: enrollment.enrolledAt ? new Date((enrollment.enrolledAt as any).seconds * 1000).toISOString() : undefined,
+        courseEndDate: new Date().toISOString()
+      })
+      if (certificateId) {
+        alert("Certificate issued successfully! You can view it in your profile.")
+        const updatedEnrollment = await LMSService.getEnrollment(user.uid, course.id)
+        setEnrollment(updatedEnrollment)
+      }
+    } catch (err) {
+      console.error("Error claiming certificate:", err)
+      alert("Failed to issue certificate. Please try again later.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const progress = enrollment.progress?.attendancePercentage || 0;
+  const completedCount = enrollment.progress?.completedLessons?.length || 0;
+  const totalLessons = course.modules.reduce((acc, mod) => acc + (mod.lessons?.length || 0), 0);
+
   return (
     <div className="space-y-10 pb-20">
       <section className="section-shell">
-        <div className="hero-panel">
-          <p className="section-kicker">Course Dashboard</p>
-          <h1 className="mt-4 text-4xl font-extrabold dark:text-white">{course.title}</h1>
-          <p className="mt-3 text-ink/60 dark:text-gray-400">Real-time updates for schedules, sessions, and live classes.</p>
+        <div className="hero-panel grid lg:grid-cols-3 gap-8 items-center">
+          <div className="lg:col-span-2">
+            <p className="section-kicker">Course Dashboard</p>
+            <h1 className="mt-4 text-4xl font-extrabold dark:text-white">{course.title}</h1>
+            <p className="mt-3 text-ink/60 dark:text-gray-400">Continue your learning journey and track your progress.</p>
+          </div>
+          <Card className="bg-primary/5 border-primary/20">
+            <CardContent className="pt-6 space-y-4">
+              <div className="flex justify-between items-center text-sm font-medium">
+                <span>Course Progress</span>
+                <span>{progress}%</span>
+              </div>
+              <Progress value={progress} className="h-2" />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>{completedCount} of {totalLessons} lessons completed</span>
+                {progress >= 75 && <Badge className="bg-green-500"><Trophy className="h-3 w-3 mr-1" /> Eligible for Certificate</Badge>}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
-      <section className="section-shell grid gap-8 lg:grid-cols-2">
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold dark:text-white flex items-center gap-2">
-            <Video size={24} className="text-primary" /> Class Timeline
-          </h2>
-          {liveSessions.length === 0 ? (
-            <div className="surface-card bg-slate-50/50 border-dashed dark:bg-gray-900/40 py-16 flex flex-col items-center justify-center text-center">
-              <Video size={48} className="text-ink/10 dark:text-gray-600 mb-4" />
-              <p className="text-sm text-ink/40 dark:text-gray-500 font-medium max-w-[280px]">No live sessions added yet. They will appear here instantly when published!</p>
+      <section className="section-shell grid gap-8 lg:grid-cols-3">
+        {/* Curriculum */}
+        <div className="lg:col-span-2 space-y-6">
+            <h2 className="text-2xl font-bold dark:text-white flex items-center gap-2">
+                <BookOpen size={24} className="text-primary" /> Course Curriculum
+            </h2>
+            <div className="space-y-4">
+                {course.modules.map((module, mIdx) => (
+                    <Card key={module.id} className="overflow-hidden">
+                        <CardHeader className="bg-muted/30 py-4">
+                            <CardTitle className="text-lg flex items-center gap-3">
+                                <span className="text-primary/40 font-normal">M{mIdx + 1}</span>
+                                {module.title}
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <div className="divide-y divide-border">
+                                {module.lessons.map((lesson) => {
+                                    const isCompleted = enrollment.progress?.completedLessons?.includes(lesson.id);
+                                    return (
+                                        <Link 
+                                            key={lesson.id} 
+                                            href={`/courses/${course.id}/learn/${lesson.id}`}
+                                            className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors group"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                {isCompleted ? (
+                                                    <CheckCircle className="h-5 w-5 text-green-500 fill-green-500/10" />
+                                                ) : (
+                                                    <PlayCircle className="h-5 w-5 text-primary/40 group-hover:text-primary transition-colors" />
+                                                )}
+                                                <span className={`text-sm font-medium ${isCompleted ? "text-muted-foreground" : ""}`}>
+                                                    {lesson.title}
+                                                </span>
+                                            </div>
+                                            {lesson.isFree && <Badge variant="outline" className="text-[10px]">Preview</Badge>}
+                                        </Link>
+                                    )
+                                })}
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
-          ) : (
-            <div className="relative pl-8 before:absolute before:left-[11px] before:top-2 before:h-[calc(100%-20px)] before:w-0.5 before:bg-slate-200 dark:before:bg-gray-800">
-              {liveSessions.map((cls, idx) => (
-                <div key={cls.id} className="relative mb-10 last:mb-0 animate-in fade-in slide-in-from-right-4" style={{ animationDelay: `${idx * 100}ms` }}>
-                  {/* Dot */}
-                  <div className={`absolute -left-[27px] top-1.5 z-10 h-4 w-4 rounded-full border-4 border-white dark:border-gray-900 shadow-sm transition-colors ${cls.recordedLink ? 'bg-emerald-500' : 'bg-primary animate-pulse'}`} />
-
-                  <article className="surface-card p-5 group hover:border-primary/30 transition-all dark:bg-gray-900/40">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex-1">
-                        <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <h3 className="font-bold text-lg dark:text-gray-100">{cls.title}</h3>
-                          <span className={`text-[9px] uppercase font-black px-2.5 py-1 rounded-full tracking-wider shadow-sm ${cls.status === 'active' ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 animate-pulse' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30'}`}>
-                            {cls.status === 'active' ? 'Live Now' : 'Completed'}
-                          </span>
-                        </div>
-                        <p className="text-sm text-ink/60 dark:text-gray-400 mt-1 leading-relaxed line-clamp-3">{cls.description}</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 flex flex-wrap items-center gap-4">
-                      {cls.status === 'active' && (
-                        <a href={cls.classLink} target="_blank" rel="noopener noreferrer" className="btn-primary px-6 py-2.5 text-xs font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
-                          Join Session <ExternalLink size={14} />
-                        </a>
-                      )}
-                      {cls.recordedLink && (
-                        <a href={cls.recordedLink} target="_blank" rel="noopener noreferrer" className="btn-secondary px-6 py-2.5 text-xs font-bold flex items-center gap-2 dark:bg-gray-800 hover:border-primary/50 hover:bg-slate-50 transition-all">
-                          Play Recording <PlayCircle size={15} />
-                        </a>
-                      )}
-                      <button
-                        onClick={() => {
-                          setFeedbackTarget(cls)
-                          setFeedbackForm({ rating: 5, comment: '' })
-                        }}
-                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-ink/30 hover:text-primary transition-all ml-auto hover:bg-primary/5 px-2 py-1 rounded-lg"
-                      >
-                        <MessageSquare size={13} /> Class Feedback
-                      </button>
-                    </div>
-                  </article>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold dark:text-white flex items-center gap-2 text-primary">
-            <Calendar size={24} /> Learning Guidance
-          </h2>
-          <div className="surface-card border-emerald-500/20 bg-emerald-500/5">
-            <h3 className="font-bold text-emerald-700 dark:text-emerald-400">Class Highlights</h3>
-            <p className="mt-2 text-sm text-ink/70 dark:text-gray-400 leading-relaxed">
-              Focused on practical learning with hands-on projects. Access provided only to enrolled students.
-            </p>
+        {/* Live Sessions & Info */}
+        <div className="space-y-8">
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold dark:text-white flex items-center gap-2">
+                <Video size={24} className="text-primary" /> Live Sessions
+            </h2>
+            {liveSessions.length === 0 ? (
+                <div className="surface-card bg-slate-50/50 border-dashed dark:bg-gray-900/40 py-12 flex flex-col items-center justify-center text-center">
+                <Video size={40} className="text-ink/10 dark:text-gray-600 mb-4" />
+                <p className="text-sm text-ink/40 dark:text-gray-500 font-medium px-4">No live sessions scheduled yet.</p>
+                </div>
+            ) : (
+                <div className="space-y-4">
+                    {liveSessions.map((cls) => (
+                        <Card key={cls.id} className="hover:border-primary/30 transition-all">
+                            <CardContent className="p-4">
+                                <div className="flex justify-between items-start mb-2">
+                                    <h3 className="font-bold text-sm">{cls.title}</h3>
+                                    <Badge variant={cls.status === 'active' ? "destructive" : "secondary"} className="text-[9px] h-5">
+                                        {cls.status === 'active' ? 'Live' : 'Past'}
+                                    </Badge>
+                                </div>
+                                <p className="text-xs text-muted-foreground line-clamp-2 mb-4">{cls.description}</p>
+                                <div className="flex gap-2">
+                                    {cls.status === 'active' && (
+                                        <a href={cls.meetingLink} target="_blank" rel="noopener noreferrer" className="btn-primary py-1.5 px-3 text-[10px] flex-1 text-center">
+                                            Join Now
+                                        </a>
+                                    )}
+                                    {cls.recordedVideoUrl && (
+                                        <a href={cls.recordedVideoUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary py-1.5 px-3 text-[10px] flex-1 text-center">
+                                            Watch Recording
+                                        </a>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            )}
+          </div>
+
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold dark:text-white flex items-center gap-2">
+                <Trophy size={24} className="text-primary" /> Certification
+            </h2>
+            <Card className={progress >= 75 ? "bg-green-500/5 border-green-500/20" : ""}>
+                <CardContent className="p-6 text-center space-y-4">
+                    <Trophy className={`h-12 w-12 mx-auto ${progress >= 75 ? "text-green-500" : "text-muted-foreground/30"}`} />
+                    <div>
+                        <h3 className="font-bold">Course Certificate</h3>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            Complete all lessons and achieve at least 75% attendance to unlock your certificate.
+                        </p>
+                    </div>
+                    <Button 
+                        variant={progress >= 75 ? "default" : "outline"} 
+                        disabled={progress < 75 || isLoading} 
+                        className="w-full"
+                        onClick={handleClaimCertificate}
+                    >
+                        {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                        {progress >= 75 ? "Claim Certificate" : `Need ${75 - progress}% more`}
+                    </Button>
+                </CardContent>
+            </Card>
           </div>
         </div>
       </section>
-
-      {/* Feedback Modal */}
-      {feedbackTarget && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
-          <div className="surface-card w-full max-w-lg shadow-[0_20px_50px_rgba(0,0,0,0.3)] animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 border-none dark:bg-gray-900">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h3 className="text-2xl font-bold dark:text-gray-100">Review Lesson</h3>
-                <p className="text-xs text-ink/40 dark:text-gray-400 mt-1 uppercase tracking-widest font-bold">{feedbackTarget.title}</p>
-              </div>
-              <button onClick={() => setFeedbackTarget(null)} className="h-10 w-10 flex items-center justify-center rounded-full hover:bg-slate-50 dark:hover:bg-gray-800 transition-colors">
-                <X size={20} className="text-ink/30" />
-              </button>
-            </div>
-
-            <form onSubmit={handleFeedbackSubmit} className="space-y-6">
-              <div>
-                <label className="text-[10px] uppercase font-black text-ink/40 dark:text-gray-500 tracking-widest mb-3 block">Overall Rating</label>
-                <div className="flex gap-3">
-                  {[1, 2, 3, 4, 5].map(val => (
-                    <button key={val} type="button" onClick={() => setFeedbackForm(p => ({ ...p, rating: val }))} className={`h-14 w-14 rounded-2xl flex items-center justify-center border-2 transition-all group active:scale-90 ${feedbackForm.rating >= val ? 'bg-amber-50 text-amber-500 border-amber-200 dark:bg-amber-900/20 dark:border-amber-900/40' : 'bg-slate-50 text-slate-300 border-slate-100 dark:bg-gray-800 dark:border-gray-700'}`}>
-                      <Star size={24} className={`${feedbackForm.rating >= val ? 'fill-amber-500 group-hover:scale-110 transition-transform' : ''}`} />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-[10px] uppercase font-black text-ink/40 dark:text-gray-500 tracking-widest mb-3 block">Share your thoughts</label>
-                <textarea rows={4} placeholder="What did you learn? Any questions?" className="input-clean min-h-[120px] resize-none" value={feedbackForm.comment} onChange={e => setFeedbackForm(p => ({ ...p, comment: e.target.value }))} required />
-              </div>
-
-              <div className="flex gap-4 pt-4 border-t dark:border-gray-800">
-                <button type="button" onClick={() => setFeedbackTarget(null)} className="btn-secondary h-12 flex-1 rounded-2xl font-bold">Cancel</button>
-                <button type="submit" disabled={isSubmittingFeedback || !feedbackForm.comment} className="btn-primary h-12 flex-1 rounded-2xl font-bold shadow-xl shadow-primary/20 disabled:opacity-50 disabled:grayscale transition-all">
-                  {isSubmittingFeedback ? <Loader2 size={18} className="animate-spin" /> : 'Send Feedback'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

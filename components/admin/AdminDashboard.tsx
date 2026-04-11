@@ -15,7 +15,7 @@ import { User, Course, UserRole } from "@/types/lms"
 import { useAuth } from "@/hooks/useAuth"
 import { createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth"
 import { auth, db } from "@/lib/firebase"
-import { doc, setDoc, Timestamp } from "firebase/firestore"
+import { doc, setDoc, Timestamp, onSnapshot, query, collection } from "firebase/firestore"
 
 export default function AdminDashboard() {
     const { user, loading: authLoading } = useAuth()
@@ -30,6 +30,7 @@ export default function AdminDashboard() {
         totalRevenue: 0
     })
     const [suspendingUserId, setSuspendingUserId] = useState<string | null>(null)
+    const [totalEnrollmentsCount, setTotalEnrollmentsCount] = useState(0)
 
     // Instructor creation state
     const [showCreateInstructor, setShowCreateInstructor] = useState(false)
@@ -45,6 +46,18 @@ export default function AdminDashboard() {
         if (normalizedRole === 'admin') {
             loadDashboardData()
         }
+    }, [normalizedRole])
+
+    // Subscribe to real-time enrollments
+    useEffect(() => {
+        if (normalizedRole !== 'admin') return
+
+        const unsubscribe = LMSService.subscribeToAllEnrollments((count) => {
+            setTotalEnrollmentsCount(count)
+            setStats(prev => ({ ...prev, totalEnrollments: count }))
+        })
+
+        return () => unsubscribe()
     }, [normalizedRole])
 
     if (authLoading) {
@@ -91,16 +104,13 @@ export default function AdminDashboard() {
             const allCourses = await LMSService.getAllCourses()
             setCourses(allCourses)
 
-            // Calculate stats
-            const totalEnrollments = allCourses.reduce((sum, course) => sum + course.totalEnrollments, 0)
-            const totalRevenue = allCourses.reduce((sum, course) => sum + (course.price * course.totalEnrollments), 0)
-
-            setStats({
+            // Calculate stats - enrollments will be updated via subscription
+            setStats(prev => ({
                 totalUsers: students.length + instructors.length,
                 totalCourses: allCourses.length,
-                totalEnrollments,
-                totalRevenue
-            })
+                totalEnrollments: prev.totalEnrollments,
+                totalRevenue: allCourses.reduce((sum, course) => sum + (course.price * (course.totalEnrollments || 0)), 0)
+            }))
         } catch (error) {
             console.error("Error loading dashboard data:", error)
         } finally {

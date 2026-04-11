@@ -1,17 +1,40 @@
 
-import { LMSService } from "@/services/lms-service"
-import { notFound, redirect } from "next/navigation"
-import SidebarClient from "@/components/courses/SidebarClient"
+"use client"
 
-export default async function LearningLayout({
+import { useEffect, useState } from "react"
+import { LMSService } from "@/services/lms-service"
+import { notFound } from "next/navigation"
+import SidebarClient from "@/components/courses/SidebarClient"
+import { Course } from "@/types/lms"
+import { Loader2 } from "lucide-react"
+
+export default function LearningLayout({
     children,
     params,
 }: {
     children: React.ReactNode
     params: Promise<{ courseId: string }>
 }) {
-    const { courseId } = await params
-    const course = await LMSService.getCourseById(courseId)
+    const [course, setCourse] = useState<Course | null>(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchCourse = async () => {
+            const { courseId } = await params
+            const fetchedCourse = await LMSService.getCourseById(courseId)
+            setCourse(fetchedCourse)
+            setLoading(false)
+        }
+        fetchCourse()
+    }, [params])
+
+    if (loading) {
+        return (
+            <div className="h-screen flex items-center justify-center">
+                <Loader2 className="animate-spin h-8 w-8 text-primary" />
+            </div>
+        )
+    }
 
     if (!course) {
         notFound()
@@ -29,7 +52,6 @@ export default async function LearningLayout({
                 {/* Mobile Header could go here */}
                 <div className="md:hidden p-4 border-b flex items-center justify-between">
                     <span className="font-bold truncate">{course.title}</span>
-                    {/* Mobile Menu Trigger would go here */}
                 </div>
                 {children}
             </main>

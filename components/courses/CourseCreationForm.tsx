@@ -19,8 +19,10 @@ interface CourseFormData {
     subtitle: string
     description: string
     thumbnail: string
+    category: string
     level: 'Beginner' | 'Intermediate' | 'Advanced'
     duration: string
+    startDate: string
     tags: string[]
     price: number
     certificateAvailable: boolean
@@ -36,8 +38,10 @@ export default function CourseCreationForm() {
         subtitle: "",
         description: "",
         thumbnail: "",
+        category: "Technology",
         level: "Beginner",
         duration: "",
+        startDate: "",
         tags: [],
         price: 0,
         certificateAvailable: true
@@ -79,7 +83,7 @@ export default function CourseCreationForm() {
                 instructorId: user.uid,
                 instructorName: user.displayName || user.email || "Unknown Instructor",
                 status: "draft" as CourseStatus,
-                modules: [], // Will be added later
+                modules: [], 
                 totalEnrollments: 0
             }
 
@@ -132,20 +136,31 @@ export default function CourseCreationForm() {
                                     id="title"
                                     value={formData.title}
                                     onChange={(e) => handleInputChange("title", e.target.value)}
-                                    placeholder="e.g., Complete Python Programming"
+                                    placeholder="e.g., AI Foundation"
                                     required
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="subtitle">Course Subtitle</Label>
+                                <Label htmlFor="category">Category *</Label>
                                 <Input
-                                    id="subtitle"
-                                    value={formData.subtitle}
-                                    onChange={(e) => handleInputChange("subtitle", e.target.value)}
-                                    placeholder="A brief subtitle for your course"
+                                    id="category"
+                                    value={formData.category}
+                                    onChange={(e) => handleInputChange("category", e.target.value)}
+                                    placeholder="e.g., Technology, Business, Design"
+                                    required
                                 />
                             </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="subtitle">Course Subtitle</Label>
+                            <Input
+                                id="subtitle"
+                                value={formData.subtitle}
+                                onChange={(e) => handleInputChange("subtitle", e.target.value)}
+                                placeholder="A brief subtitle for your course"
+                            />
                         </div>
 
                         <div className="space-y-2">
@@ -188,7 +203,7 @@ export default function CourseCreationForm() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div className="space-y-2">
                                 <Label htmlFor="duration">Duration *</Label>
                                 <Input
@@ -201,6 +216,16 @@ export default function CourseCreationForm() {
                             </div>
 
                             <div className="space-y-2">
+                                <Label htmlFor="startDate">Start Date</Label>
+                                <Input
+                                    id="startDate"
+                                    value={formData.startDate}
+                                    onChange={(e) => handleInputChange("startDate", e.target.value)}
+                                    placeholder="e.g., Oct 15, 2024"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
                                 <Label htmlFor="price">Price (₹) *</Label>
                                 <Input
                                     id="price"
@@ -209,7 +234,7 @@ export default function CourseCreationForm() {
                                     step="0.01"
                                     value={formData.price}
                                     onChange={(e) => handleInputChange("price", parseFloat(e.target.value) || 0)}
-                                    placeholder="0 for free courses"
+                                    placeholder="0 for free"
                                     required
                                 />
                             </div>

@@ -25,7 +25,8 @@ import {
     where,
     orderBy,
     limit,
-    Timestamp
+    Timestamp,
+    onSnapshot
 } from "firebase/firestore";
 
 export const LMSService = {
@@ -101,13 +102,27 @@ export const LMSService = {
 
     async createCourse(courseData: Omit<Course, 'id' | 'createdAt' | 'updatedAt' | 'totalEnrollments'>): Promise<string | null> {
         try {
-            const docRef = await addDoc(collection(db, "courses"), {
+            // Generate slug-based ID from title
+            const courseId = courseData.title
+                .toLowerCase()
+                .replace(/[^\w\s-]/g, '') // Remove non-word chars
+                .replace(/\s+/g, '-')     // Replace spaces with -
+                .replace(/--+/g, '-')     // Replace multiple - with single -
+                .trim();
+
+            // Check if course with this ID already exists
+            const existingCourse = await this.getCourseById(courseId);
+            const finalId = existingCourse ? `${courseId}-${Date.now().toString().slice(-4)}` : courseId;
+
+            await setDoc(doc(db, "courses", finalId), {
                 ...courseData,
+                id: finalId,
+                slug: finalId,
                 createdAt: Timestamp.now(),
                 updatedAt: Timestamp.now(),
                 totalEnrollments: 0
             });
-            return docRef.id;
+            return finalId;
         } catch (error) {
             console.error("Error creating course:", error);
             return null;
@@ -153,22 +168,23 @@ export const LMSService = {
             const course = await this.getCourseById(courseId);
             if (!course) return null;
 
+            const now = new Date().toISOString();
             const enrollmentData = {
                 userId,
                 courseId,
                 enrolledAt: Timestamp.now(),
                 status: 'confirmed' as const,
-                paymentId,
-                paymentStatus: paymentId ? 'completed' : 'pending',
+                paymentId: paymentId || null,
+                paymentStatus: (course.price === 0 || paymentId) ? 'completed' : 'pending',
                 amount: course.price,
                 progress: {
                     userId,
                     courseId,
-                    enrolledAt: new Date().toISOString(),
+                    enrolledAt: now,
                     completedLessons: [],
                     quizScores: {},
                     status: 'active',
-                    lastAccessedAt: new Date().toISOString(),
+                    lastAccessedAt: now,
                     attendancePercentage: 0,
                     totalAttendanceTime: 0
                 } as UserCourseProgress,
@@ -179,7 +195,7 @@ export const LMSService = {
 
             // Update course enrollment count
             await this.updateCourse(courseId, {
-                totalEnrollments: course.totalEnrollments + 1
+                totalEnrollments: (course.totalEnrollments || 0) + 1
             });
 
             return docRef.id;
@@ -234,6 +250,38 @@ export const LMSService = {
             console.error("Error fetching course enrollments:", error);
             return [];
         }
+    },
+
+    async getCourseEnrollmentsFromSubcollection(courseId: string): Promise<Enrollment[]> {
+        try {
+            const enrollmentsRef = collection(db, "courses", courseId, "enrollments");
+            const querySnapshot = await getDocs(enrollmentsRef);
+            return querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            } as Enrollment));
+        } catch (error) {
+            console.error("Error fetching course enrollments from subcollection:", error);
+            return [];
+        }
+    },
+
+    subscribeToCourseEnrollments(courseId: string, callback: (enrollments: Enrollment[]) => void) {
+        const enrollmentsRef = collection(db, "courses", courseId, "enrollments");
+        return onSnapshot(enrollmentsRef, (snapshot) => {
+            const enrollments = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            } as Enrollment));
+            callback(enrollments);
+        });
+    },
+
+    subscribeToAllEnrollments(callback: (totalCount: number) => void) {
+        const enrollmentsRef = collection(db, "enrollments");
+        return onSnapshot(enrollmentsRef, (snapshot) => {
+            callback(snapshot.size);
+        });
     },
 
     // Live Session Management
@@ -490,17 +538,49 @@ export const LMSService = {
     },
 
     // Progress Tracking
-    async updateProgress(userId: string, courseId: string, progress: Partial<UserCourseProgress>): Promise<boolean> {
+    async updateProgress(userId: string, courseId: string, progressUpdates: Partial<UserCourseProgress>): Promise<boolean> {
         try {
             const enrollment = await this.getEnrollment(userId, courseId);
             if (!enrollment) return false;
 
+            const updatedProgress = { 
+                ...enrollment.progress, 
+                ...progressUpdates,
+                lastAccessedAt: new Date().toISOString()
+            };
+
+            // Calculate attendance percentage based on lesson completion
+            const course = await this.getCourseById(courseId);
+            if (course) {
+                const totalLessons = course.modules.reduce((acc, mod) => acc + (mod.lessons?.length || 0), 0);
+                if (totalLessons > 0) {
+                    updatedProgress.attendancePercentage = Math.round((updatedProgress.completedLessons.length / totalLessons) * 100);
+                }
+            }
+
             await updateDoc(doc(db, "enrollments", enrollment.id), {
-                progress: { ...enrollment.progress, ...progress }
+                progress: updatedProgress
             });
             return true;
         } catch (error) {
             console.error("Error updating progress:", error);
+            return false;
+        }
+    },
+
+    async completeLesson(userId: string, courseId: string, lessonId: string): Promise<boolean> {
+        try {
+            const enrollment = await this.getEnrollment(userId, courseId);
+            if (!enrollment) return false;
+
+            const completedLessons = [...(enrollment.progress.completedLessons || [])];
+            if (!completedLessons.includes(lessonId)) {
+                completedLessons.push(lessonId);
+            }
+
+            return await this.updateProgress(userId, courseId, { completedLessons });
+        } catch (error) {
+            console.error("Error completing lesson:", error);
             return false;
         }
     },
