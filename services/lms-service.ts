@@ -12,7 +12,6 @@ import {
     Payment,
     UserCourseProgress
 } from "@/types/lms";
-import { ALL_COURSES_DATA } from "@/lib/lms-data";
 import { db } from "@/lib/firebase";
 import {
     collection,
@@ -83,8 +82,7 @@ export const LMSService = {
             } as Course));
         } catch (error) {
             console.error("Error fetching courses:", error);
-            // Fallback to static data
-            return ALL_COURSES_DATA;
+            return [];
         }
     },
 
@@ -94,11 +92,10 @@ export const LMSService = {
             if (courseDoc.exists()) {
                 return { id: courseDoc.id, ...courseDoc.data() } as Course;
             }
-            // Fallback to static data
-            return ALL_COURSES_DATA.find(c => c.id === courseId) || null;
+            return null;
         } catch (error) {
             console.error("Error fetching course:", error);
-            return ALL_COURSES_DATA.find(c => c.id === courseId) || null;
+            return null;
         }
     },
 
