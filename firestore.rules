@@ -46,10 +46,13 @@ service cloud.firestore {
 
     // --- Users Collection & Subcollections ---
     match /users/{userId} {
+      // Allow users to create their own profile when authenticated
+      // This handles new user registration flow
+      allow create: if isSignedIn();
       // Instructors can only read student profiles, not other admins/instructors
       allow read: if isOwner(userId) || isAdmin() || 
                   (isInstructor() && resource.data.role == 'student');
-      allow create, update, delete: if isOwner(userId) || isAdmin();
+      allow update, delete: if isOwner(userId) || isAdmin();
       
       // Allow access to all subcollections of user (e.g. enrolledCourses, courseProgress, etc)
       match /{document=**} {

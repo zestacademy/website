@@ -8,6 +8,7 @@ import { CreditCard, CheckCircle, XCircle } from "lucide-react"
 import { LMSService } from "@/services/lms-service"
 import { Course } from "@/types/lms"
 import { useAuth } from "@/hooks/useAuth"
+import { sendPaymentConfirmationEmail } from "@/services/emailService"
 
 interface PaymentGatewayProps {
     course: Course
@@ -96,6 +97,23 @@ export default function PaymentGateway({ course, onPaymentSuccess, onPaymentFail
             const enrollmentId = await LMSService.enrollInCourse(user!.uid, course.id, paymentId)
 
             if (enrollmentId) {
+                // Send payment confirmation email
+                await sendPaymentConfirmationEmail(
+                    user!.email || '',
+                    user!.displayName || 'Student',
+                    course.title,
+                    course.price,
+                    paymentId
+                )
+
+                // Show browser notification
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('Payment Successful!', {
+                        body: `You are now enrolled in ${course.title}`,
+                        icon: '/logo.png'
+                    })
+                }
+
                 alert("Payment successful! You are now enrolled in the course.")
                 onPaymentSuccess?.(enrollmentId)
             } else {

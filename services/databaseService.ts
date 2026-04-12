@@ -16,7 +16,13 @@ import {
   type CollectionReference,
 } from 'firebase/firestore'
 import { db, isFirebaseInitialized } from '../lib/firebase'
-import { sendEnrollmentEmail, sendCertificateEmail } from './emailService'
+import { sendEnrollmentEmail, sendCertificateEmail, sendCourseStartedEmail } from './emailService'
+
+function showBrowserNotification(title: string, body: string) {
+  if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+    new Notification(title, { body, icon: '/logo.png' })
+  }
+}
 
 function ensureDatabaseReady() {
   if (!isFirebaseInitialized || !db) {
@@ -182,10 +188,16 @@ export async function enrollUserInCourse(user: any, course: any) {
   // Send an Enrollment Email!
   try {
     const courseUrl = `${window.location.origin}/courses/${course.slug || course.id}/learn`
-    await sendEnrollmentEmail(user.email ?? '', course.title, courseUrl)
+    await sendEnrollmentEmail(user.email ?? '', user.displayName || 'Student', course.title, courseUrl)
   } catch (error) {
     console.error("Failed to send enrollment email:", error)
   }
+
+  // Browser notification
+  showBrowserNotification(
+    `Enrolled in ${course.title}`,
+    'You have successfully enrolled. Start learning now!'
+  )
 }
 
 export async function getUserCourseLearningState(uid: string, course: any) {
@@ -314,10 +326,22 @@ export async function setCourseLessonCompletion(user: any, course: any, lessonId
       try {
          const certId = `${activeSlug.toUpperCase()}-${user.uid.slice(0, 8)}`
          const certUrl = `${window.location.origin}/certificates/${certId}`
-         await sendCertificateEmail(user.email ?? '', course.title, certId, certUrl)
+         await sendCertificateEmail(
+            user.email ?? '',
+            user.displayName || 'Student',
+            course.title,
+            certId,
+            certUrl
+         )
       } catch (error) {
          console.error("Failed to send certificate email:", error)
       }
+
+      // Browser notification
+      showBrowserNotification(
+        'Certificate Earned!',
+        `Congratulations! You completed ${course.title}`
+      )
   }
 
   return {
@@ -502,6 +526,26 @@ export async function createLiveClassWithNotifications({ courseSlug, title, desc
   })
 
   await batch.commit()
+
+  // 3. Send course started emails to enrolled users
+  const courseLink = `/courses/${courseSlug}/learn`
+  for (const uid of enrolledUserIds) {
+    try {
+      const userDoc = await getDoc(doc(db!, 'users', uid))
+      const userData = userDoc.data()
+      if (userData?.email) {
+        sendCourseStartedEmail(
+          userData.email,
+          userData.displayName || 'Student',
+          title,
+          courseLink
+        ).catch(console.error)
+      }
+    } catch (e) {
+      console.error(`Failed to send email to user ${uid}:`, e)
+    }
+  }
+
   return classData
 }
 
