@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useEffect, useState } from 'react'
@@ -8,6 +7,9 @@ import { useAuth } from '../../../hooks/useAuth'
 import { LMSService } from '../../../services/lms-service'
 import { Course, Enrollment } from '../../../types/lms'
 import CourseJsonLd from "@/components/seo/CourseJsonLd"
+import PaymentGateway from "@/components/payment/PaymentGateway"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import useFcmToken from '@/hooks/useFcmToken'
 
 interface PageProps {
     params: Promise<{
@@ -18,12 +20,18 @@ interface PageProps {
 function CourseDetails({ params }: { params: { courseId: string } }) {
   const router = useRouter()
   const { user } = useAuth()
+  const { notificationPermission, requestPermission } = useFcmToken()
+  
   const [course, setCourse] = useState<Course | null>(null)
   const [courseLoading, setCourseLoading] = useState(true)
   const [isEnrolling, setIsEnrolling] = useState(false)
   const [enrollment, setEnrollment] = useState<Enrollment | null>(null)
-  const [checkoutStep, setCheckoutStep] = useState<'idle' | 'confirm_purchase'>('idle')
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [enrollmentMessage, setEnrollmentMessage] = useState('')
+  
+  // Notification states
+  const [showNotificationPrompt, setShowNotificationPrompt] = useState(false)
+  const [isEnablingNotifications, setIsEnablingNotifications] = useState(false)
 
   useEffect(() => {
     let isMounted = true
@@ -40,6 +48,11 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
 
         const userEnrollment = await LMSService.getEnrollment(user.uid, fetchedCourse.id)
         if (isMounted) setEnrollment(userEnrollment)
+        
+        // Check if we should show notification prompt
+        if (isMounted && notificationPermission === 'default' && userEnrollment) {
+           setShowNotificationPrompt(true)
+        }
       } catch (err) {
         console.error(err)
         if (isMounted) setEnrollment(null)
@@ -53,7 +66,7 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
     return () => {
       isMounted = false
     }
-  }, [user?.uid, params.courseId])
+  }, [user?.uid, params.courseId, notificationPermission])
 
   const handleEnroll = async () => {
     if (!user || !course) {
@@ -68,8 +81,8 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
       return
     }
 
-    if (course.price > 0 && checkoutStep === 'idle') {
-      setCheckoutStep('confirm_purchase')
+    if (course.price > 0) {
+      setShowPaymentModal(true)
       return
     }
 
@@ -77,20 +90,16 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
     setEnrollmentMessage('')
 
     try {
-      if (course.price > 0) {
-        setEnrollmentMessage(`Redirecting to secure checkout for ₹${course.price}...`)
-        await new Promise(r => setTimeout(r, 1000))
-        setEnrollmentMessage('Simulating payment processing...')
-        await new Promise(r => setTimeout(r, 1500))
-        setEnrollmentMessage('Payment successful! Finalizing enrollment...')
-        await new Promise(r => setTimeout(r, 800))
-      }
-
       const enrollmentId = await LMSService.enrollInCourse(user.uid, course.id)
       if (enrollmentId) {
         const newEnrollment = await LMSService.getEnrollment(user.uid, course.id)
         setEnrollment(newEnrollment)
         setEnrollmentMessage('Enrollment successful! You can now start learning.')
+        
+        // Show notification prompt after free enrollment
+        if (notificationPermission === 'default') {
+            setShowNotificationPrompt(true)
+        }
       } else {
         throw new Error("Failed to enroll")
       }
@@ -98,6 +107,30 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
       setEnrollmentMessage(error?.message ?? 'Unable to complete enrollment. Please try again.')
     } finally {
       setIsEnrolling(false)
+    }
+  }
+
+  const handlePaymentSuccess = async (enrollmentId: string) => {
+    setShowPaymentModal(false)
+    const newEnrollment = await LMSService.getEnrollment(user!.uid, course!.id)
+    setEnrollment(newEnrollment)
+    setEnrollmentMessage('Payment successful! You are now enrolled in the course.')
+    
+    // Show notification prompt after successful payment
+    if (notificationPermission === 'default') {
+        setShowNotificationPrompt(true)
+    }
+  }
+
+  const handleEnableNotifications = async () => {
+    setIsEnablingNotifications(true)
+    try {
+      await requestPermission()
+    } catch (error) {
+      console.error("Error enabling notifications:", error)
+    } finally {
+      setIsEnablingNotifications(false)
+      setShowNotificationPrompt(false)
     }
   }
 
@@ -166,9 +199,7 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
                   {isEnrolling 
                     ? 'Processing...' 
                     : course.price && course.price > 0 
-                        ? checkoutStep === 'confirm_purchase' 
-                            ? `Confirm Purchase ($${course.price})` 
-                            : 'Enroll Now'
+                        ? 'Enroll Now'
                         : 'Enroll for Free'}
                 </button>
               )}
@@ -203,6 +234,17 @@ function CourseDetails({ params }: { params: { courseId: string } }) {
           </article>
         )}
       </section>
+
+      {/* Payment Modal */}
+      <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
+          <DialogContent className="max-w-md p-0 overflow-hidden border-none bg-transparent">
+              <PaymentGateway 
+                course={course} 
+                onPaymentSuccess={handlePaymentSuccess}
+                onPaymentFailure={() => setShowPaymentModal(false)}
+              />
+          </DialogContent>
+      </Dialog>
 
       {/* Notification Request Modal */}
       {showNotificationPrompt && (
