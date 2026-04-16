@@ -10,7 +10,8 @@ import {
     AttendanceRecord,
     Certificate,
     Payment,
-    UserCourseProgress
+    UserCourseProgress,
+    PaymentStatus
 } from "@/types/lms";
 import { db } from "@/lib/firebase";
 import {
@@ -26,7 +27,8 @@ import {
     orderBy,
     limit,
     Timestamp,
-    onSnapshot
+    onSnapshot,
+    setDoc
 } from "firebase/firestore";
 
 export const LMSService = {

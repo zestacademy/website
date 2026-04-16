@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { LMSService } from './services/lms-service'
+import { LMSService } from '../services/lms-service'
 import fs from 'fs'
 import path from 'path'
 
