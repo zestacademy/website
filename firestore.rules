@@ -47,12 +47,12 @@ service cloud.firestore {
     // --- Users Collection & Subcollections ---
     match /users/{userId} {
       // Allow users to create their own profile when authenticated
-      // This handles new user registration flow
       allow create: if isSignedIn();
       // Instructors can only read student profiles, not other admins/instructors
       allow read: if isOwner(userId) || isAdmin() || 
                   (isInstructor() && resource.data.role == 'student');
-      allow update, delete: if isOwner(userId) || isAdmin();
+      allow update: if isAdmin() || (isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'suspended', 'zestId']));
+      allow delete: if isAdmin();
       
       // Allow access to all subcollections of user (e.g. enrolledCourses, courseProgress, etc)
       match /{document=**} {
@@ -65,8 +65,11 @@ service cloud.firestore {
     match /enrollments/{enrollmentId} {
       // Fixed: Students can only read their own enrollments
       allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid &&
+                    (request.resource.data.paymentStatus == 'pending' || get(/databases/$(database)/documents/courses/$(request.resource.data.courseId)).data.price == 0);
+      allow update: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid && 
+                    !request.resource.data.diff(resource.data).affectedKeys().hasAny(['paymentStatus', 'amount', 'courseId']));
+      allow delete: if isAdmin();
 
       match /quiz_attempts/{attemptId} {
         allow read, write: if isSignedIn() && get(/databases/$(database)/documents/enrollments/$(enrollmentId)).data.userId == request.auth.uid;
@@ -94,13 +97,13 @@ service cloud.firestore {
 
     // --- Contact Messages ---
     match /contact_messages/{messageId} {
-      allow create: if true;
+      allow create: if request.resource.data.keys().hasAll(['email']) && request.resource.data.email is string;
       allow read, delete: if isAdmin();
     }
 
     // --- Developer Applications ---
     match /developer_applications/{applicationId} {
-      allow create: if true;
+      allow create: if request.resource.data.keys().hasAll(['email']) && request.resource.data.email is string;
       allow read, delete: if isAdmin();
     }
 
@@ -113,7 +116,7 @@ service cloud.firestore {
       // databaseService.ts uses standard subcollections
       match /enrollments/{uid} {
         allow read: if isOwner(uid) || isAdmin() || (isInstructor() && get(/databases/$(database)/documents/courses/$(courseId)).data.instructorId == request.auth.uid);
-        allow write: if isOwner(uid) || isAdmin();
+        allow write: if isAdmin();
       }
 
       match /liveClasses/{classId} {
@@ -151,7 +154,7 @@ service cloud.firestore {
     // --- Payments (lms-service.ts) ---
     match /payments/{paymentId} {
       allow read: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow create: if false; // Only secure backend should create payments
       allow update, delete: if isAdmin();
     }
 
@@ -177,7 +180,7 @@ service cloud.firestore {
     }
 
     match /leads/{leadId} {
-      allow create: if true;
+      allow create: if request.resource.data.keys().hasAll(['email']) && request.resource.data.email is string;
       allow read, update, delete: if isAdmin();
     }
 

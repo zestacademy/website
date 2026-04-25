@@ -133,8 +133,8 @@ export default function AdminDashboard() {
 
         setCreatingInstructor(true)
         try {
-            // Generate a temporary password
-            const tempPassword = Math.random().toString(36).slice(-12) + "Temp2024!"
+            // Generate a more secure temporary password
+            const tempPassword = crypto.randomUUID().slice(0, 10) + "Temp!24"
 
             // Create user in Firebase Auth
             const userCredential = await createUserWithEmailAndPassword(

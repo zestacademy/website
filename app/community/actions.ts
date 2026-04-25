@@ -3,7 +3,7 @@
 import axios from "axios"
 
 // Check for keys without blocking the entire module (they might be added later)
-const NEWS_API_KEY = process.env.NEXT_PUBLIC_NEWS_API_KEY
+const NEWS_API_KEY = process.env.NEWS_API_KEY
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY
 const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST || "jsearch.p.rapidapi.com"
 

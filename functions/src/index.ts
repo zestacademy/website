@@ -109,10 +109,14 @@ export const sendDailyNotifications = functions.pubsub.schedule('every 24 hours'
 });
 
 export const sendAdminNotification = functions.https.onCall(async (data, context) => {
-    // Check if user is admin (simple check, ideally use custom claims or admin list in env)
-    // For now, we rely on the client-side check + maybe a simple email check if context.auth exists
+    // Check if user is admin
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
+    }
+
+    const userDoc = await admin.firestore().collection('users').doc(context.auth.uid).get();
+    if (!userDoc.exists || userDoc.data()?.role !== 'admin') {
+        throw new functions.https.HttpsError('permission-denied', 'Only admins can send notifications.');
     }
 
     const { title, body, link } = data;

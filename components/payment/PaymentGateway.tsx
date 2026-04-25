@@ -71,11 +71,14 @@ export default function PaymentGateway({ course, onPaymentSuccess, onPaymentFail
                         const verifyResponse = await axios.post('/api/payments/razorpay/verify', {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_signature: response.razorpay_signature
+                            razorpay_signature: response.razorpay_signature,
+                            userId: user.uid,
+                            courseId: course.id,
+                            amount: course.price
                         });
 
                         if (verifyResponse.data.success) {
-                            await handlePaymentSuccess(response.razorpay_payment_id)
+                            await handlePaymentSuccess(response.razorpay_payment_id, verifyResponse.data.enrollmentId)
                         } else {
                             throw new Error("Payment verification failed");
                         }
@@ -110,24 +113,8 @@ export default function PaymentGateway({ course, onPaymentSuccess, onPaymentFail
         }
     }
 
-    const handlePaymentSuccess = async (paymentId: string) => {
+    const handlePaymentSuccess = async (paymentId: string, enrollmentId: string) => {
         try {
-            // Create payment record
-            const paymentData = {
-                userId: user!.uid,
-                courseId: course.id,
-                amount: course.price,
-                currency: 'INR',
-                status: 'completed' as const,
-                paymentMethod: 'razorpay',
-                transactionId: paymentId
-            }
-
-            await LMSService.createPayment(paymentData)
-
-            // Enroll user in course
-            const enrollmentId = await LMSService.enrollInCourse(user!.uid, course.id, paymentId)
-
             if (enrollmentId) {
                 // Send payment confirmation email
                 try {
