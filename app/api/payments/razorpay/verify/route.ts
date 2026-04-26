@@ -21,6 +21,10 @@ export async function POST(req: Request) {
         if (courseDoc.exists) {
           const courseData = courseDoc.data();
           
+          if (amount < courseData!.price) {
+            return NextResponse.json({ success: false, message: "Invalid payment amount" }, { status: 400 });
+          }
+
           // Check existing enrollment
           const enrollmentsQuery = await adminDb.collection('enrollments')
             .where('userId', '==', userId)

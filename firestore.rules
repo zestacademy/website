@@ -110,7 +110,7 @@ service cloud.firestore {
     // --- Course Management ---
     match /courses/{courseId} {
       allow read: if true;
-      allow create: if isAdmin() || isInstructor();
+      allow create: if isAdmin() || (isInstructor() && request.resource.data.instructorId == request.auth.uid);
       allow update, delete: if isAdmin() || (isInstructor() && resource.data.instructorId == request.auth.uid);
 
       // databaseService.ts uses standard subcollections

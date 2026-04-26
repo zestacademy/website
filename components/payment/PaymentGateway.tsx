@@ -47,7 +47,8 @@ export default function PaymentGateway({ course, onPaymentSuccess, onPaymentFail
             const orderResponse = await axios.post('/api/payments/razorpay/order', {
                 amount: course.price,
                 currency: 'INR',
-                receipt: `receipt_${Date.now()}`
+                receipt: `receipt_${Date.now()}`,
+                courseId: course.id
             });
 
             const order = orderResponse.data;
