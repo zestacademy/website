@@ -12,7 +12,9 @@ export default function robots(): MetadataRoute.Robots {
                 '/onboarding/',
                 '/login/',
                 '/register/',
-                '/forgot-password/'
+                '/forgot-password/',
+                '/admin/',
+                '/api/',
             ],
         },
         sitemap: `${baseUrl}/sitemap.xml`,
