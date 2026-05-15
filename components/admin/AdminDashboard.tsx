@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -20,6 +21,7 @@ import { doc, setDoc, Timestamp, onSnapshot, query, collection } from "firebase/
 export default function AdminDashboard() {
     const { user, loading: authLoading } = useAuth()
     const normalizedRole = String(user?.role || '').toLowerCase()
+    const isAdmin = normalizedRole === 'admin' || user?.email?.toLowerCase().includes('admin') || user?.email?.endsWith('@zestacademy.tech') || user?.email?.endsWith('@zestacademy.com');
     const [users, setUsers] = useState<User[]>([])
     const [courses, setCourses] = useState<Course[]>([])
     const [loading, setLoading] = useState(true)
@@ -43,14 +45,14 @@ export default function AdminDashboard() {
     })
 
     useEffect(() => {
-        if (normalizedRole === 'admin') {
+        if (isAdmin) {
             loadDashboardData()
         }
-    }, [normalizedRole])
+    }, [isAdmin])
 
     // Subscribe to real-time enrollments
     useEffect(() => {
-        if (normalizedRole !== 'admin') return
+        if (!isAdmin) return
 
         const unsubscribe = LMSService.subscribeToAllEnrollments((count) => {
             setTotalEnrollmentsCount(count)
@@ -58,7 +60,7 @@ export default function AdminDashboard() {
         })
 
         return () => unsubscribe()
-    }, [normalizedRole])
+    }, [isAdmin])
 
     if (authLoading) {
         return (
@@ -75,7 +77,7 @@ export default function AdminDashboard() {
         )
     }
 
-    if (!user || normalizedRole !== 'admin') {
+    if (!user || !isAdmin) {
         return (
             <div className="container mx-auto px-4 py-8">
                 <Card>
@@ -239,7 +241,7 @@ export default function AdminDashboard() {
         }
     }
 
-    if (!user || normalizedRole !== 'admin') {
+    if (!user || !isAdmin) {
         return (
             <div className="container mx-auto px-4 py-8">
                 <Card>
@@ -520,13 +522,23 @@ export default function AdminDashboard() {
                 </CardContent>
             </Card>
 
-            {/* Courses Overview */}
+            {/* List of Courses */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Courses Overview</CardTitle>
-                    <CardDescription>
-                        Monitor course performance and enrollment
-                    </CardDescription>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle>List of Courses</CardTitle>
+                            <CardDescription>
+                                Monitor course performance and enrollment
+                            </CardDescription>
+                        </div>
+                        <Link href="/create-course">
+                            <Button>
+                                <Plus className="h-4 w-4 mr-2" />
+                                Add Course
+                            </Button>
+                        </Link>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <Table>
