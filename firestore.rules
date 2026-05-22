@@ -23,13 +23,6 @@ service cloud.firestore {
       );
     }
 
-    // Helper function to check if user is an Instructor
-    function isInstructor() {
-      return request.auth != null && 
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'instructor';
-    }
-
     // Allow collection group queries for comments for admins
     match /{path=**}/comments/{commentId} {
       allow read: if isAdmin();
@@ -48,38 +41,15 @@ service cloud.firestore {
     match /users/{userId} {
       // Allow users to create their own profile when authenticated
       allow create: if isSignedIn();
-      // Instructors can only read student profiles, not other admins/instructors
-      allow read: if isOwner(userId) || isAdmin() || 
-                  (isInstructor() && resource.data.role == 'student');
+      // Allow users and admins to read profiles
+      allow read: if isOwner(userId) || isAdmin();
       allow update: if isAdmin() || (isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'suspended', 'zestId']));
       allow delete: if isAdmin();
       
-      // Allow access to all subcollections of user (e.g. enrolledCourses, courseProgress, etc)
+      // Allow access to all subcollections of user
       match /{document=**} {
         allow read, write: if isOwner(userId) || isAdmin();
       }
-    }
-
-    // --- LMS: Enrollments & Progress ---
-    // Root level enrollments (lms-service.ts)
-    match /enrollments/{enrollmentId} {
-      // Fixed: Students can only read their own enrollments
-      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid &&
-                    (request.resource.data.paymentStatus == 'pending' || get(/databases/$(database)/documents/courses/$(request.resource.data.courseId)).data.price == 0);
-      allow update: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid && 
-                    !request.resource.data.diff(resource.data).affectedKeys().hasAny(['paymentStatus', 'amount', 'courseId']));
-      allow delete: if isAdmin();
-
-      match /quiz_attempts/{attemptId} {
-        allow read, write: if isSignedIn() && get(/databases/$(database)/documents/enrollments/$(enrollmentId)).data.userId == request.auth.uid;
-      }
-    }
-
-    // --- Leaderboards ---
-    match /leaderboards/{roadmapId}/users/{userId} {
-      allow read: if true;
-      allow write: if isOwner(userId) || isAdmin();
     }
 
     // --- Community: Discussions ---
@@ -107,70 +77,14 @@ service cloud.firestore {
       allow read, delete: if isAdmin();
     }
 
-    // --- Course Management ---
-    match /courses/{courseId} {
-      allow read: if true;
-      allow create: if isAdmin() || (isInstructor() && request.resource.data.instructorId == request.auth.uid);
-      allow update, delete: if isAdmin() || (isInstructor() && resource.data.instructorId == request.auth.uid);
-
-      // databaseService.ts uses standard subcollections
-      match /enrollments/{uid} {
-        allow read: if isOwner(uid) || isAdmin() || (isInstructor() && get(/databases/$(database)/documents/courses/$(courseId)).data.instructorId == request.auth.uid);
-        allow write: if isAdmin();
-      }
-
-      match /liveClasses/{classId} {
-        allow read: if isSignedIn();
-        allow write: if isAdmin() || isInstructor();
-
-        match /feedback/{feedbackId} {
-          allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-          allow read, update, delete: if isAdmin() || isInstructor();
-        }
-      }
-    }
-
-    // --- Live Sessions (lms-service.ts) ---
-    match /liveSessions/{sessionId} {
-      allow read: if true;
-      // Fixed: Ensure instructorId matches creator
-      allow create: if isAdmin() || (isInstructor() && request.resource.data.instructorId == request.auth.uid);
-      allow update, delete: if isAdmin() || (isInstructor() && resource.data.instructorId == request.auth.uid);
-    }
-
-    // --- Attendance (lms-service.ts) ---
-    match /attendance/{attendanceId} {
-      allow read: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin() || isInstructor();
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isAdmin() || isInstructor();
-    }
-
-    // --- Certificates (lms-service.ts) ---
-    match /certificates/{certId} {
-      allow read: if true; // Publicly verifiable
-      allow write: if isAdmin() || isInstructor();
-    }
-
-    // --- Payments (lms-service.ts) ---
-    match /payments/{paymentId} {
-      allow read: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
-      allow create: if false; // Only secure backend should create payments
-      allow update, delete: if isAdmin();
-    }
-
     // --- Notifications & Configs ---
-    match /courseConfigs/{configId} {
-      allow read: if true;
-      allow write: if isAdmin() || isInstructor();
-    }
-
     match /notificationSubscriptions/{uid} {
       allow read, write: if isOwner(uid) || isAdmin();
     }
 
     match /notifications/{notifId} {
       allow read: if isSignedIn();
-      allow write: if isAdmin() || isInstructor();
+      allow write: if isAdmin();
     }
 
     // --- Newsletter & Leads ---

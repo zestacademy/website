@@ -6,9 +6,7 @@ import {
     BookOpen,
     Code2,
     Briefcase,
-    Cpu,
     Users,
-    GraduationCap,
     Layers,
     Zap,
     ChevronLeft,
@@ -19,7 +17,6 @@ import {
     ExternalLink,
     Flame,
     Sparkles,
-    Trophy,
 } from "lucide-react"
 
 /* ─────────────────────────── HERO SLIDES ─────────────────────────── */
@@ -95,29 +92,6 @@ const HERO_SLIDES = [
         ],
     },
     {
-        id: "courses",
-        title: "Courses",
-        tagline: "Structured Paths. Real Skills.",
-        description:
-            "Follow curated learning paths from fundamentals to advanced topics — Python, IoT, Embedded Systems, Data Structures, and more.",
-        href: "/courses",
-        external: false,
-        gradient: "from-emerald-600 via-teal-700 to-cyan-800",
-        blob1: "bg-emerald-400/20",
-        blob2: "bg-cyan-500/20",
-        accentBar: "from-emerald-400 via-teal-400 to-cyan-400",
-        badge: "Popular",
-        badgeDot: "bg-emerald-300",
-        taglineColor: "text-emerald-200",
-        icon: GraduationCap,
-        cta: "Browse Courses",
-        stats: [
-            { label: "Courses", value: "10+" },
-            { label: "Hands-on", value: "100%" },
-            { label: "Difficulty", value: "All levels" },
-        ],
-    },
-    {
         id: "community",
         title: "Community",
         tagline: "Connect. Collaborate. Grow.",
@@ -159,16 +133,6 @@ const ROWS = [
                 icon: BookOpen,
                 badge: "New",
                 wide: true,
-            },
-            {
-                id: "iot",
-                label: "IoT & Embedded",
-                sub: "ESP32, Arduino & real-world systems",
-                href: "/courses/internet-of-things",
-                gradient: "from-rose-500 to-pink-700",
-                icon: Cpu,
-                badge: "Hot",
-                wide: false,
             },
             {
                 id: "quick-learn",
@@ -241,53 +205,7 @@ const ROWS = [
             },
         ],
     },
-    {
-        id: "courses",
-        title: "🎓 Top Courses",
-        icon: Trophy,
-        cards: [
-            {
-                id: "course-python",
-                label: "Python Mastery",
-                sub: "From basics to advanced scripting",
-                href: "/courses/python-basics",
-                gradient: "from-yellow-500 to-amber-600",
-                icon: GraduationCap,
-                badge: "Popular",
-                wide: false,
-            },
-            {
-                id: "course-iot",
-                label: "Internet of Things",
-                sub: "Sensors, microcontrollers & cloud",
-                href: "/courses/internet-of-things",
-                gradient: "from-emerald-500 to-teal-700",
-                icon: Cpu,
-                badge: "Bestseller",
-                wide: true,
-            },
-            {
-                id: "course-ds",
-                label: "Data Structures",
-                sub: "Algorithms for coding interviews",
-                href: "/courses",
-                gradient: "from-sky-500 to-indigo-700",
-                icon: Layers,
-                badge: "",
-                wide: false,
-            },
-            {
-                id: "course-embedded",
-                label: "Embedded C",
-                sub: "Low-level programming for MCUs",
-                href: "/courses",
-                gradient: "from-fuchsia-500 to-purple-700",
-                icon: Code2,
-                badge: "",
-                wide: false,
-            },
-        ],
-    },
+
 ]
 
 /* ─────────────────────────── HERO CAROUSEL ─────────────────────────── */

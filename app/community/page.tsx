@@ -3,8 +3,6 @@
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { MessageSquare, Code, Briefcase, Coffee, ArrowRight, Rocket, Terminal } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Leaderboard } from "@/components/Leaderboard"
 import { NewsSection } from "@/components/community/NewsSection"
 import { JobsSection } from "@/components/community/JobsSection"
 
@@ -75,26 +73,6 @@ export default function CommunityPage() {
 
                 <div className="mt-16">
                     <JobsSection />
-                </div>
-
-                <div className="mt-16 border-t pt-12">
-                    <div className="text-center mb-10">
-                        <h2 className="text-3xl font-bold mb-3">🏆 Community Leaderboard</h2>
-                        <p className="text-muted-foreground">See who's leading the charts in our learning paths.</p>
-                    </div>
-
-                    <Tabs defaultValue="iot" className="w-full max-w-4xl mx-auto">
-                        <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="iot">Internet of Things</TabsTrigger>
-                            <TabsTrigger value="python">Python Basics</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="iot" className="mt-6">
-                            <Leaderboard courseId="internet-of-things" title="IoT Course" />
-                        </TabsContent>
-                        <TabsContent value="python" className="mt-6">
-                            <Leaderboard courseId="python-basics" title="Python Basics" />
-                        </TabsContent>
-                    </Tabs>
                 </div>
             </div>
         </div>

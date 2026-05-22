@@ -8,8 +8,6 @@ export default function robots(): MetadataRoute.Robots {
             userAgent: '*',
             allow: '/',
             disallow: [
-                '/my-learning/',
-                '/onboarding/',
                 '/login/',
                 '/register/',
                 '/forgot-password/',

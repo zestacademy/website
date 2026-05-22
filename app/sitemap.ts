@@ -1,5 +1,4 @@
 import { MetadataRoute } from 'next'
-import { LMSService } from '../services/lms-service'
 import fs from 'fs'
 import path from 'path'
 
@@ -11,7 +10,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '',
         '/explore',
         '/categories',
-        '/courses',
         '/about-us',
         '/contact',
         '/privacy-policy',
@@ -25,21 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: route === '' ? 1.0 : 0.8,
     }))
 
-    // 2. Dynamic Courses from Firestore
-    let courseEntries: MetadataRoute.Sitemap = []
-    try {
-        const courses = await LMSService.getAllCourses()
-        courseEntries = courses.map((course) => ({
-            url: `${baseUrl}/courses/${course.slug || course.id}`,
-            lastModified: new Date(course.updatedAt || new Date()),
-            changeFrequency: 'monthly' as const,
-            priority: 0.7,
-        }))
-    } catch (error) {
-        console.error("Sitemap: Error fetching courses:", error)
-    }
-
-    // 3. Dynamic Articles from File System
+    // 2. Dynamic Articles from File System
     let articleEntries: MetadataRoute.Sitemap = []
     try {
         const articlesDirectory = path.join(process.cwd(), 'app/articles')
@@ -65,5 +49,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }))
     }
 
-    return [...staticEntries, ...courseEntries, ...articleEntries]
+    return [...staticEntries, ...articleEntries]
 }

@@ -116,9 +116,9 @@ export function HeroSection() {
                             onSearch={async (query) => {
                                 await new Promise(resolve => setTimeout(resolve, 300))
                                 const items = [
-                                    { id: '/courses/python-basics', title: 'Python Basics', description: 'Master Python programming', category: 'Course' },
-                                    { id: '/courses/internet-of-things', title: 'Internet of Things', description: 'Learn IoT & Embedded Systems', category: 'Course' },
-                                    { id: '/explore', title: 'Explore Skills', description: 'Browse all available skills', category: 'Page' },
+                                    { id: '/explore', title: 'Electronics & Embedded Systems', description: 'Deep dive into circuit designs and hardware', category: 'Skill' },
+                                    { id: '/explore', title: 'Emerging Tech & AI', description: 'Learn machine learning and AI concepts', category: 'Skill' },
+                                    { id: '/explore', title: 'Interview & Placement Prep', description: 'Placement questions and tips', category: 'Prep' },
                                 ]
                                 return items.filter(i => i.title.toLowerCase().includes(query.toLowerCase()))
                             }}
@@ -144,9 +144,9 @@ export function HeroSection() {
                                 </Link>
                             </>
                         ) : (
-                            <Link href="/my-learning">
+                            <Link href="/explore">
                                 <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all">
-                                    Go to Dashboard
+                                    Explore Platform
                                 </Button>
                             </Link>
                         )}

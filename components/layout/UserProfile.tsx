@@ -128,37 +128,19 @@ export function UserProfile() {
                     </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                    <Link href="/my-learning">
-                        <DropdownMenuItem>
-                            <UserIcon className="mr-2 h-4 w-4" />
-                            <span>Profile</span>
-                        </DropdownMenuItem>
-                    </Link>
-                    <Link href="/my-learning">
-                        <DropdownMenuItem>
-                            <Settings className="mr-2 h-4 w-4" />
-                            <span>Settings</span>
-                        </DropdownMenuItem>
-                    </Link>
-                    {(user.role === 'instructor' || user.role === 'admin') && (
-                        <Link href="/instructor">
-                            <DropdownMenuItem>
-                                <GraduationCap className="mr-2 h-4 w-4 text-blue-500" />
-                                <span>Instructor Dashboard</span>
-                            </DropdownMenuItem>
-                        </Link>
-                    )}
-                    {user.role === 'admin' && (
-                        <Link href="/admin">
-                            <DropdownMenuItem>
-                                <ShieldCheck className="mr-2 h-4 w-4 text-purple-500" />
-                                <span>Admin Dashboard</span>
-                            </DropdownMenuItem>
-                        </Link>
-                    )}
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
+                {user.role === 'admin' && (
+                    <>
+                        <DropdownMenuGroup>
+                            <Link href="/admin">
+                                <DropdownMenuItem>
+                                    <ShieldCheck className="mr-2 h-4 w-4 text-purple-500" />
+                                    <span>Admin Dashboard</span>
+                                </DropdownMenuItem>
+                            </Link>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                    </>
+                )}
                 <DropdownMenuItem onClick={handleSignOut} className="text-red-500 focus:text-red-500">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>

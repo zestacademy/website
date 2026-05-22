@@ -1,6 +1,6 @@
-# 🎓 Zest Academy - E-Learning Platform
+# 🎓 Zest Academy - Educational Platform
 
-A modern, full-featured e-learning platform built with Next.js 16, React 19, and Firebase. This platform offers structured courses, interactive quizzes, article publishing, community features, and a comprehensive learning management system (LMS).
+A modern, full-featured educational platform built with Next.js 16, React 19, and Firebase. This platform offers tech news, developer tools, educational articles, and vibrant community forums.
 
 ## 📑 Table of Contents
 
@@ -22,22 +22,13 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 - **Smart Onboarding**: Welcome flow showcasing new Zest ID with feature spotlights
 - **Profile Management**: Edit bio, social links, and display Zest ID
 
-### 📚 Learning Management System (LMS)
-- **Structured Courses**: Multi-module courses with organized lessons (Python, IoT, JavaScript, etc.)
-- **Course Enrollment**: Track user enrollments and learning progress
-- **Interactive Lessons**: Rich content with code editors, videos, and text
-- **Quiz System**: Multiple-choice quizzes with explanations and instant feedback
-- **Progress Tracking**: Visual progress indicators and completion tracking
-- **Resume Learning**: Continue from where you left off
-- **Monaco Code Editor**: In-browser code editing with syntax highlighting
-
 ### 🌐 Community & Content
 - **Tech News**: Real-time technology news updates (via NewsAPI)
 - **Job Board**: Integrated job search for developers (via JSearch/RapidAPI)
 - **Article Publishing**: Educational blog system with 11+ articles
 - **Community Topics**: Discussion forums for various tech topics
-- **Comments System**: Discussion threads on courses and articles
-- **Developer Profiles**: Showcase mentors and instructors
+- **Comments System**: Discussion threads on articles
+- **Developer Profiles**: Showcase developer profiles
 
 ### 🎨 User Experience
 - **Dark Mode**: Theme switching with next-themes
@@ -47,7 +38,7 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 - **Animations**: Smooth transitions and micro-interactions
 - **Reading Progress**: Article reading progress bar
 - **XP & Gamification**: Experience points and achievement animations
-- **Instant Search**: Fast search across courses and content
+- **Instant Search**: Fast search across articles and content
 - **AI Chatbot**: Interactive chatbot for user assistance
 
 ### 🔧 Admin & Tools
@@ -132,21 +123,14 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 │   │   ├── resistor-guide/
 │   │   ├── what-is-api/
 │   │   └── what-is-quantum-computing/
-│   ├── 📁 categories/               # Course categories
+│   ├── 📁 categories/               # Article categories
 │   ├── 📁 community/                # Community hub
 │   │   └── [topicId]/              # Topic-specific discussions
 │   ├── 📁 contact/                  # Contact form
 │   ├── 📁 cookie-policy/            # Cookie policy
-│   ├── 📁 courses/                  # Course pages
-│   │   └── [courseId]/
-│   │       ├── page.tsx             # Course details
-│   │       └── learn/
-│   │           └── [lessonId]/      # Individual lessons
 │   ├── 📁 developers/               # Developer profiles
 │   │   └── [developerId]/
 │   ├── 📁 explore/                  # Explore/discovery page
-│   ├── 📁 my-learning/              # User dashboard
-│   ├── 📁 onboarding/               # User onboarding flow
 │   ├── 📁 privacy-policy/           # Privacy policy
 │   ├── 📁 terms-conditions/         # Terms & conditions
 │   ├── 📁 ui-demo/                  # UI component showcase
@@ -155,7 +139,7 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 │   ├── robots.ts                    # robots.txt generator
 │   ├── sitemap.ts                   # Sitemap generator
 │   └── not-found.tsx               # 404 page
-├── 📁 components/                   # React Components (60+ components)
+├── 📁 components/                   # React Components (40+ components)
 │   ├── 📁 articles/                 # Article components
 │   │   ├── ArticleFooter.tsx
 │   │   ├── ArticleHeader.tsx
@@ -164,27 +148,16 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 │   ├── 📁 community/                # Community components
 │   │   ├── JobsSection.tsx
 │   │   └── NewsSection.tsx
-│   ├── 📁 courses/                  # Course components
-│   │   ├── AllCourses.tsx
-│   │   ├── CourseCard.tsx
-│   │   ├── CourseHero.tsx
-│   │   ├── CourseLanding.tsx
-│   │   ├── LessonUI.tsx
-│   │   ├── ResumeLearning.tsx
-│   │   └── SidebarClient.tsx
 │   ├── 📁 explore/                  # Explore page components
 │   │   ├── CategoryGrid.tsx
 │   │   ├── ExploreHero.tsx
-│   │   ├── FeaturedArticles.tsx
-│   │   └── TrendingCourses.tsx
+│   │   └── FeaturedArticles.tsx
 │   ├── 📁 home/                     # Home page sections
 │   │   ├── CategoriesSection.tsx
-│   │   ├── CoursesSection.tsx
 │   │   ├── ExploreSection.tsx
-│   │   ├── FeaturedCoursesSection.tsx
+│   │   ├── FeaturedLinksSlider.tsx
 │   │   ├── HeroSection.tsx
-│   │   ├── HowItWorksSection.tsx
-│   │   └── StructuredCoursesSection.tsx
+│   │   └── HowItWorksSection.tsx
 │   ├── 📁 layout/                   # Layout components
 │   │   ├── Footer.tsx
 │   │   ├── Navbar.tsx
@@ -222,8 +195,6 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 │   ├── AIChatbot.tsx                # AI chatbot interface
 │   ├── CommentsSection.tsx          # Comments/discussions
 │   ├── JsonLd.tsx                   # SEO structured data
-│   ├── Leaderboard.tsx              # Gamification leaderboard
-│   ├── QuizSection.tsx              # Quiz component
 │   └── ThemeProvider.tsx            # Theme context provider
 ├── 📁 hooks/                        # Custom React Hooks
 │   ├── useAnimatedCounter.ts        # Animated number counter
@@ -231,21 +202,13 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 │   ├── useFcmToken.ts               # FCM token management
 │   └── useScrollProgress.ts         # Scroll progress tracking
 ├── 📁 lib/                          # Utilities & Configuration
-│   ├── 📁 hooks/                    # Additional hooks
-│   │   ├── useCourseProgress.ts     # Course progress
-│   │   ├── useQuiz.ts               # Quiz logic
-│   │   └── useUserEnrollments.ts    # User enrollments
 │   ├── animations.ts                # Animation configurations
-│   ├── courses.ts                   # Course utilities
 │   ├── developers-data.ts           # Developer profiles data
 │   ├── firebase-admin.ts            # Firebase Admin SDK
 │   ├── firebase.ts                  # Firebase client config
-│   ├── lms-data.ts                  # Complete LMS course data
 │   └── utils.ts                     # Utility functions
 ├── 📁 services/                     # Business Logic Services
-│   └── lms-service.ts               # LMS operations
 ├── 📁 types/                        # TypeScript Definitions
-│   ├── course.ts                    # Course types
 │   ├── developer.ts                 # Developer types
 │   └── user.ts                      # User types
 ├── 📁 functions/                    # Firebase Cloud Functions
@@ -284,27 +247,15 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 - **UserProfile.tsx** - User profile dropdown menu
 - **NotificationToggle.tsx** - Notification settings toggle
 
-### Course Components (7)
-- **CourseCard.tsx** - Individual course card display
-- **CourseHero.tsx** - Course hero/banner section
-- **CourseLanding.tsx** - Course landing page layout
-- **AllCourses.tsx** - All courses listing page
-- **LessonUI.tsx** - Lesson display interface with content
-- **ResumeLearning.tsx** - Resume course button
-- **SidebarClient.tsx** - Course navigation sidebar
-
-### Home Page Components (7)
+### Home Page Components (5)
 - **HeroSection.tsx** - Landing page hero with animated quotes
-- **FeaturedCoursesSection.tsx** - Featured courses carousel
+- **FeaturedLinksSlider.tsx** - Featured services and tools slider
 - **CategoriesSection.tsx** - Course categories grid
 - **HowItWorksSection.tsx** - How it works section
-- **CoursesSection.tsx** - Courses overview
 - **ExploreSection.tsx** - Explore CTA section
-- **StructuredCoursesSection.tsx** - Structured learning path
 
 ### Explore Page Components (4)
 - **ExploreHero.tsx** - Explore page hero
-- **TrendingCourses.tsx** - Trending courses display
 - **FeaturedArticles.tsx** - Featured articles grid
 - **CategoryGrid.tsx** - Category browsing grid
 
@@ -344,8 +295,6 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 - table.tsx, separator.tsx
 
 ### Feature Components (5)
-- **QuizSection.tsx** - Interactive quiz component
-- **Leaderboard.tsx** - User rankings and leaderboard
 - **AIChatbot.tsx** - AI-powered chatbot
 - **CommentsSection.tsx** - Comments and discussions
 - **JsonLd.tsx** - SEO structured data
@@ -358,18 +307,9 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 - `/login` - User login page
 - `/register` - New user registration
 - `/forgot-password` - Password recovery
-- `/onboarding` - New user onboarding flow
-
-### Learning (5 routes)
-- `/courses` - All courses listing
-- `/courses/[courseId]` - Course details page
-- `/courses/[courseId]/learn` - Course learning interface
-- `/courses/[courseId]/learn/[lessonId]` - Individual lesson viewer
-- `/my-learning` - User's enrolled courses dashboard
-
-### Discovery (3 routes)
+### Discovery (2 routes)
 - `/explore` - Explore page with trending content
-- `/categories` - Browse course categories
+- `/categories` - Browse article categories
 - `/community` - Community hub
 - `/community/[topicId]` - Topic-specific discussions
 
@@ -407,7 +347,7 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 ## 🔧 Services & Utilities
 
 ### Services
-- **lms-service.ts** - LMS operations (get courses, lessons, progress tracking)
+- **databaseService.ts** - General profile and system database operations
 
 ### Custom Hooks
 **Root Hooks:**
@@ -416,24 +356,16 @@ A modern, full-featured e-learning platform built with Next.js 16, React 19, and
 - **useFcmToken.ts** - Firebase Cloud Messaging token management
 - **useScrollProgress.ts** - Page scroll progress tracking
 
-**Lib Hooks:**
-- **useUserEnrollments.ts** - User course enrollment management
-- **useCourseProgress.ts** - Course progress tracking and updates
-- **useQuiz.ts** - Quiz state and logic management
-
 ### Utilities
 - **lib/utils.ts** - Utility functions (cn for className merging)
 - **lib/animations.ts** - Animation configurations
-- **lib/courses.ts** - Course data and helper functions
 - **lib/developers-data.ts** - Developer profiles dataset
-- **lib/lms-data.ts** - Complete LMS course data (Python, IoT, JavaScript, C, etc.)
 - **lib/firebase.ts** - Firebase SDK initialization (Auth, Firestore, Messaging, Analytics)
 - **lib/firebase-admin.ts** - Firebase Admin SDK for server-side operations
 
 ### Type Definitions
-- **types/course.ts** - Course, Module, Lesson, Quiz types
 - **types/developer.ts** - Developer profile types
-- **types/user.ts** - User profile and progress types
+- **types/user.ts** - User profile types
 
 ## 🚀 Getting Started
 
@@ -592,19 +524,8 @@ ESLint configuration for code quality
 
 ## 🎯 Core Features Breakdown
 
-### LMS Courses Available
-The platform includes complete structured courses:
-- **Python Programming** - Beginner to advanced Python
-- **IoT (Internet of Things)** - Hardware and software integration
-- **JavaScript** - Modern JavaScript and ES6+
-- **C Programming** - Systems programming fundamentals
-- **And more** - Check `lib/lms-data.ts` for complete list
-
 ### Firestore Collections
 - `users` - User profiles and metadata
-- `courses` - Course information
-- `enrollments` - User course enrollments
-- `progress` - Learning progress tracking
 - `comments` - Discussion threads
 - `notifications` - User notifications
 

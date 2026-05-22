@@ -448,7 +448,7 @@ export default function RegisterPage() {
                     <DialogFooter className="sm:justify-center">
                         <Button
                             className="w-full sm:w-auto px-8"
-                            onClick={() => router.push("/my-learning")}
+                            onClick={() => router.push("/explore")}
                         >
                             Explore
                         </Button>

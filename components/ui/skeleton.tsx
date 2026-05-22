@@ -39,19 +39,3 @@ export function ProfileStatSkeleton() {
     </div>
   )
 }
-
-export function CourseCardSkeleton() {
-  return (
-    <div className="rounded-xl border p-4 space-y-3">
-      <div className="flex gap-4">
-        <Skeleton className="h-12 w-12 rounded-lg" />
-        <div className="flex-1 space-y-2">
-          <Skeleton className="h-5 w-3/4" />
-          <Skeleton className="h-4 w-full" />
-        </div>
-      </div>
-      <Skeleton className="h-2 w-full" />
-      <Skeleton className="h-3 w-24" />
-    </div>
-  )
-}

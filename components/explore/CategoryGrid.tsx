@@ -1,8 +1,45 @@
-import { Monitor, PenTool, TrendingUp, Megaphone, Camera, Music, Heart, Star, Activity } from "lucide-react"
+import { Cpu, Terminal, Sparkles, Briefcase } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
-const categories: any[] = []
+const categories = [
+    {
+        title: "Electronics & Embedded",
+        description: "Master resistors, digital electronics, and embedded systems prototyping.",
+        articlesCount: 3,
+        icon: Cpu,
+        color: "bg-blue-600",
+        tag: "Core Engineering",
+        tagColor: "text-blue-400"
+    },
+    {
+        title: "Emerging Tech & AI",
+        description: "Explore AI tools, quantum computing, and future tech landscapes.",
+        articlesCount: 3,
+        icon: Sparkles,
+        color: "bg-pink-600",
+        tag: "Latest Insights",
+        tagColor: "text-pink-400"
+    },
+    {
+        title: "Interview & Placement Prep",
+        description: "Prepare with extensive question banks and placement-oriented guides.",
+        articlesCount: 2,
+        icon: Terminal,
+        color: "bg-amber-600",
+        tag: "Career Ready",
+        tagColor: "text-amber-400"
+    },
+    {
+        title: "Professional Growth",
+        description: "Dive into entrepreneurship, microhabits, and modern APIs.",
+        articlesCount: 3,
+        icon: Briefcase,
+        color: "bg-purple-600",
+        tag: "Success Mindset",
+        tagColor: "text-purple-400"
+    }
+]
 
 export function CategoryGrid() {
     return (
@@ -12,10 +49,10 @@ export function CategoryGrid() {
                     <h2 className="text-2xl font-bold">Browse by Category</h2>
                     <div className="flex flex-wrap gap-2 justify-center">
                         <Button variant="default" className="rounded-full bg-blue-600 hover:bg-blue-700">All</Button>
-                        <Button variant="outline" className="rounded-full">Development</Button>
-                        <Button variant="outline" className="rounded-full">Design</Button>
-                        <Button variant="outline" className="rounded-full">Business</Button>
-                        <Button variant="outline" className="rounded-full">Marketing</Button>
+                        <Button variant="outline" className="rounded-full">Electronics</Button>
+                        <Button variant="outline" className="rounded-full">Emerging Tech</Button>
+                        <Button variant="outline" className="rounded-full">Career Prep</Button>
+                        <Button variant="outline" className="rounded-full">Growth</Button>
                     </div>
                 </div>
 
@@ -29,7 +66,7 @@ export function CategoryGrid() {
                                     </div>
                                 </div>
                                 <Badge variant="secondary" className="bg-muted text-muted-foreground">
-                                    {cat.courses} Courses
+                                    {cat.articlesCount} Articles
                                 </Badge>
                             </div>
 

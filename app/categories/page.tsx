@@ -10,9 +10,9 @@ export default function CategoriesPage() {
         <div className="flex flex-col min-h-screen">
             <section className="py-12 bg-background border-b">
                 <div className="container mx-auto px-4 text-center">
-                    <h1 className="text-4xl font-bold mb-4">Course Categories</h1>
+                    <h1 className="text-4xl font-bold mb-4">Article Categories</h1>
                     <p className="text-muted-foreground w-full max-w-2xl mx-auto">
-                        Dive deep into our specific categories to find exactly what you need to advance your career.
+                        Dive deep into our specific categories to find exactly what you need to advance your engineering and career goals.
                     </p>
                 </div>
             </section>
