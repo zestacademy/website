@@ -110,6 +110,34 @@ service cloud.firestore {
       allow read: if false;
       allow write: if false;
     }
+    // --- LMS: Courses, Chapters, Lessons ---
+    match /lmsCourses/{courseId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /lmsChapters/{chapterId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /lmsLessons/{lessonId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- LMS: Enrollments ---
+    match /lmsEnrollments/{enrollmentId} {
+      allow read: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && ((resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid) || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // --- LMS: Certificates ---
+    match /lmsCertificates/{certificateId} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
 
     // Default deny all other access
     match /{document=**} {

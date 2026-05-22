@@ -128,6 +128,15 @@ export function UserProfile() {
                     </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                    <Link href="/courses">
+                        <DropdownMenuItem>
+                            <GraduationCap className="mr-2 h-4 w-4 text-emerald-500" />
+                            <span>My Learning</span>
+                        </DropdownMenuItem>
+                    </Link>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
                 {user.role === 'admin' && (
                     <>
                         <DropdownMenuGroup>
@@ -135,6 +144,12 @@ export function UserProfile() {
                                 <DropdownMenuItem>
                                     <ShieldCheck className="mr-2 h-4 w-4 text-purple-500" />
                                     <span>Admin Dashboard</span>
+                                </DropdownMenuItem>
+                            </Link>
+                            <Link href="/admin/lms">
+                                <DropdownMenuItem>
+                                    <GraduationCap className="mr-2 h-4 w-4 text-blue-500" />
+                                    <span>LMS Course Builder</span>
                                 </DropdownMenuItem>
                             </Link>
                         </DropdownMenuGroup>

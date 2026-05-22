@@ -44,6 +44,7 @@ export function Navbar() {
     const navLinks = [
         { href: "/", label: "Home" },
         { href: "/explore", label: "Articles" },
+        { href: "/courses", label: "Courses" },
         { href: "https://compilers.zestacademy.tech/", label: "Compilers" },
         { href: "/community", label: "Community" },
     ]
