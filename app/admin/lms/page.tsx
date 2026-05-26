@@ -32,8 +32,7 @@ import {
   getChapterLessons, 
   createOrUpdateCourse,
   createOrUpdateChapter,
-  createOrUpdateLesson,
-  MOCK_COURSES
+  createOrUpdateLesson
 } from "@/services/lmsService"
 import { LmsCourse, LmsChapter, LmsLesson, LmsQuizQuestion } from "@/types/lms"
 
@@ -97,7 +96,7 @@ export default function LmsAdminDashboard() {
         setLoadingAuth(false)
         setIsAdmin(true) // Mockup development authorization
         setIsSimulated(true)
-        loadMockCourses()
+        loadLmsData()
         return
       }
 
@@ -120,7 +119,7 @@ export default function LmsAdminDashboard() {
               console.error("Auth role check failed, falling back:", err)
               setIsAdmin(true)
               setIsSimulated(true)
-              loadMockCourses()
+              loadLmsData()
             }
           } else {
             setIsAdmin(false)
@@ -135,13 +134,6 @@ export default function LmsAdminDashboard() {
     })
   }, [])
 
-  const loadMockCourses = () => {
-    setCourses(MOCK_COURSES)
-    if (MOCK_COURSES.length > 0) {
-      handleSelectCourse(MOCK_COURSES[0])
-    }
-  }
-
   const loadLmsData = async () => {
     setLoadingData(true)
     try {
@@ -152,7 +144,7 @@ export default function LmsAdminDashboard() {
       }
     } catch (e) {
       console.error("LMS service load failure:", e)
-      loadMockCourses()
+      setCourses([])
     } finally {
       setLoadingData(false)
     }
