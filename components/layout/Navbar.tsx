@@ -46,6 +46,7 @@ export function Navbar() {
         { href: "/explore", label: "Articles" },
         { href: "/courses", label: "Courses" },
         { href: "https://compilers.zestacademy.tech/", label: "Compilers" },
+        { href: "/tools/post-writer", label: "Tools" },
         { href: "/community", label: "Community" },
     ]
 

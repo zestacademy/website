@@ -34,6 +34,9 @@ export function Footer() {
                     <Link href="/developers" className="hover:text-primary transition-colors">
                         Developers
                     </Link>
+                    <Link href="/tools/post-writer" className="hover:text-primary transition-colors">
+                        Post Writer Tool
+                    </Link>
                     <Link href="/privacy-policy" className="hover:text-primary transition-colors">
                         Privacy Policy
                     </Link>
