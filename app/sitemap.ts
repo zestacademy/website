@@ -12,6 +12,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/categories',
         '/about-us',
         '/contact',
+        '/tools',
+        '/tools/zest-notes',
+        '/tools/post-writer',
         '/privacy-policy',
         '/terms-conditions',
     ]

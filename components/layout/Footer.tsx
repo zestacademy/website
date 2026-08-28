@@ -34,8 +34,14 @@ export function Footer() {
                     <Link href="/developers" className="hover:text-primary transition-colors">
                         Developers
                     </Link>
+                    <Link href="/tools" className="hover:text-primary transition-colors">
+                        Tools Hub
+                    </Link>
+                    <Link href="/tools/zest-notes" className="hover:text-primary transition-colors">
+                        Zest Notes
+                    </Link>
                     <Link href="/tools/post-writer" className="hover:text-primary transition-colors">
-                        Post Writer Tool
+                        Post Writer
                     </Link>
                     <Link href="/privacy-policy" className="hover:text-primary transition-colors">
                         Privacy Policy
