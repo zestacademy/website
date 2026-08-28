@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Github, Twitter, Linkedin, Globe, Instagram, ArrowRight } from 'lucide-react';
+import { Github, Twitter, Linkedin, Globe, ArrowRight, FileText } from 'lucide-react';
 import { developers } from '@/lib/developers-data';
 
 function DeveloperCard({ dev }: { dev: typeof developers[0] }) {
@@ -13,11 +13,11 @@ function DeveloperCard({ dev }: { dev: typeof developers[0] }) {
     return (
         <div
             onClick={() => router.push(`/developers/${dev.id}`)}
-            className="group relative bg-card rounded-3xl overflow-hidden border shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+            className="group relative bg-card rounded-3xl overflow-hidden border shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col justify-between"
         >
             <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-            <div className="p-8 flex flex-col items-center text-center">
+            <div className="p-8 flex flex-col items-center text-center flex-1">
                 <div className="relative h-32 w-32 mb-6 rounded-full overflow-hidden border-4 border-background shadow-xl ring-2 ring-primary/20 group-hover:ring-primary transition-all">
                     <Image
                         src={dev.avatar}
@@ -32,37 +32,49 @@ function DeveloperCard({ dev }: { dev: typeof developers[0] }) {
                 <p className="text-muted-foreground mb-6 leading-relaxed">{dev.bio}</p>
 
                 <div className="flex flex-wrap gap-2 justify-center mb-8">
-                    {dev.skills.map((skill) => (
+                    {dev.skills.slice(0, 6).map((skill) => (
                         <span key={skill} className="px-3 py-1 text-xs font-semibold rounded-full bg-secondary text-secondary-foreground">
                             {skill}
                         </span>
                     ))}
+                    {dev.skills.length > 6 && (
+                        <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-muted text-muted-foreground">
+                            +{dev.skills.length - 6} more
+                        </span>
+                    )}
                 </div>
 
-                <div className="flex gap-4">
+                <div className="flex flex-wrap items-center justify-center gap-3 mt-auto pt-4 border-t w-full">
+                    {dev.resume && (
+                        <a
+                            href={dev.resume}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all text-xs font-semibold"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <FileText className="h-3.5 w-3.5" />
+                            Resume PDF
+                        </a>
+                    )}
                     {dev.links.github && (
                         <Link href={dev.links.github} target="_blank" className="p-2 rounded-full bg-muted hover:bg-foreground hover:text-background transition-colors" onClick={(e) => e.stopPropagation()}>
-                            <Github className="h-5 w-5" />
+                            <Github className="h-4 w-4" />
                         </Link>
                     )}
                     {dev.links.linkedin && (
                         <Link href={dev.links.linkedin} target="_blank" className="p-2 rounded-full bg-muted hover:bg-blue-600 hover:text-white transition-colors" onClick={(e) => e.stopPropagation()}>
-                            <Linkedin className="h-5 w-5" />
+                            <Linkedin className="h-4 w-4" />
                         </Link>
                     )}
                     {dev.links.twitter && (
                         <Link href={dev.links.twitter} target="_blank" className="p-2 rounded-full bg-muted hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors" onClick={(e) => e.stopPropagation()}>
-                            <Twitter className="h-5 w-5" />
+                            <Twitter className="h-4 w-4" />
                         </Link>
                     )}
                     {dev.links.website && (
                         <Link href={dev.links.website} target="_blank" className="p-2 rounded-full bg-muted hover:bg-emerald-500 hover:text-white transition-colors" onClick={(e) => e.stopPropagation()}>
-                            <Globe className="h-5 w-5" />
-                        </Link>
-                    )}
-                    {dev.links.instagram && (
-                        <Link href={dev.links.instagram} target="_blank" className="p-2 rounded-full bg-muted hover:bg-pink-600 hover:text-white transition-colors" onClick={(e) => e.stopPropagation()}>
-                            <Instagram className="h-5 w-5" />
+                            <Globe className="h-4 w-4" />
                         </Link>
                     )}
                 </div>
